@@ -11,13 +11,8 @@
 import fs from 'fs'
 import path from 'path'
 import { glob } from 'glob'
-import type { SafeTestInfo, SafeTestResult, SafeTestSubset } from '../types.js'
 
 export class SafeTestsManager {
-  private projectRoot: string
-  private safeTestsFile: string
-  private executionHistoryFile: string
-
   constructor(projectRoot = process.cwd()) {
     this.projectRoot = projectRoot
     this.safeTestsFile = path.join(process.cwd(), 'tmp', 'tdd-safe-tests.json')
@@ -25,7 +20,7 @@ export class SafeTestsManager {
     this.ensureDirectories()
   }
 
-  private ensureDirectories() {
+  ensureDirectories() {
     const dir = path.dirname(this.safeTestsFile)
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true })
@@ -35,9 +30,9 @@ export class SafeTestsManager {
   /**
    * Descobre testes candidatos a "safe tests"
    */
-  async discoverSafeTestCandidates(): Promise<SafeTestInfo[]> {
+  async discoverSafeTestCandidates() {
     const testFiles = await this.findTestFiles()
-    const candidates: SafeTestInfo[] = []
+    const candidates = []
 
     for (const testFile of testFiles) {
       const candidate = await this.analyzeTestFile(testFile)
@@ -52,7 +47,7 @@ export class SafeTestsManager {
   /**
    * Encontra arquivos de teste
    */
-  private async findTestFiles(): Promise<string[]> {
+  async findTestFiles() {
     const patterns = [
       'tests/**/*.test.ts',
       'tests/**/*.test.tsx',
@@ -64,7 +59,7 @@ export class SafeTestsManager {
       '**/*.spec.tsx'
     ]
 
-    const allFiles: string[] = []
+    const allFiles = []
 
     for (const pattern of patterns) {
       try {
@@ -92,7 +87,7 @@ export class SafeTestsManager {
   /**
    * Analisa um arquivo de teste para determinar se é "safe"
    */
-  private async analyzeTestFile(testFile: string): Promise<SafeTestInfo | null> {
+  async analyzeTestFile(testFile) {
     try {
       const content = fs.readFileSync(path.join(this.projectRoot, testFile), 'utf8')
       const lines = content.split('\n')
@@ -132,13 +127,13 @@ export class SafeTestsManager {
   /**
    * Analisa conteúdo do arquivo de teste
    */
-  private analyzeTestContent(content: string, lines: string[]): any {
+  analyzeTestContent(content, lines) {
     const analysis = {
       isValidTestFile: false,
-      category: 'unknown' as 'unit' | 'integration' | 'component' | 'e2e' | 'unknown',
+      category: 'unknown',
       estimatedDuration: 100, // ms
-      dependencies: [] as string[],
-      reasons: [] as string[],
+      dependencies: [],
+      reasons: [],
       testCount: 0,
       hasMocks: false,
       coversCriticalPath: false
@@ -204,7 +199,7 @@ export class SafeTestsManager {
   /**
    * Calcula score de segurança (0-100)
    */
-  private calculateSafetyScore(analysis: any): number {
+  calculateSafetyScore(analysis) {
     let score = 50 // Base
 
     // Bônus por categoria
@@ -241,16 +236,15 @@ export class SafeTestsManager {
   /**
    * Cria subset de safe tests baseado nos critérios
    */
-  async createSafeSubset(targetDuration = 30000): Promise<SafeTestSubset> {
+  async createSafeSubset(targetDuration = 30000) {
     const candidates = await this.discoverSafeTestCandidates()
-    const subset: SafeTestSubset = {
+    const subset = {
       tests: [],
       totalEstimatedDuration: 0,
       coverage: {
         unit: 0,
         component: 0,
         integration: 0,
-        e2e: 0,
         total: 0
       },
       lastUpdated: new Date().toISOString(),
@@ -287,7 +281,7 @@ export class SafeTestsManager {
       subset.tests.push(candidate)
       subset.totalEstimatedDuration += candidate.estimatedDuration
 
-            // Atualiza cobertura
+      // Atualiza cobertura
       subset.coverage[candidate.category] =
         (subset.coverage[candidate.category] || 0) + 1
       subset.coverage.total++
@@ -299,7 +293,7 @@ export class SafeTestsManager {
   /**
    * Salva subset de safe tests
    */
-  saveSafeSubset(subset: SafeTestSubset): void {
+  saveSafeSubset(subset) {
     try {
       fs.writeFileSync(this.safeTestsFile, JSON.stringify(subset, null, 2))
     } catch (error) {
@@ -310,7 +304,7 @@ export class SafeTestsManager {
   /**
    * Carrega subset salvo
    */
-  loadSafeSubset(): SafeTestSubset | null {
+  loadSafeSubset() {
     try {
       if (fs.existsSync(this.safeTestsFile)) {
         const content = fs.readFileSync(this.safeTestsFile, 'utf8')
@@ -325,8 +319,8 @@ export class SafeTestsManager {
   /**
    * Executa subset de safe tests e coleta métricas
    */
-  async executeSafeSubset(subset: SafeTestSubset): Promise<SafeTestResult> {
-    const result: SafeTestResult = {
+  async executeSafeSubset(subset) {
+    const result = {
       subset: subset,
       executedAt: new Date().toISOString(),
       totalDuration: 0,
@@ -374,7 +368,7 @@ export class SafeTestsManager {
   /**
    * Simula execução de teste (placeholder)
    */
-  private async simulateTestExecution(test: SafeTestInfo): Promise<any> {
+  async simulateTestExecution(test) {
     // Simula duração baseada na categoria
     const baseDuration = test.estimatedDuration
     const variance = Math.random() * 0.3 - 0.15 // ±15%
@@ -398,7 +392,7 @@ export class SafeTestsManager {
   /**
    * Salva resultado de execução no histórico
    */
-  private saveExecutionResult(result: SafeTestResult): void {
+  saveExecutionResult(result) {
     try {
       const history = this.loadExecutionHistory()
       history.push(result)
@@ -417,7 +411,7 @@ export class SafeTestsManager {
   /**
    * Carrega histórico de execuções
    */
-  private loadExecutionHistory(): SafeTestResult[] {
+  loadExecutionHistory() {
     try {
       if (fs.existsSync(this.executionHistoryFile)) {
         const content = fs.readFileSync(this.executionHistoryFile, 'utf8')
@@ -432,7 +426,7 @@ export class SafeTestsManager {
   /**
    * Atualiza subset baseado no histórico de execuções
    */
-  updateSubsetFromHistory(): SafeTestSubset | null {
+  updateSubsetFromHistory() {
     const subset = this.loadSafeSubset()
     if (!subset) return null
 
@@ -440,7 +434,7 @@ export class SafeTestsManager {
     if (history.length === 0) return subset
 
     // Calcula métricas de confiabilidade baseadas no histórico
-    const testReliability: Record<string, { runs: number, failures: number, avgDuration: number }> = {}
+    const testReliability = {}
 
     for (const execution of history.slice(-10)) { // Últimas 10 execuções
       for (const testResult of execution.results) {
@@ -468,8 +462,7 @@ export class SafeTestsManager {
     subset.coverage.total = subset.tests.length
     subset.coverage.unit = subset.tests.filter(t => t.category === 'unit').length
     subset.coverage.component = subset.tests.filter(t => t.category === 'component').length
-        subset.coverage.integration = subset.tests.filter(t => t.category === 'integration').length
-    subset.coverage.e2e = subset.tests.filter(t => t.category === 'e2e').length
+    subset.coverage.integration = subset.tests.filter(t => t.category === 'integration').length
     subset.totalEstimatedDuration = subset.tests.reduce((sum, t) => sum + t.estimatedDuration, 0)
 
     this.saveSafeSubset(subset)
