@@ -38,7 +38,7 @@ jobs:
           curl -f http://localhost:3000 || exit 1
 
       - name: Run Lighthouse
-        uses: treosh/lighthouse-ci-action@v10
+        uses: treosh/lighthouse-ci-action@v12
         id: lighthouse
         with:
           urls: http://localhost:3000
