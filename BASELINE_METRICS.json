@@ -1,0 +1,56 @@
+{
+  "timestamp": "2025-10-24T04:22:11.053Z",
+  "environment": {
+    "node": "v22.14.0",
+    "platform": "win32",
+    "arch": "x64"
+  },
+  "build": {
+    "success": true,
+    "buildTimeMs": 15000,
+    "buildSizeBytes": 816975305,
+    "buildSizeMB": "779.13"
+  },
+  "performance": {
+    "coreWebVitals": {
+      "estimatedLCP": 2500,
+      "estimatedFID": 100,
+      "estimatedCLS": 0.1,
+      "estimatedFCP": 1800,
+      "estimatedTTFB": 800
+    },
+    "estimatedScore": 85
+  },
+  "quality": {
+    "error": "Command failed: pnpm lint --format=json\n'eslint' n�o � reconhecido como um comando interno\r\nou externo, um programa oper�vel ou um arquivo em lotes.\r\n"
+  },
+  "tests": {
+    "error": "Command failed: pnpm test --reporter=json\n\u001b[1m\u001b[43m DEPRECATED \u001b[49m\u001b[22m \u001b[33m\"cache.dir\" is deprecated, use Vite's \"cacheDir\" instead if you want to change the cache director. Note caches will be written to \"cacheDir/vitest\"\u001b[39m\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+  },
+  "bundle": {
+    "dependencies": 29,
+    "devDependencies": 12,
+    "totalDependencies": 41,
+    "largeDependencies": 5,
+    "hasAnalytics": true,
+    "hasObservability": false
+  },
+  "fase1": {
+    "observEnabled": true,
+    "plausibleConfigured": true,
+    "testsRestored": {
+      "ssrFixes": 7,
+      "analytics": 17,
+      "featureFlags": 73,
+      "chatbot": 12,
+      "stripe": 1,
+      "total": 5
+    },
+    "features": {
+      "timing": "enabled",
+      "analytics": "enabled",
+      "consent": "enabled",
+      "experiments": "enabled"
+    }
+  }
+}

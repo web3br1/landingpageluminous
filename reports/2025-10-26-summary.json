@@ -1,0 +1,20 @@
+{
+  "period": "2025-09-26 to 2025-10-26",
+  "overall": {
+    "status": "Excelente - Tendência de Melhoria",
+    "confidence": 0.8666666666666667,
+    "riskLevel": "Baixo - Status Saudável"
+  },
+  "highlights": [
+    "✅ Taxa de flakes reduziu 11.1% ao longo do período",
+    "🔧 6 incidentes resolvidos no período"
+  ],
+  "recommendations": [
+    {
+      "priority": "Baixa",
+      "action": "Implementar Test Impact Analysis para CI mais rápido",
+      "impact": "Redução de 40% no tempo de CI",
+      "effort": "2-3 dias"
+    }
+  ]
+}

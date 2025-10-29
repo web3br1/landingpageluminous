@@ -1,0 +1,155 @@
+/* ===== THEME PACK: Monochromatic Lux ===== */
+/* Single scale with subtle accents */
+
+:root[data-theme="mono-luxe"] {
+  /* Color overrides - monochromatic scale */
+  --bg: oklch(99% 0.02 95);
+  --fg: oklch(18% 0.04 95);
+  --primary: oklch(40% 0.04 95);
+  --primary-contrast: oklch(98% 0.01 95);
+  --secondary: oklch(50% 0.04 95);
+  --accent: oklch(30% 0.04 95);
+  --muted: oklch(94% 0.02 95);
+  --border: oklch(90% 0.02 95);
+  --destructive: oklch(50% 0.10 25);
+  --success: oklch(40% 0.10 142);
+  --warning: oklch(85% 0.12 85);
+
+  /* Motion overrides - subtle and refined */
+  --ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-normal: 400ms;
+  --duration-slow: 600ms;
+
+  /* Layout overrides - minimal radius */
+  --radius: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-2xl: 0.75rem;
+
+  /* Shadow overrides - subtle depth */
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 2px 4px rgb(0 0 0 / 0.06);
+  --shadow-lg: 0 4px 8px rgb(0 0 0 / 0.05);
+  --shadow-xl: 0 6px 12px rgb(0 0 0 / 0.04);
+  --shadow-2xl: 0 8px 16px rgb(0 0 0 / 0.03);
+}
+
+/* Monochrome effect utilities */
+.mono-card {
+  border: 1px solid var(--border);
+  background: var(--bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.mono-elevated {
+  border: 2px solid var(--border);
+  background: var(--bg);
+  box-shadow: var(--shadow-md);
+}
+
+.mono-accent {
+  background: linear-gradient(135deg, var(--secondary), var(--primary));
+  color: var(--primary-contrast);
+}
+
+/* Typography refinements for monochrome theme */
+.mono-heading {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg);
+}
+
+.mono-subheading {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--primary);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
+}
+
+/* Animation refinements - smooth and minimal */
+.mono-enter {
+  animation: monoFadeIn var(--duration-slow) var(--ease-smooth) both;
+}
+
+.mono-slide {
+  animation: monoSlideUp var(--duration-normal) var(--ease-standard) both;
+}
+
+@keyframes monoFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes monoSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Button variants for monochrome theme */
+.btn-mono {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border: 1px solid var(--border);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.btn-mono:hover {
+  background: var(--secondary);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-mono-outline {
+  background: transparent;
+  color: var(--fg);
+  border: 2px solid var(--border);
+  font-weight: 600;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.btn-mono-outline:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  transform: translateY(-1px);
+}
+
+/* Interactive elements */
+.mono-interactive {
+  position: relative;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.mono-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Layout helpers */
+.mono-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mono-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}

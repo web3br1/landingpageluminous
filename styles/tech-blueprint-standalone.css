@@ -1,0 +1,361 @@
+/* ===========================================
+   TECH BLUEPRINT THEME - STANDALONE VERSION
+   ===========================================
+
+   Um tema técnico com grid blueprint para interfaces
+   de painel de controle e aplicações técnicas.
+
+   Como usar:
+   1. Importe este CSS em seu projeto
+   2. Aplique data-theme="tech-blueprint" no elemento root
+   3. Use as classes utilitárias fornecidas
+
+   Exemplo:
+   <html data-theme="tech-blueprint">
+   <body class="blueprint-bg">
+     <div class="blueprint-card">...</div>
+   </body>
+   </html>
+
+   =========================================== */
+
+:root[data-theme="tech-blueprint"] {
+  /* ===== CORES BASE ===== */
+  --bg: oklch(20% 0.03 220);           /* Fundo escuro técnico */
+  --fg: oklch(95% 0.03 220);           /* Texto claro */
+  --primary: oklch(60% 0.23 200);      /* Azul blueprint vibrante */
+  --primary-contrast: oklch(95% 0.03 220);
+  --secondary: oklch(55% 0.17 160);    /* Azul secundário */
+  --accent: oklch(60% 0.23 40);        /* Accent */
+  --muted: oklch(25% 0.02 220);        /* Superfície secundária */
+  --border: oklch(25% 0.08 220);       /* Bordas */
+  --destructive: oklch(65% 0.25 25);   /* Erro */
+  --success: oklch(75% 0.22 142);      /* Sucesso */
+  --warning: oklch(85% 0.18 85);       /* Aviso */
+
+  /* ===== MOTION ===== */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-entrance: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-emphasis: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --duration-normal: 250ms;
+  --duration-slow: 350ms;
+
+  /* ===== LAYOUT ===== */
+  --radius: 0.25rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* ===== SHADOWS ===== */
+  --shadow-sm: 0 0 0 1px hsl(var(--border));
+  --shadow-md: 0 0 8px rgb(0 20 60 / 0.3), 0 0 0 1px hsl(var(--border));
+  --shadow-lg: 0 0 16px rgb(0 20 60 / 0.4), 0 0 0 1px hsl(var(--border));
+  --shadow-xl: 0 0 24px rgb(0 20 60 / 0.5), 0 0 0 1px hsl(var(--border));
+  --shadow-2xl: 0 0 32px rgb(0 20 60 / 0.6), 0 0 0 1px hsl(var(--border));
+}
+
+/* ===== EFEITO BLUEPRINT DE FUNDO ===== */
+.blueprint-bg {
+  background-image:
+    linear-gradient(transparent 23px, rgba(92,163,255,.08) 24px),
+    linear-gradient(90deg, transparent 23px, rgba(92,163,255,.08) 24px);
+  background-size: 24px 24px;
+  background-color: var(--bg);
+}
+
+/* ===== COMPONENTES BASE ===== */
+.blueprint-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+
+.blueprint-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(100, 150, 255, 0.1) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 150, 255, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+/* ===== TIPOGRAFIA ===== */
+.blueprint-heading {
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fg);
+  font-family: 'Courier New', monospace;
+  text-shadow: 0 0 8px var(--primary);
+}
+
+.blueprint-subheading {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--secondary);
+  font-family: 'Courier New', monospace;
+  border-left: 3px solid var(--primary);
+  padding-left: 0.75rem;
+}
+
+.blueprint-label {
+  font-family: 'Courier New', monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 0.25rem;
+}
+
+/* ===== BOTÕES ===== */
+.btn-blueprint {
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--duration-normal) var(--ease-standard);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+}
+
+.btn-blueprint::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(45deg, var(--primary), var(--secondary), var(--accent));
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.btn-blueprint:hover::before {
+  opacity: 0.1;
+}
+
+.btn-blueprint:hover {
+  color: var(--primary);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.btn-blueprint-outline {
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+  font-family: 'Courier New', monospace;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--duration-normal) var(--ease-standard);
+  box-shadow: 0 0 8px hsl(from var(--primary) h s l / 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+}
+
+.btn-blueprint-outline:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  box-shadow: 0 0 16px hsl(from var(--primary) h s l / 0.5);
+  transform: translateY(-1px);
+}
+
+/* ===== ELEMENTOS INTERATIVOS ===== */
+.blueprint-interactive {
+  position: relative;
+  cursor: pointer;
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.blueprint-interactive:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.blueprint-interactive::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--primary), var(--secondary));
+  opacity: 0;
+  transition: opacity var(--duration-normal) var(--ease-standard);
+  z-index: -1;
+  border-radius: inherit;
+}
+
+.blueprint-interactive:hover::after {
+  opacity: 0.05;
+}
+
+/* ===== LAYOUT HELPERS ===== */
+.blueprint-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  position: relative;
+}
+
+.blueprint-grid::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image:
+    linear-gradient(rgba(100, 150, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(100, 150, 255, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  pointer-events: none;
+}
+
+.blueprint-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* ===== ELEMENTOS TÉCNICOS ===== */
+.blueprint-circuit {
+  position: relative;
+  overflow: hidden;
+}
+
+.blueprint-circuit::before {
+  content: '';
+  position: absolute;
+  top: 20px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--primary), transparent);
+  animation: circuitFlow 4s var(--ease-standard) infinite;
+}
+
+@keyframes circuitFlow {
+  0%, 100% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+.blueprint-terminal {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  font-family: 'Courier New', monospace;
+  padding: 1rem;
+  position: relative;
+  border-radius: var(--radius);
+}
+
+.blueprint-terminal::before {
+  content: '>';
+  position: absolute;
+  top: 1rem;
+  left: 0.75rem;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.blueprint-terminal::after {
+  content: '_';
+  animation: terminalCursor 1s var(--ease-standard) infinite;
+  color: var(--primary);
+}
+
+@keyframes terminalCursor {
+  0%, 50% {
+    opacity: 1;
+  }
+  51%, 100% {
+    opacity: 0;
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+.blueprint-enter {
+  animation: blueprintScan var(--duration-slow) var(--ease-entrance) both;
+}
+
+.blueprint-fade {
+  animation: blueprintFade var(--duration-normal) var(--ease-standard) both;
+}
+
+.blueprint-glow {
+  animation: blueprintGlow 3s var(--ease-emphasis) infinite alternate;
+}
+
+@keyframes blueprintScan {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@keyframes blueprintFade {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes blueprintGlow {
+  from {
+    box-shadow: 0 0 8px hsl(from var(--primary) h s l / 0.3);
+  }
+  to {
+    box-shadow: 0 0 16px hsl(from var(--primary) h s l / 0.6);
+  }
+}
+
+/* ===== FOCUS E ACESSIBILIDADE ===== */
+:root[data-theme="tech-blueprint"] :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .blueprint-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .blueprint-heading {
+    font-size: 1.5rem;
+  }
+
+  .blueprint-subheading {
+    font-size: 1.125rem;
+  }
+}

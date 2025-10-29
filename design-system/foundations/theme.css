@@ -1,0 +1,236 @@
+/* Design System Foundations - Theme CSS Variables */
+/* Auto-generated from design-system/tokens - DO NOT EDIT MANUALLY */
+/* This file defines all CSS custom properties used throughout the application */
+
+/* ===== THEME TOKENS LAYER ===== */
+@layer themes {
+  /* Theme overrides and theme-specific tokens */
+  /* This layer comes BEFORE base to allow theme overrides */
+}
+
+@layer base {
+  :root {
+    /* ===== COLOR TOKENS ===== */
+    /* Primary Colors */
+    --color-primary-50: 258 90% 98%;
+    --color-primary-100: 258 90% 95%;
+    --color-primary-200: 258 90% 88%;
+    --color-primary-300: 258 90% 78%;
+    --color-primary-400: 258 90% 68%;
+    --color-primary-500: 258 90% 60%;
+    --color-primary-600: 258 90% 52%;
+    --color-primary-700: 258 90% 44%;
+    --color-primary-800: 258 90% 36%;
+    --color-primary-900: 258 90% 28%;
+    --color-primary-foreground: 0 0% 100%;
+
+    /* Secondary Colors */
+    --color-secondary-50: 200 100% 98%;
+    --color-secondary-100: 200 100% 95%;
+    --color-secondary-200: 200 100% 88%;
+    --color-secondary-300: 200 100% 78%;
+    --color-secondary-400: 200 100% 68%;
+    --color-secondary-500: 200 100% 50%;
+    --color-secondary-600: 200 100% 42%;
+    --color-secondary-700: 200 100% 34%;
+    --color-secondary-800: 200 100% 26%;
+    --color-secondary-900: 200 100% 18%;
+    --color-secondary-foreground: 210 40% 2%;
+
+    /* Accent Colors */
+    --color-accent-50: 340 93% 98%;
+    --color-accent-100: 340 93% 95%;
+    --color-accent-200: 340 93% 88%;
+    --color-accent-300: 340 93% 78%;
+    --color-accent-400: 340 93% 68%;
+    --color-accent-500: 340 93% 72%;
+    --color-accent-600: 340 93% 64%;
+    --color-accent-700: 340 93% 56%;
+    --color-accent-800: 340 93% 48%;
+    --color-accent-900: 340 93% 40%;
+    --color-accent-foreground: 340 93% 10%;
+
+    /* Neutral Colors */
+    --color-neutral-50: 210 20% 98%;
+    --color-neutral-100: 210 15% 96%;
+    --color-neutral-200: 210 13% 92%;
+    --color-neutral-300: 210 10% 82%;
+    --color-neutral-400: 210 8% 72%;
+    --color-neutral-500: 210 6% 62%;
+    --color-neutral-600: 210 8% 52%;
+    --color-neutral-700: 210 10% 42%;
+    --color-neutral-800: 210 13% 32%;
+    --color-neutral-900: 210 15% 22%;
+
+    /* Semantic Colors */
+    --color-success-default: 142 76% 36%;
+    --color-success-foreground: 0 0% 100%;
+    --color-warning-default: 38 92% 50%;
+    --color-warning-foreground: 210 40% 2%;
+    --color-destructive-default: 0 84.2% 60.2%;
+    --color-destructive-foreground: 210 40% 98%;
+    --color-info-default: 199 89% 48%;
+    --color-info-foreground: 0 0% 100%;
+
+    /* ===== OKLCH TOKENS (MODERN BROWSERS ONLY) ===== */
+    /* Primary Colors OKLCH */
+    --color-primary-50-oklch: 97% 0.03 258;
+    --color-primary-100-oklch: 95% 0.03 258;
+    --color-primary-200-oklch: 88% 0.04 258;
+    --color-primary-300-oklch: 78% 0.05 258;
+    --color-primary-400-oklch: 68% 0.07 258;
+    --color-primary-500-oklch: 60% 0.09 258;
+    --color-primary-600-oklch: 52% 0.11 258;
+    --color-primary-700-oklch: 44% 0.13 258;
+    --color-primary-800-oklch: 36% 0.15 258;
+    --color-primary-900-oklch: 28% 0.17 258;
+    --color-primary-foreground-oklch: 100% 0 0;
+
+    /* Secondary Colors OKLCH */
+    --color-secondary-50-oklch: 98% 0.02 200;
+    --color-secondary-100-oklch: 95% 0.03 200;
+    --color-secondary-200-oklch: 88% 0.04 200;
+    --color-secondary-300-oklch: 78% 0.06 200;
+    --color-secondary-400-oklch: 68% 0.08 200;
+    --color-secondary-500-oklch: 50% 0.2 200;
+    --color-secondary-600-oklch: 42% 0.24 200;
+    --color-secondary-700-oklch: 34% 0.28 200;
+    --color-secondary-800-oklch: 26% 0.32 200;
+    --color-secondary-900-oklch: 18% 0.36 200;
+    --color-secondary-foreground-oklch: 2% 0.04 210;
+
+    /* Accent Colors OKLCH */
+    --color-accent-50-oklch: 98% 0.02 340;
+    --color-accent-100-oklch: 95% 0.03 340;
+    --color-accent-200-oklch: 88% 0.04 340;
+    --color-accent-300-oklch: 78% 0.06 340;
+    --color-accent-400-oklch: 68% 0.08 340;
+    --color-accent-500-oklch: 72% 0.1 340;
+    --color-accent-600-oklch: 64% 0.11 340;
+    --color-accent-700-oklch: 56% 0.12 340;
+    --color-accent-800-oklch: 48% 0.13 340;
+    --color-accent-900-oklch: 40% 0.14 340;
+    --color-accent-foreground-oklch: 10% 0.02 340;
+
+    /* Neutral Colors OKLCH */
+    --color-neutral-50-oklch: 98% 0.005 210;
+    --color-neutral-100-oklch: 96% 0.004 210;
+    --color-neutral-200-oklch: 92% 0.003 210;
+    --color-neutral-300-oklch: 82% 0.003 210;
+    --color-neutral-400-oklch: 72% 0.002 210;
+    --color-neutral-500-oklch: 62% 0.002 210;
+    --color-neutral-600-oklch: 52% 0.002 210;
+    --color-neutral-700-oklch: 42% 0.003 210;
+    --color-neutral-800-oklch: 32% 0.003 210;
+    --color-neutral-900-oklch: 22% 0.004 210;
+
+    /* Semantic Colors OKLCH */
+    --color-success-default-oklch: 36% 0.18 142;
+    --color-success-foreground-oklch: 100% 0 0;
+    --color-warning-default-oklch: 50% 0.18 38;
+    --color-warning-foreground-oklch: 2% 0.04 210;
+    --color-destructive-default-oklch: 60.2% 0.21 0;
+    --color-destructive-foreground-oklch: 98% 0.01 210;
+    --color-info-default-oklch: 48% 0.17 199;
+    --color-info-foreground-oklch: 100% 0 0;
+
+    /* ===== TYPOGRAPHY TOKENS ===== */
+    /* Font Families */
+    --font-inter: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-inter-tight: 'Inter Tight', 'Inter', system-ui, -apple-system, sans-serif;
+    /* Additional font family for compatibility */
+    --font-inter-fallback: 'Inter', system-ui, sans-serif;
+
+    /* ===== SPACING & LAYOUT TOKENS ===== */
+    /* Border Radius */
+    --radius: 1rem; /* 16px - default border radius */
+
+    /* ===== SEMANTIC TOKENS ===== */
+    /* Shadcn/ui compatible tokens */
+    --background: hsl(var(--color-neutral-50));
+    --foreground: hsl(var(--color-neutral-900));
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(var(--color-neutral-900));
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(var(--color-neutral-900));
+    --primary: hsl(var(--color-primary-500));
+    --primary-foreground: hsl(var(--color-primary-foreground));
+    --secondary: hsl(var(--color-secondary-500));
+    --secondary-foreground: hsl(var(--color-secondary-foreground));
+    --muted: hsl(var(--color-neutral-100));
+    --muted-foreground: hsl(var(--color-neutral-600));
+    --accent: hsl(var(--color-accent-500));
+    --accent-foreground: hsl(var(--color-accent-foreground));
+    --destructive: hsl(var(--color-destructive-default));
+    --destructive-foreground: hsl(var(--color-destructive-foreground));
+    --border: hsl(var(--color-neutral-200));
+    --input: hsl(var(--color-neutral-200));
+    --ring: hsl(var(--color-primary-500));
+
+    /* ===== GRADIENT TOKENS ===== */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--color-neutral-50)) 0%, hsl(320 40% 97%) 50%, hsl(320 50% 96%) 100%);
+    --gradient-section: linear-gradient(180deg, hsl(var(--color-neutral-50)) 0%, hsl(0 0% 100%) 100%);
+    --gradient-primary: linear-gradient(135deg, hsl(var(--color-primary-500)) 0%, hsl(var(--color-primary-600)) 100%);
+    --gradient-secondary: linear-gradient(135deg, hsl(var(--color-secondary-500)) 0%, hsl(var(--color-secondary-600)) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--color-accent-500)) 0%, hsl(var(--color-accent-600)) 100%);
+
+    /* ===== SHADOW TOKENS ===== */
+    --shadow-soft-sm: 0 1px 2px rgba(17, 24, 39, 0.04);
+    --shadow-soft-md: 0 10px 30px rgba(17, 24, 39, 0.06);
+    --shadow-soft-lg: 0 20px 40px rgba(17, 24, 39, 0.08);
+    --shadow-soft-xl: 0 25px 50px rgba(17, 24, 39, 0.12);
+  }
+
+  /* ===== OKLCH SEMANTIC TOKENS (MODERN BROWSERS) ===== */
+  @supports (color: oklch(0% 0 0)) {
+    :root {
+      /* OKLCH semantic tokens for enhanced color accuracy */
+      --background-oklch: var(--color-neutral-50-oklch);
+      --foreground-oklch: var(--color-neutral-900-oklch);
+      --card-oklch: 100% 0 0;
+      --card-foreground-oklch: var(--color-neutral-900-oklch);
+      --popover-oklch: 100% 0 0;
+      --popover-foreground-oklch: var(--color-neutral-900-oklch);
+      --primary-oklch: var(--color-primary-500-oklch);
+      --primary-foreground-oklch: var(--color-primary-foreground-oklch);
+      --secondary-oklch: var(--color-secondary-500-oklch);
+      --secondary-foreground-oklch: var(--color-secondary-foreground-oklch);
+      --muted-oklch: var(--color-neutral-100-oklch);
+      --muted-foreground-oklch: var(--color-neutral-600-oklch);
+      --accent-oklch: var(--color-accent-500-oklch);
+      --accent-foreground-oklch: var(--color-accent-foreground-oklch);
+      --destructive-oklch: var(--color-destructive-default-oklch);
+      --destructive-foreground-oklch: var(--color-destructive-foreground-oklch);
+      --border-oklch: var(--color-neutral-200-oklch);
+      --input-oklch: var(--color-neutral-200-oklch);
+      --ring-oklch: var(--color-primary-500-oklch);
+    }
+  }
+
+  /* ===== DARK MODE TOKENS ===== */
+  .dark {
+    --background: hsl(var(--color-neutral-900));
+    --foreground: hsl(var(--color-neutral-50));
+    --card: hsl(var(--color-neutral-800));
+    --card-foreground: hsl(var(--color-neutral-50));
+    --popover: hsl(var(--color-neutral-800));
+    --popover-foreground: hsl(var(--color-neutral-50));
+    --primary: hsl(var(--color-primary-400));
+    --primary-foreground: hsl(var(--color-neutral-900));
+    --secondary: hsl(var(--color-secondary-400));
+    --secondary-foreground: hsl(var(--color-neutral-900));
+    --muted: hsl(var(--color-neutral-800));
+    --muted-foreground: hsl(var(--color-neutral-400));
+    --accent: hsl(var(--color-accent-400));
+    --accent-foreground: hsl(var(--color-neutral-900));
+    --destructive: hsl(0 62.8% 50%);
+    --destructive-foreground: hsl(var(--color-neutral-50));
+    --border: hsl(var(--color-neutral-700));
+    --input: hsl(var(--color-neutral-700));
+    --ring: hsl(var(--color-primary-400));
+
+    /* Dark mode gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(var(--color-neutral-900)) 0%, hsl(240 20% 15%) 50%, hsl(240 25% 12%) 100%);
+    --gradient-section: linear-gradient(180deg, hsl(var(--color-neutral-900)) 0%, hsl(var(--color-neutral-800)) 100%);
+  }
+} /* End @layer base */

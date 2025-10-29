@@ -1,0 +1,45 @@
+/* ===== THEME PACK: Bento Grid ===== */
+/* Asymmetrical cards with organic layouts */
+
+:root[data-theme="bento-grid"] {
+  --bg: oklch(99% 0.02 105);
+  --fg: oklch(16% 0.03 105);
+  --primary: oklch(62% 0.16 260);
+  --secondary: oklch(55% 0.14 220);
+  --accent: oklch(70% 0.18 300);
+  --muted: oklch(96% 0.02 105);
+  --border: oklch(90% 0.02 105);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-normal: 250ms;
+  --radius: 18px;
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.08);
+  --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.1);
+}
+
+.bento-card {
+  border-radius: var(--radius);
+  padding: var(--space-6);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  transition: all var(--duration-normal) var(--ease-standard);
+}
+
+.bento-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: var(--space-4);
+}
+
+.span-3 { grid-column: span 3; }
+.span-4 { grid-column: span 4; }
+.span-5 { grid-column: span 5; }
+.span-6 { grid-column: span 6; }
+.span-7 { grid-column: span 7; }
+.span-8 { grid-column: span 8; }
+.span-9 { grid-column: span 9; }

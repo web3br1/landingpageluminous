@@ -1,0 +1,21 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "app/**/*.{ts,tsx}",
+    "components/**/*.{ts,tsx}",
+    "domains/**/*.{ts,tsx}",
+    "lib/**/*.{ts,tsx}",
+    "scripts/**/*.ts"
+  ],
+  "ignore": [
+    "**/*.test.*",
+    "**/*.spec.*",
+    "**/*.feature",
+    "**/*.steps.*",
+    "**/*.md",
+    "**/*.disabled"
+  ],
+  "project": [
+    "**/*.{ts,tsx}"
+  ]
+}

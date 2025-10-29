@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "description": "Bundle budgets configuration - Sprint 3: Governância",
+  "budgets": {
+    "marketing": {
+      "maxSize": 350000,
+      "description": "Marketing/Landing pages (350KB)",
+      "chunks": 12,
+      "priority": "high"
+    },
+    "product": {
+      "maxSize": 400000,
+      "description": "Product pages - pricing, signup, checkout (400KB)",
+      "chunks": 8,
+      "priority": "high"
+    },
+    "admin": {
+      "maxSize": 800000,
+      "description": "Admin dashboard (lazy loaded - 800KB)",
+      "chunks": 15,
+      "priority": "medium"
+    },
+    "dev": {
+      "maxSize": 300000,
+      "description": "Development tools (300KB)",
+      "chunks": 5,
+      "priority": "low"
+    },
+    "experiments": {
+      "maxSize": 200000,
+      "description": "Experiment pages (200KB)",
+      "chunks": 3,
+      "priority": "low"
+    },
+    "framework": {
+      "maxSize": 200000,
+      "description": "React + Next.js framework (200KB)",
+      "chunks": 5,
+      "priority": "critical"
+    },
+    "total": {
+      "maxSize": 1500000,
+      "description": "Total bundle size (1.5MB)",
+      "chunks": 45,
+      "priority": "critical"
+    }
+  },
+  "thresholds": {
+    "warning": 0.85,
+    "error": 0.95,
+    "critical": 1.0
+  },
+  "exclusions": {
+    "chunks": ["webpack-runtime", "polyfills", "hot-reload"],
+    "files": ["*.map", "*.LICENSE.txt"]
+  },
+  "performance": {
+    "lcp": {
+      "target": 2.5,
+      "warning": 3.0,
+      "error": 4.0
+    },
+    "fid": {
+      "target": 100,
+      "warning": 200,
+      "error": 300
+    },
+    "cls": {
+      "target": 0.1,
+      "warning": 0.2,
+      "error": 0.3
+    }
+  },
+  "metadata": {
+    "created": "2025-01-27",
+    "lastUpdated": "2025-01-27",
+    "nextjsVersion": "16.0.0",
+    "nodeVersion": "20.x"
+  }
+}

@@ -1,0 +1,211 @@
+{
+  "version": "1.0.0",
+  "description": "Design System Token Metadata Registry - Single source of truth for token governance",
+  "tokens": {
+    "--primary": {
+      "space": "oklch",
+      "function": "interactive",
+      "contrastTarget": "AA",
+      "maxOpacity": 0.9,
+      "description": "Primary interactive elements (buttons, links, CTAs)",
+      "fallback": "hsl(var(--color-primary-500))",
+      "usage": ["buttons", "links", "interactive-elements"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--primary-foreground"
+      }
+    },
+    "--primary-foreground": {
+      "space": "oklch",
+      "function": "text",
+      "contrastTarget": "AA",
+      "description": "Text and icons on primary backgrounds",
+      "fallback": "hsl(var(--color-primary-foreground))",
+      "usage": ["button-text", "link-text", "interactive-text"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--primary"
+      }
+    },
+    "--secondary": {
+      "space": "oklch",
+      "function": "interactive",
+      "contrastTarget": "AA",
+      "maxOpacity": 0.8,
+      "description": "Secondary interactive elements (outlines, ghost buttons)",
+      "fallback": "hsl(var(--color-secondary-500))",
+      "usage": ["outline-buttons", "secondary-actions"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--secondary-foreground"
+      }
+    },
+    "--background": {
+      "space": "oklch",
+      "function": "surface",
+      "contrastTarget": "AAA",
+      "description": "Main page background - highest contrast target for readability",
+      "fallback": "hsl(var(--color-neutral-50))",
+      "usage": ["page-background", "container-background"],
+      "accessibility": {
+        "minContrast": 7.0,
+        "against": "--foreground"
+      }
+    },
+    "--foreground": {
+      "space": "oklch",
+      "function": "text",
+      "contrastTarget": "AA",
+      "description": "Primary text color - must be readable on background",
+      "fallback": "hsl(var(--color-neutral-900))",
+      "usage": ["headings", "body-text", "primary-content"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--background"
+      }
+    },
+    "--card": {
+      "space": "oklch",
+      "function": "surface",
+      "contrastTarget": "AA",
+      "description": "Card and panel backgrounds",
+      "fallback": "hsl(0 0% 100%)",
+      "usage": ["cards", "panels", "elevated-surfaces"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--card-foreground"
+      }
+    },
+    "--card-foreground": {
+      "space": "oklch",
+      "function": "text",
+      "contrastTarget": "AA",
+      "description": "Text on card backgrounds",
+      "fallback": "hsl(var(--color-neutral-900))",
+      "usage": ["card-content", "panel-text"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--card"
+      }
+    },
+    "--muted": {
+      "space": "oklch",
+      "function": "surface",
+      "contrastTarget": "AA",
+      "maxOpacity": 0.7,
+      "description": "Muted backgrounds for secondary content",
+      "fallback": "hsl(var(--color-neutral-100))",
+      "usage": ["secondary-backgrounds", "subtle-surfaces"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--muted-foreground"
+      }
+    },
+    "--muted-foreground": {
+      "space": "oklch",
+      "function": "text",
+      "contrastTarget": "AA",
+      "description": "Secondary text and labels",
+      "fallback": "hsl(var(--color-neutral-600))",
+      "usage": ["secondary-text", "labels", "captions"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--muted"
+      }
+    },
+    "--border": {
+      "space": "oklch",
+      "function": "border",
+      "contrastTarget": "AA",
+      "description": "Borders, dividers, and outlines",
+      "fallback": "hsl(var(--color-neutral-200))",
+      "usage": ["borders", "dividers", "input-borders"],
+      "accessibility": {
+        "minContrast": 3.0,
+        "against": "background"
+      }
+    },
+    "--destructive": {
+      "space": "oklch",
+      "function": "interactive",
+      "contrastTarget": "AA",
+      "description": "Error states and destructive actions",
+      "fallback": "hsl(var(--color-destructive-default))",
+      "usage": ["error-buttons", "destructive-actions", "error-states"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--destructive-foreground"
+      }
+    },
+    "--success": {
+      "space": "oklch",
+      "function": "feedback",
+      "contrastTarget": "AA",
+      "description": "Success states and confirmations",
+      "fallback": "hsl(var(--color-success-default))",
+      "usage": ["success-messages", "confirmations", "positive-feedback"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--success-foreground"
+      }
+    },
+    "--warning": {
+      "space": "oklch",
+      "function": "feedback",
+      "contrastTarget": "AA",
+      "description": "Warning states and cautions",
+      "fallback": "hsl(var(--color-warning-default))",
+      "usage": ["warning-messages", "cautions", "attention-states"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--warning-foreground"
+      }
+    },
+    "--info": {
+      "space": "oklch",
+      "function": "feedback",
+      "contrastTarget": "AA",
+      "description": "Informational messages and notices",
+      "fallback": "hsl(var(--color-info-default))",
+      "usage": ["info-messages", "notices", "informational-content"],
+      "accessibility": {
+        "minContrast": 4.5,
+        "against": "--info-foreground"
+      }
+    },
+    "--ring": {
+      "space": "oklch",
+      "function": "interactive",
+      "contrastTarget": "AA",
+      "description": "Focus rings and interactive indicators",
+      "fallback": "hsl(var(--color-primary-500))",
+      "usage": ["focus-rings", "interactive-indicators"],
+      "accessibility": {
+        "minContrast": 3.0,
+        "against": "background"
+      }
+    }
+  },
+  "validation": {
+    "contrast": {
+      "AA": 4.5,
+      "AAA": 7.0,
+      "large-text-only": 3.0
+    },
+    "color-spaces": ["oklch", "hsl"],
+    "functions": [
+      "surface",
+      "text",
+      "interactive",
+      "border",
+      "feedback",
+      "shadow"
+    ],
+    "contrast-targets": ["AA", "AAA"]
+  },
+  "generated": {
+    "timestamp": "2024-10-26T15:00:00Z",
+    "source": "design-system/tokens-meta.json",
+    "generator": "design-system-cli v1.0.0"
+  }
+}

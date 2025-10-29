@@ -1,0 +1,441 @@
+{
+  "version": "4.0.1",
+  "results": [
+    [
+      ":tests/analytics.test.ts",
+      { "duration": 21.174200000001292, "failed": false }
+    ],
+    [
+      ":tests/components/sections/demo.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/api-monitoring.test.tsx",
+      { "duration": 6.36359999999695, "failed": false }
+    ],
+    [
+      ":tests/components/sections/lead-form.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/animation-system.test.ts",
+      { "duration": 11.933900000003632, "failed": false }
+    ],
+    [
+      ":tests/components/sections/final-cta.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [":tests/components/benefits.test.tsx", { "duration": 0, "failed": false }],
+    [
+      ":tests/components/sections/social-proof.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [":tests/components/features.test.tsx", { "duration": 0, "failed": false }],
+    [
+      ":tests/ui-components.test.tsx",
+      { "duration": 146.68619999999646, "failed": false }
+    ],
+    [
+      ":tests/composition-validation.test.ts",
+      { "duration": 157.4418999999998, "failed": true }
+    ],
+    [":tests/components/pricing.test.tsx", { "duration": 0, "failed": false }],
+    [
+      ":tests/sections.test.tsx",
+      { "duration": 69.76900000000023, "failed": false }
+    ],
+    [
+      ":tests/contract-apis.test.ts",
+      { "duration": 69.14630000000034, "failed": false }
+    ],
+    [
+      ":tests/utils-advanced.test.ts",
+      { "duration": 18.310499999999593, "failed": false }
+    ],
+    [
+      ":tests/theme-system.test.ts",
+      { "duration": 15.7245000000039, "failed": false }
+    ],
+    [
+      ":tests/a11y/accessibility-wcag.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [":tests/components/hero.test.tsx", { "duration": 0, "failed": false }],
+    [
+      ":tests/app-layout.test.tsx",
+      { "duration": 40.112600000000384, "failed": false }
+    ],
+    [":tests/seo.test.ts", { "duration": 21.046600000000126, "failed": true }],
+    [
+      ":tests/api-chatbot.test.ts",
+      { "duration": 12.03020000000106, "failed": false }
+    ],
+    [
+      ":tests/layout-composition.test.ts",
+      { "duration": 6.803400000004331, "failed": false }
+    ],
+    [
+      ":tests/integration-landing-page.test.tsx",
+      { "duration": 189.064699999999, "failed": false }
+    ],
+    [
+      ":tests/unit/ssr-fixes.test.ts",
+      { "duration": 4.721499999999651, "failed": false }
+    ],
+    [
+      ":tests/integration-flows.test.tsx",
+      { "duration": 177.7000999999982, "failed": false }
+    ],
+    [":tests/a11y/landing-a11y.test.tsx", { "duration": 0, "failed": true }],
+    [
+      ":tests/hooks-remaining.test.tsx",
+      { "duration": 23.493200000004435, "failed": false }
+    ],
+    [
+      ":tests/hooks.test.tsx",
+      { "duration": 129.80349999999453, "failed": false }
+    ],
+    [
+      ":tests/flags.test.ts",
+      { "duration": 20.370699999999488, "failed": false }
+    ],
+    [
+      ":tests/components/sections/benefits.test.tsx",
+      { "duration": 125.92989999999918, "failed": false }
+    ],
+    [":tests/ssr-safety.test.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/security/xss-rendering.test.tsx",
+      { "duration": 80.35179999999991, "failed": true }
+    ],
+    [
+      ":tests/utils.test.ts",
+      { "duration": 4.558099999994738, "failed": false }
+    ],
+    [
+      ":tests/app-page.test.tsx",
+      { "duration": 58.25800000000163, "failed": false }
+    ],
+    [
+      ":tests/components/faq.test.tsx",
+      { "duration": 40.54070000000502, "failed": false }
+    ],
+    [":tests/ssr.test.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/components/footer.test.tsx",
+      { "duration": 27.741399999998976, "failed": false }
+    ],
+    [
+      ":tests/components/proof-traction.test.tsx",
+      { "duration": 31.680500000002212, "failed": false }
+    ],
+    [
+      ":tests/lib/utils.test.ts",
+      { "duration": 16.341300000000047, "failed": false }
+    ],
+    [
+      ":tests/lib/flags.test.ts",
+      { "duration": 12.215100000001257, "failed": false }
+    ],
+    [
+      ":tests/components/ui/section.test.tsx",
+      { "duration": 42.56409999999596, "failed": false }
+    ],
+    [
+      ":tests/components/ui/fade-up.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/domains/marketing/content/hero-content.test.ts",
+      { "duration": 8.247999999992317, "failed": false }
+    ],
+    [
+      ":tests/app/api/monitoring/performance.test.ts",
+      { "duration": 16.507799999999406, "failed": false }
+    ],
+    [
+      ":tests/app/api/chatbot.test.ts",
+      { "duration": 19.966200000002573, "failed": false }
+    ],
+    [
+      ":tests/app/api/monitoring/error.test.ts",
+      { "duration": 14.69539999999688, "failed": false }
+    ],
+    [
+      ":tests/domains/marketing/composers/hero-composer.test.ts",
+      { "duration": 9.044800000003306, "failed": false }
+    ],
+    [
+      ":tests/lib/hooks/use-analytics.test.ts",
+      { "duration": 32.93590000000404, "failed": false }
+    ],
+    [
+      ":tests/lib/advanced-utils.test.ts",
+      { "duration": 5.423999999999069, "failed": false }
+    ],
+    [
+      ":tests/a11y/accessibility-testing.spec.ts",
+      { "duration": 0, "failed": true }
+    ],
+    [
+      ":tests/performance/performance-monitoring.spec.ts",
+      { "duration": 0, "failed": true }
+    ],
+    [
+      ":tests/error-boundary.test.tsx",
+      { "duration": 348.8884999999991, "failed": false }
+    ],
+    [
+      ":tests/flags-clean.test.ts",
+      { "duration": 12.267100000000028, "failed": true }
+    ],
+    [
+      ":tests/api-integration.test.ts",
+      { "duration": 34.44969999999739, "failed": false }
+    ],
+    [
+      ":tests/browser-compatibility.test.ts",
+      { "duration": 314.98509999999806, "failed": false }
+    ],
+    [
+      ":tests/network-failures.test.ts",
+      { "duration": 97.0721999999987, "failed": false }
+    ],
+    [":tests/i18n.test.ts", { "duration": 37.27130000000034, "failed": false }],
+    [
+      ":tests/bundle-analysis.test.ts",
+      { "duration": 120.18639999999868, "failed": false }
+    ],
+    [
+      ":tests/print-styles.test.ts",
+      { "duration": 173.40879999999743, "failed": false }
+    ],
+    [
+      ":tests/mobile-gestures.test.ts",
+      { "duration": 205.01729999999952, "failed": false }
+    ],
+    [
+      ":tests/memory-leaks.test.ts",
+      { "duration": 191.00630000000092, "failed": false }
+    ],
+    [":tests/pwa.test.ts", { "duration": 73.07740000000194, "failed": false }],
+    [":tests/seo-playwright.spec.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/performance/performance-thresholds.test.ts",
+      { "duration": 12.316699999995762, "failed": false }
+    ],
+    [
+      ":tests/a11y/wcag-aa-compliance.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/seo/seo-compliance.test.tsx",
+      { "duration": 279.7793999999999, "failed": true }
+    ],
+    [
+      ":tests/ab-testing/feature-flags.test.ts",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/security/security-validation.test.tsx",
+      { "duration": 27.140400000003865, "failed": false }
+    ],
+    [
+      ":tests/performance/core-web-vitals.test.ts",
+      { "duration": 0, "failed": true }
+    ],
+    [
+      ":tests/i18n/internationalization.test.tsx",
+      { "duration": 12.690499999996973, "failed": false }
+    ],
+    [
+      ":tests/a11y/accessibility-basic.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/visual-regression.test.tsx",
+      { "duration": 1183.3479000000007, "failed": false }
+    ],
+    [
+      ":tests/pwa/pwa-functionality.test.ts",
+      { "duration": 19.53070000000298, "failed": false }
+    ],
+    [
+      ":tests/visual-regression/layout-consistency.test.ts",
+      { "duration": 10.45920000001206, "failed": false }
+    ],
+    [
+      ":tests/integration/api-integration.test.ts",
+      { "duration": 11.251900000002934, "failed": false }
+    ],
+    [
+      ":tests/error-boundary/error-boundary.test.tsx",
+      { "duration": 50151.9757, "failed": true }
+    ],
+    [
+      ":tests/memory-leaks/memory-leaks.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/network-failures/network-failures.test.ts",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/mobile-gestures/mobile-gestures.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/print-styles/print-styles.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/browser-compatibility/browser-compatibility.test.ts",
+      { "duration": 49.05319999999847, "failed": false }
+    ],
+    [
+      ":tests/browser-compatibility/browser-compatibility.test.tsx",
+      { "duration": 51.2596999999987, "failed": false }
+    ],
+    [
+      ":tests/bundle-analysis/bundle-analysis.test.ts",
+      { "duration": 8.731100000004517, "failed": false }
+    ],
+    [
+      ":tests/network-failures/network-failures.test.tsx",
+      { "duration": 40.04019999999582, "failed": false }
+    ],
+    [":tests/load-performance.spec.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/components/theme-switcher.test.tsx",
+      { "duration": 108.91089999999895, "failed": false }
+    ],
+    [
+      ":tests/lib/ab-testing-framework.test.ts",
+      { "duration": 9.75739999999496, "failed": false }
+    ],
+    [
+      ":tests/lib/whatsapp.integration.test.ts",
+      { "duration": 14.943599999998696, "failed": false }
+    ],
+    [
+      ":tests/css-integration.test.tsx",
+      { "duration": 39.92769999999291, "failed": false }
+    ],
+    [
+      ":tests/components/cta-experiment-tracking.test.tsx",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/seo/json-ld-validation.test.ts",
+      { "duration": 8.532699999996112, "failed": false }
+    ],
+    [
+      ":tests/integration/section-error-boundaries.test.tsx",
+      { "duration": 47.51729999999952, "failed": false }
+    ],
+    [":tests/ssr/boundary-ssr.test.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/ssr/boundary-ssr.test.tsx",
+      { "duration": 9.069499999997788, "failed": false }
+    ],
+    [
+      ":tests/dom/boundary.test.tsx",
+      { "duration": 66.52869999999893, "failed": false }
+    ],
+    [
+      ":tests/ssr/security-csp.test.ts",
+      { "duration": 3.3175000000046566, "failed": false }
+    ],
+    [
+      ":tests/ssr/security-jwt.test.ts",
+      { "duration": 5.541899999996531, "failed": false }
+    ],
+    [":tests/ssr/seo-metadata.test.ts", { "duration": 0, "failed": false }],
+    [
+      ":tests/ssr/security-input-validation.test.ts",
+      { "duration": 6.917199999996228, "failed": false }
+    ],
+    [
+      ":tests/ssr/flags-validation.test.ts",
+      { "duration": 6.526400000002468, "failed": false }
+    ],
+    [
+      ":tests/ssr/utils-validation.test.ts",
+      { "duration": 9.590500000005704, "failed": false }
+    ],
+    [
+      ":tests/ssr/composition-validation.test.ts",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/ssr/seo-config.test.ts",
+      { "duration": 6.616600000001199, "failed": false }
+    ],
+    [
+      ":tests/hydration-ssr-validation.test.tsx",
+      { "duration": 150.9929000000011, "failed": false }
+    ],
+    [
+      ":tests/lazy-loading-validation.test.tsx",
+      { "duration": 57.20550000000003, "failed": false }
+    ],
+    [
+      ":tests/ssr/ssr-headers-validation.test.ts",
+      { "duration": 441.41599999999926, "failed": false }
+    ],
+    [
+      ":tests/__sentinel__/alias-resolution.test.ts",
+      { "duration": 453.518399999999, "failed": false }
+    ],
+    [
+      ":tests/__sentinel__/ssr-jsdom-isolation.test.ts",
+      { "duration": 76.28659999999945, "failed": false }
+    ],
+    [":tests/performance-example.spec.ts", { "duration": 0, "failed": true }],
+    [
+      ":tests/unit/page-composition-helpers.test.ts",
+      { "duration": 9.516999999999825, "failed": false }
+    ],
+    [
+      ":tests/unit/page-configuration-provider.test.ts",
+      { "duration": 16.620199999997567, "failed": false }
+    ],
+    [
+      ":tests/unit/page-composition-service.test.ts",
+      { "duration": 0, "failed": false }
+    ],
+    [
+      ":tests/a11y/theme-contrast.test.ts",
+      { "duration": 22.698499999998603, "failed": false }
+    ],
+    [
+      ":tests/theme-system-oklch.test.ts",
+      { "duration": 5.599499999996624, "failed": false }
+    ],
+    [
+      ":tests/hydration-theme.test.tsx",
+      { "duration": 11.053599999999278, "failed": false }
+    ],
+    [
+      ":tests/a11y/accessibility-advanced.test.tsx",
+      { "duration": 88.99349999999686, "failed": true }
+    ],
+    [
+      ":tests/a11y/theme-a11y.test.ts",
+      { "duration": 27.952799999999115, "failed": false }
+    ],
+    [
+      ":tests/rtl/rtl-validation.test.tsx",
+      { "duration": 93.93569999999818, "failed": false }
+    ],
+    [
+      ":tests/ssr/ssr-safety.test.tsx",
+      { "duration": 13.122599999995145, "failed": false }
+    ],
+    [
+      ":tests/hydration-theme-dom.test.tsx",
+      { "duration": 29.57549999999901, "failed": false }
+    ],
+    [":tests/hydration.test.ts", { "duration": 0, "failed": true }]
+  ]
+}

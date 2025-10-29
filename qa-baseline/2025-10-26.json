@@ -1,0 +1,96 @@
+{
+  "version": "1.0.0",
+  "timestamp": "2025-10-26T20:14:00.000Z",
+  "description": "Baseline oficial pós-otimizações do QA Framework",
+  "metrics": {
+    "performance": {
+      "chromium": {
+        "p50": 8.5,
+        "p90": 11.2,
+        "p95": 12,
+        "cv": 12.5,
+        "mean": 9.1,
+        "min": 7.2,
+        "max": 15.8
+      },
+      "firefox": {
+        "p50": 9.8,
+        "p90": 13.1,
+        "p95": 13.8,
+        "cv": 14.2,
+        "mean": 10.5,
+        "min": 8.1,
+        "max": 18.2
+      },
+      "webkit": {
+        "p50": 9.2,
+        "p90": 12.8,
+        "p95": 13.5,
+        "cv": 13.8,
+        "mean": 10.1,
+        "min": 7.8,
+        "max": 17.1
+      }
+    },
+    "reliability": {
+      "flakeRate": 0.8,
+      "ssrWarnings": 0,
+      "buildSuccessRate": 100
+    },
+    "performanceReal": {
+      "lighthouse": {
+        "performance": 92,
+        "accessibility": 96,
+        "best-practices": 94,
+        "seo": 95,
+        "pwa": 88
+      },
+      "coreWebVitals": {
+        "lcp": 1.8,
+        "cls": 0.08,
+        "inp": 85
+      },
+      "bundle": {
+        "totalSize": 485000,
+        "chunkCount": 12,
+        "largestChunk": 125000
+      }
+    }
+  },
+  "environment": {
+    "playwright": "1.40+",
+    "node": "20.x",
+    "os": "ubuntu-latest",
+    "browserVersions": {
+      "chromium": "119.x",
+      "firefox": "118.x",
+      "webkit": "17.x"
+    }
+  },
+  "thresholds": {
+    "alerts": {
+      "p95Increase": 15,
+      "flakeRate": 1,
+      "lighthouseDrop": 5,
+      "bundleIncrease": 10
+    },
+    "blocking": {
+      "p95Increase": 25,
+      "flakeRate": 5,
+      "lighthouseDrop": 10,
+      "bundleIncrease": 20
+    }
+  },
+  "testSuite": {
+    "totalSpecs": 19,
+    "criticalSpecs": 5,
+    "visualSpecs": 3,
+    "e2eSpecs": 11,
+    "executionTime": {
+      "expected": 180,
+      "timeout": 300
+    }
+  },
+  "generatedBy": "QA Framework v1.0",
+  "nextReview": "2026-01-26"
+}

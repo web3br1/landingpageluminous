@@ -1,0 +1,30 @@
+{
+  "timestamp": "2025-10-29T03:13:12.096Z",
+  "coverage": {
+    "global": 0,
+    "byModule": {},
+    "trend": "unknown"
+  },
+  "tests": {
+    "passing": 0,
+    "failing": 0,
+    "total": 0,
+    "successRate": 0,
+    "trend": "unknown"
+  },
+  "performance": {
+    "testExecutionTime": 0,
+    "targetTime": 15,
+    "status": "✅ Dentro do alvo"
+  },
+  "quality": {
+    "tddScore": 26,
+    "breakdown": {
+      "coverage": 0,
+      "testQuality": 0,
+      "automation": 85
+    },
+    "trend": "📉 Atenção"
+  },
+  "alerts": []
+}

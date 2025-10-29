@@ -1,0 +1,45 @@
+/* ===== THEME PACK: Soft UI ===== */
+/* Soft surfaces with gentle shadows */
+
+:root[data-theme="soft-ui"] {
+  --bg: oklch(98% 0.02 250);
+  --fg: oklch(22% 0.03 250);
+  --primary: oklch(66% 0.15 270);
+  --secondary: oklch(60% 0.12 220);
+  --accent: oklch(70% 0.17 320);
+  --muted: oklch(96% 0.02 250);
+  --border: oklch(92% 0.02 250);
+  --ease-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration-normal: 250ms;
+  --duration-slow: 400ms;
+  --radius: 24px;
+  --radius-lg: 32px;
+  --radius-xl: 40px;
+  --shadow-sm: 4px 4px 8px rgb(0 0 0 / 0.08), -2px -2px 4px rgb(255 255 255);
+  --shadow-md: 6px 6px 12px rgb(0 0 0 / 0.1), -3px -3px 6px rgb(255 255 255);
+  --shadow-lg: 8px 8px 16px rgb(0 0 0 / 0.12), -4px -4px 8px rgb(255 255 255);
+  --shadow-xl: 12px 12px 24px rgb(0 0 0 / 0.15), -6px -6px 12px rgb(255 255 255);
+}
+
+.soft-card {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--border);
+  transition: all var(--duration-normal) var(--ease-smooth);
+}
+
+.soft-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-xl);
+}
+
+.soft-elevated {
+  box-shadow: var(--shadow-lg);
+}
+
+.soft-pressed {
+  box-shadow: var(--shadow-sm);
+  transform: translateY(2px);
+}

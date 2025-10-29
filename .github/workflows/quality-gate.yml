@@ -1,0 +1,115 @@
+name: Quality Assurance Suite
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Run quality suite daily at 6 AM UTC
+    - cron: '0 6 * * *'
+
+jobs:
+  quality-suite:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Setup Playwright browsers
+      run: npx playwright install --with-deps
+
+    - name: Build application
+      run: npm run build
+
+    - name: Run Quality Assurance Suite
+      run: npm run quality:suite
+      env:
+        CI: true
+        E2E_PREPARE_DATA: true
+
+    - name: Upload visual regression results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: visual-regression-results
+        path: |
+          test-results/visual/
+          playwright-report/visual/
+        retention-days: 30
+
+    - name: Upload critical path results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: critical-path-results
+        path: |
+          test-results/critical-paths/
+          playwright-report/critical-paths/
+        retention-days: 30
+
+    - name: Upload quality report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: quality-report
+        path: quality-report.json
+        retention-days: 7
+
+    - name: Comment PR with results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const report = JSON.parse(fs.readFileSync('quality-report.json', 'utf8'));
+
+          const { passedSuites, totalSuites, successRate } = report.summary;
+          const status = successRate === 100 ? '✅' : '❌';
+
+          const comment = `
+          ## 🎯 Quality Assurance Results
+
+          **${status} ${passedSuites}/${totalSuites} test suites passed (${successRate}% success rate)**
+
+          ### Test Results:
+          - 🎨 Visual Regression: ${report.results.visual.passed ? '✅' : '❌'} (${report.results.visual.duration}ms)
+          - 🚀 Critical Paths: ${report.results.critical.passed ? '✅' : '❌'} (${report.results.critical.duration}ms)
+          - ⚡ Performance: ${report.results.performance.passed ? '✅' : '❌'} (${report.results.performance.duration}ms)
+          - ♿ Accessibility: ${report.results.accessibility.passed ? '✅' : '❌'} (${report.results.accessibility.duration}ms)
+
+          ### 📊 Details
+          - Total duration: ${report.summary.totalDuration}ms
+          - Environment: ${report.environment}
+          - Timestamp: ${new Date(report.timestamp).toLocaleString()}
+
+          [📄 Full Report](${{github.server_url}}/${{github.repository}}/actions/runs/${{github.run_id}})
+          `;
+
+          github.rest.issues.createComment({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            body: comment
+          });
+
+    - name: Fail on quality issues
+      if: always()
+      run: |
+        if [ ${{ job.status }} = "failure" ]; then
+          echo "❌ Quality assurance failed - check artifacts for details"
+          exit 1
+        else
+          echo "✅ Quality assurance passed"
+        fi

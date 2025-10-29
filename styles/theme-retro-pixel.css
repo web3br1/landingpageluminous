@@ -1,0 +1,219 @@
+/* ===== THEME PACK: Retro Pixel ===== */
+/* 8-bit inspired forms and limited palette */
+
+:root[data-theme="retro-pixel"] {
+  /* Color overrides - retro game palette */
+  --bg: oklch(96% 0.15 45);
+  --fg: oklch(18% 0.04 95);
+  --primary: oklch(50% 0.70 210);
+  --primary-contrast: oklch(98% 0.01 95);
+  --secondary: oklch(45% 0.60 120);
+  --accent: oklch(55% 0.60 300);
+  --muted: oklch(80% 0.02 95);
+  --border: oklch(30% 0.25 210);
+  --destructive: oklch(55% 0.70 25);
+  --success: oklch(50% 0.60 120);
+  --warning: oklch(85% 0.18 45);
+
+  /* Motion overrides - pixel-perfect timing */
+  --ease-standard: steps(4, end);
+  --ease-entrance: steps(4, end);
+  --ease-emphasis: steps(8, end);
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 200ms;
+
+  /* Layout overrides - pixel perfect */
+  --radius: 0;
+  --radius-lg: 0;
+  --radius-xl: 0;
+  --radius-2xl: 0;
+
+  /* Shadow overrides - pixel art style */
+  --shadow-sm: 2px 2px 0 rgb(0 0 0);
+  --shadow-md: 4px 4px 0 rgb(0 0 0);
+  --shadow-lg: 6px 6px 0 rgb(0 0 0);
+  --shadow-xl: 8px 8px 0 rgb(0 0 0);
+  --shadow-2xl: 10px 10px 0 rgb(0 0 0);
+}
+
+/* Pixel effect utilities */
+.pixel-card {
+  border: 2px solid var(--border);
+  background: var(--bg);
+  box-shadow: var(--shadow-md);
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+.pixel-border {
+  border: 1px solid var(--border);
+  background: var(--bg);
+}
+
+.pixel-block {
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  background: var(--bg);
+}
+
+/* Typography refinements for pixel theme */
+.pixel-heading {
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-family: 'Courier New', monospace;
+  color: var(--fg);
+  text-shadow: var(--shadow-sm);
+}
+
+.pixel-text {
+  font-family: 'Courier New', monospace;
+  letter-spacing: 0.5px;
+  color: var(--fg);
+}
+
+/* Animation refinements - pixel perfect */
+.pixel-enter {
+  animation: pixelFadeIn var(--duration-fast) var(--ease-entrance) both;
+}
+
+.pixel-slide {
+  animation: pixelSlide var(--duration-normal) var(--ease-standard) both;
+}
+
+.pixel-bounce {
+  animation: pixelBounce var(--duration-slow) var(--ease-emphasis) both;
+}
+
+@keyframes pixelFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pixelSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pixelBounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-8px);
+  }
+  60% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Button variants for pixel theme */
+.btn-pixel {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  border: 2px solid var(--border);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all var(--duration-fast) var(--ease-standard);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-pixel:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-pixel:active {
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-pixel-outline {
+  background: transparent;
+  color: var(--fg);
+  border: 2px solid var(--border);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.btn-pixel-outline:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  transform: translate(-1px, -1px);
+}
+
+/* Interactive elements */
+.pixel-interactive {
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+  user-select: none;
+}
+
+.pixel-interactive:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
+}
+
+.pixel-interactive:active {
+  transform: translate(0px, 0px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Layout helpers */
+.pixel-grid {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(auto-fit, minmax(64px, 1fr));
+}
+
+.pixel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Pixel art patterns */
+.pixel-dither {
+  background-image:
+    linear-gradient(45deg, var(--border) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--border) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--border) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--border) 75%);
+  background-size: 4px 4px;
+  background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+}
+
+.pixel-scanlines {
+  position: relative;
+  overflow: hidden;
+}
+
+.pixel-scanlines::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(transparent 50%, rgba(0, 0, 0, 0.03) 50%);
+  background-size: 100% 4px;
+  pointer-events: none;
+}

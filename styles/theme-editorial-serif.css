@@ -1,0 +1,34 @@
+/* ===== THEME PACK: Editorial Serif ===== */
+/* High typography with serif accents */
+
+:root[data-theme="editorial-serif"] {
+  --bg: oklch(99% 0.01 95);
+  --fg: oklch(14% 0.02 95);
+  --primary: oklch(45% 0.06 95);
+  --secondary: oklch(55% 0.08 95);
+  --accent: oklch(35% 0.04 95);
+  --muted: oklch(97% 0.01 95);
+  --border: oklch(85% 0.02 95);
+  --font-display: 'Georgia', ui-serif, serif;
+  --ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration-normal: 400ms;
+  --duration-slow: 600ms;
+  --radius: 6px;
+  --shadow-sm: 0 2px 4px rgb(0 0 0 / 0.05);
+  --shadow-lg: 0 8px 16px rgb(0 0 0 / 0.08);
+}
+
+.editorial-card {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-8);
+  background: var(--bg);
+  box-shadow: var(--shadow-sm);
+}
+
+.editorial-heading {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}

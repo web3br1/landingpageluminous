@@ -1,0 +1,1206 @@
+{
+  "config": {
+    "configFile": "C:\\Meus Projetos\\Lading Page\\playwright.baseline.config.ts",
+    "rootDir": "C:/Meus Projetos/Lading Page/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "reporter": [
+      ["line", null],
+      [
+        "json",
+        {
+          "outputFile": "baseline-results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "quiet": false,
+    "projects": [
+      {
+        "outputDir": "C:/Meus Projetos/Lading Page/test-results-baseline",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "",
+        "name": "",
+        "testDir": "C:/Meus Projetos/Lading Page/tests",
+        "testIgnore": [],
+        "testMatch": ["**/hydration.test.ts", "**/ssr.test.ts"],
+        "timeout": 30000
+      }
+    ],
+    "shard": null,
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.56.1",
+    "workers": 1,
+    "webServer": {
+      "command": "npm run dev",
+      "port": 3001,
+      "timeout": 120000,
+      "reuseExistingServer": false
+    }
+  },
+  "suites": [
+    {
+      "title": "hydration.test.ts",
+      "file": "hydration.test.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Hydration Tests",
+          "file": "hydration.test.ts",
+          "line": 23,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should hydrate without errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3919,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:49:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 49
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 47 |\u001b[39m\n \u001b[90m 48 |\u001b[39m     \u001b[90m// Navigate to the page\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 49 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 50 |\u001b[39m\n \u001b[90m 51 |\u001b[39m     \u001b[90m// Wait for hydration to complete\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 49
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 47 |\u001b[39m\n \u001b[90m 48 |\u001b[39m     \u001b[90m// Navigate to the page\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 49 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 50 |\u001b[39m\n \u001b[90m 51 |\u001b[39m     \u001b[90m// Wait for hydration to complete\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:49:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:01:58.952Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 49
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-b2bbab7379a726f19482",
+              "file": "hydration.test.ts",
+              "line": 39,
+              "column": 7
+            },
+            {
+              "title": "should render theme consistently",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3555,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:76:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 76
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 74 |\u001b[39m\n \u001b[90m 75 |\u001b[39m   test(\u001b[32m'should render theme consistently'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 76 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 77 |\u001b[39m\n \u001b[90m 78 |\u001b[39m     \u001b[90m// Check if theme classes are applied\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mconst\u001b[39m bodyClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 76
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 74 |\u001b[39m\n \u001b[90m 75 |\u001b[39m   test(\u001b[32m'should render theme consistently'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 76 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 77 |\u001b[39m\n \u001b[90m 78 |\u001b[39m     \u001b[90m// Check if theme classes are applied\u001b[39m\n \u001b[90m 79 |\u001b[39m     \u001b[36mconst\u001b[39m bodyClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:76:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:03.709Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 76
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-5f995b9df79d6d568d03",
+              "file": "hydration.test.ts",
+              "line": 75,
+              "column": 7
+            },
+            {
+              "title": "should render sections without layout shift",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3548,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:103:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 103
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 101 |\u001b[39m\n \u001b[90m 102 |\u001b[39m   test(\u001b[32m'should render sections without layout shift'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 103 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 104 |\u001b[39m\n \u001b[90m 105 |\u001b[39m     \u001b[90m// Debug: Check what elements exist\u001b[39m\n \u001b[90m 106 |\u001b[39m     \u001b[36mconst\u001b[39m sectionCount \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'section'\u001b[39m)\u001b[33m.\u001b[39mcount()\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 103
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 101 |\u001b[39m\n \u001b[90m 102 |\u001b[39m   test(\u001b[32m'should render sections without layout shift'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 103 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 104 |\u001b[39m\n \u001b[90m 105 |\u001b[39m     \u001b[90m// Debug: Check what elements exist\u001b[39m\n \u001b[90m 106 |\u001b[39m     \u001b[36mconst\u001b[39m sectionCount \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'section'\u001b[39m)\u001b[33m.\u001b[39mcount()\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:103:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:08.013Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 103
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-b0211dc4a7258466d856",
+              "file": "hydration.test.ts",
+              "line": 102,
+              "column": 7
+            },
+            {
+              "title": "should handle theme toggle without errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3525,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:175:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 175
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 173 |\u001b[39m\n \u001b[90m 174 |\u001b[39m   test(\u001b[32m'should handle theme toggle without errors'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 175 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 176 |\u001b[39m\n \u001b[90m 177 |\u001b[39m     \u001b[90m// Get initial theme\u001b[39m\n \u001b[90m 178 |\u001b[39m     \u001b[36mconst\u001b[39m initialClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 175
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 173 |\u001b[39m\n \u001b[90m 174 |\u001b[39m   test(\u001b[32m'should handle theme toggle without errors'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 175 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 176 |\u001b[39m\n \u001b[90m 177 |\u001b[39m     \u001b[90m// Get initial theme\u001b[39m\n \u001b[90m 178 |\u001b[39m     \u001b[36mconst\u001b[39m initialClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:175:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:12.342Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 175
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-c4e53c82151e7ac5fde0",
+              "file": "hydration.test.ts",
+              "line": 174,
+              "column": 7
+            },
+            {
+              "title": "should maintain accessibility after hydration",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3534,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:195:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 195
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 193 |\u001b[39m\n \u001b[90m 194 |\u001b[39m   test(\u001b[32m'should maintain accessibility after hydration'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 195 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 196 |\u001b[39m\n \u001b[90m 197 |\u001b[39m     \u001b[90m// Wait for the page to load and hydrate - wait for main content to appear\u001b[39m\n \u001b[90m 198 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'main'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 195
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 193 |\u001b[39m\n \u001b[90m 194 |\u001b[39m   test(\u001b[32m'should maintain accessibility after hydration'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 195 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 196 |\u001b[39m\n \u001b[90m 197 |\u001b[39m     \u001b[90m// Wait for the page to load and hydrate - wait for main content to appear\u001b[39m\n \u001b[90m 198 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'main'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:195:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:16.688Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 195
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-89d70b06abac1b941495",
+              "file": "hydration.test.ts",
+              "line": 194,
+              "column": 7
+            },
+            {
+              "title": "should load images with proper attributes",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3546,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:213:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 213
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 211 |\u001b[39m\n \u001b[90m 212 |\u001b[39m   test(\u001b[32m'should load images with proper attributes'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 213 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 214 |\u001b[39m\n \u001b[90m 215 |\u001b[39m     \u001b[90m// Check all images have alt text\u001b[39m\n \u001b[90m 216 |\u001b[39m     \u001b[36mconst\u001b[39m images \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'img'\u001b[39m)\u001b[33m.\u001b[39mall()\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 213
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 211 |\u001b[39m\n \u001b[90m 212 |\u001b[39m   test(\u001b[32m'should load images with proper attributes'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 213 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 214 |\u001b[39m\n \u001b[90m 215 |\u001b[39m     \u001b[90m// Check all images have alt text\u001b[39m\n \u001b[90m 216 |\u001b[39m     \u001b[36mconst\u001b[39m images \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'img'\u001b[39m)\u001b[33m.\u001b[39mall()\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:213:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:21.020Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 213
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-cd5131fd903dc13bec14",
+              "file": "hydration.test.ts",
+              "line": 212,
+              "column": 7
+            },
+            {
+              "title": "should handle error boundaries gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3605,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:235:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 235
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 233 |\u001b[39m\n \u001b[90m 234 |\u001b[39m   test(\u001b[32m'should handle error boundaries gracefully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 235 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 236 |\u001b[39m\n \u001b[90m 237 |\u001b[39m     \u001b[90m// Check that error boundaries don't show by default\u001b[39m\n \u001b[90m 238 |\u001b[39m     \u001b[36mconst\u001b[39m errorBoundaries \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-error-boundary]'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 235
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 233 |\u001b[39m\n \u001b[90m 234 |\u001b[39m   test(\u001b[32m'should handle error boundaries gracefully'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 235 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 236 |\u001b[39m\n \u001b[90m 237 |\u001b[39m     \u001b[90m// Check that error boundaries don't show by default\u001b[39m\n \u001b[90m 238 |\u001b[39m     \u001b[36mconst\u001b[39m errorBoundaries \u001b[33m=\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'[data-error-boundary]'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:235:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:25.559Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 235
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-54dd203deadb6bbf9507",
+              "file": "hydration.test.ts",
+              "line": 234,
+              "column": 7
+            },
+            {
+              "title": "should load lazy components without webpack errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3549,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:254:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 254
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 252 |\u001b[39m     })\n \u001b[90m 253 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 254 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 255 |\u001b[39m\n \u001b[90m 256 |\u001b[39m     \u001b[90m// Wait for lazy components to load\u001b[39m\n \u001b[90m 257 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m1000\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 254
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 252 |\u001b[39m     })\n \u001b[90m 253 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 254 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 255 |\u001b[39m\n \u001b[90m 256 |\u001b[39m     \u001b[90m// Wait for lazy components to load\u001b[39m\n \u001b[90m 257 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m1000\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:254:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:29.929Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 254
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-d1e63666acb2446b966e",
+              "file": "hydration.test.ts",
+              "line": 245,
+              "column": 7
+            },
+            {
+              "title": "should handle dynamic imports gracefully",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1271,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:282:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 282
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 280 |\u001b[39m     })\n \u001b[90m 281 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 282 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 283 |\u001b[39m\n \u001b[90m 284 |\u001b[39m     \u001b[90m// Wait for potential dynamic imports\u001b[39m\n \u001b[90m 285 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 282
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 280 |\u001b[39m     })\n \u001b[90m 281 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 282 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 283 |\u001b[39m\n \u001b[90m 284 |\u001b[39m     \u001b[90m// Wait for potential dynamic imports\u001b[39m\n \u001b[90m 285 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:282:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:34.172Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 282
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-13ebecaa7aa15be71dab",
+              "file": "hydration.test.ts",
+              "line": 274,
+              "column": 7
+            },
+            {
+              "title": "should render all sections without hydration mismatches",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3548,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:308:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 308
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 306 |\u001b[39m     })\n \u001b[90m 307 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 308 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 309 |\u001b[39m\n \u001b[90m 310 |\u001b[39m     \u001b[90m// Wait for all sections to load\u001b[39m\n \u001b[90m 311 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 308
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 306 |\u001b[39m     })\n \u001b[90m 307 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 308 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 309 |\u001b[39m\n \u001b[90m 310 |\u001b[39m     \u001b[90m// Wait for all sections to load\u001b[39m\n \u001b[90m 311 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m2000\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:308:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:36.224Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 308
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-2f3d2b522f603b8d9c3b",
+              "file": "hydration.test.ts",
+              "line": 300,
+              "column": 7
+            },
+            {
+              "title": "should handle component unmounting without errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3546,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:340:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 340
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 338 |\u001b[39m     })\n \u001b[90m 339 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 340 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 341 |\u001b[39m\n \u001b[90m 342 |\u001b[39m     \u001b[90m// Navigate away and back to test unmounting\u001b[39m\n \u001b[90m 343 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/?test=1'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 340
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 338 |\u001b[39m     })\n \u001b[90m 339 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 340 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 341 |\u001b[39m\n \u001b[90m 342 |\u001b[39m     \u001b[90m// Navigate away and back to test unmounting\u001b[39m\n \u001b[90m 343 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/?test=1'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:340:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:40.492Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 340
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-ac07a91b6e9b3dc56328",
+              "file": "hydration.test.ts",
+              "line": 332,
+              "column": 7
+            },
+            {
+              "title": "should load all critical resources",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 2717,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:375:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 375
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 373 |\u001b[39m     })\n \u001b[90m 374 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 375 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 376 |\u001b[39m\n \u001b[90m 377 |\u001b[39m     \u001b[90m// Wait for all resources to load\u001b[39m\n \u001b[90m 378 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 375
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_RESET at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 373 |\u001b[39m     })\n \u001b[90m 374 |\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 375 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 376 |\u001b[39m\n \u001b[90m 377 |\u001b[39m     \u001b[90m// Wait for all resources to load\u001b[39m\n \u001b[90m 378 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForLoadState(\u001b[32m'networkidle'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:375:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:44.786Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 375
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-b46eee63aec1e10c38f8",
+              "file": "hydration.test.ts",
+              "line": 365,
+              "column": 7
+            },
+            {
+              "title": "should handle rapid navigation without breaking",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3524,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:404:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                          "column": 16,
+                          "line": 404
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 402 |\u001b[39m\n \u001b[90m 403 |\u001b[39m     \u001b[90m// Rapid navigation simulation\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 404 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 405 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m500\u001b[39m)\n \u001b[90m 406 |\u001b[39m\n \u001b[90m 407 |\u001b[39m     \u001b[90m// Simulate rapid clicks/navigation\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                            "column": 16,
+                            "line": 404
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 402 |\u001b[39m\n \u001b[90m 403 |\u001b[39m     \u001b[90m// Rapid navigation simulation\u001b[39m\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 404 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m     |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 405 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForTimeout(\u001b[35m500\u001b[39m)\n \u001b[90m 406 |\u001b[39m\n \u001b[90m 407 |\u001b[39m     \u001b[90m// Simulate rapid clicks/navigation\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts:404:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:48.277Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\hydration.test.ts",
+                        "column": 16,
+                        "line": 404
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "26ab07c5e76029d5f283-e2073f9fa5344235a6d9",
+              "file": "hydration.test.ts",
+              "line": 394,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "ssr.test.ts",
+      "file": "ssr.test.ts",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "SSR Tests",
+          "file": "ssr.test.ts",
+          "line": 6,
+          "column": 6,
+          "specs": [
+            {
+              "title": "should render page with proper HTML structure",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3533,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:8:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 8
+                        },
+                        "snippet": "\u001b[0m \u001b[90m  6 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'SSR Tests'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m  7 |\u001b[39m   test(\u001b[32m'should render page with proper HTML structure'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m\n \u001b[90m 10 |\u001b[39m     \u001b[90m// Should have proper HTML structure - check for lang attribute and basic elements\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mconst\u001b[39m htmlElement \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'html'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 8
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m  6 |\u001b[39m test\u001b[33m.\u001b[39mdescribe(\u001b[32m'SSR Tests'\u001b[39m\u001b[33m,\u001b[39m () \u001b[33m=>\u001b[39m {\n \u001b[90m  7 |\u001b[39m   test(\u001b[32m'should render page with proper HTML structure'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m  8 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m  9 |\u001b[39m\n \u001b[90m 10 |\u001b[39m     \u001b[90m// Should have proper HTML structure - check for lang attribute and basic elements\u001b[39m\n \u001b[90m 11 |\u001b[39m     \u001b[36mconst\u001b[39m htmlElement \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'html'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:8:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:52.624Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 8
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-7ec997251c8f38d8af3c",
+              "file": "ssr.test.ts",
+              "line": 7,
+              "column": 7
+            },
+            {
+              "title": "should render critical CSS and fonts",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3598,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:21:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 21
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 19 |\u001b[39m\n \u001b[90m 20 |\u001b[39m   test(\u001b[32m'should render critical CSS and fonts'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m     \u001b[90m// Check for critical CSS - look for stylesheet links\u001b[39m\n \u001b[90m 24 |\u001b[39m     \u001b[36mconst\u001b[39m stylesheets \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'link[rel=\"stylesheet\"]'\u001b[39m)\u001b[33m.\u001b[39mall()\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 21
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 19 |\u001b[39m\n \u001b[90m 20 |\u001b[39m   test(\u001b[32m'should render critical CSS and fonts'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 21 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 22 |\u001b[39m\n \u001b[90m 23 |\u001b[39m     \u001b[90m// Check for critical CSS - look for stylesheet links\u001b[39m\n \u001b[90m 24 |\u001b[39m     \u001b[36mconst\u001b[39m stylesheets \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'link[rel=\"stylesheet\"]'\u001b[39m)\u001b[33m.\u001b[39mall()\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:21:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:02:56.894Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 21
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-372ed68a961a1138ab80",
+              "file": "ssr.test.ts",
+              "line": 20,
+              "column": 7
+            },
+            {
+              "title": "should have proper meta tags for SEO",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3526,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:34:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 34
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 32 |\u001b[39m\n \u001b[90m 33 |\u001b[39m   test(\u001b[32m'should have proper meta tags for SEO'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 34 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 35 |\u001b[39m\n \u001b[90m 36 |\u001b[39m     \u001b[90m// Check meta tags\u001b[39m\n \u001b[90m 37 |\u001b[39m     \u001b[36mconst\u001b[39m title \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mtitle()\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 34
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 32 |\u001b[39m\n \u001b[90m 33 |\u001b[39m   test(\u001b[32m'should have proper meta tags for SEO'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 34 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 35 |\u001b[39m\n \u001b[90m 36 |\u001b[39m     \u001b[90m// Check meta tags\u001b[39m\n \u001b[90m 37 |\u001b[39m     \u001b[36mconst\u001b[39m title \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mtitle()\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:34:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:03:01.235Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 34
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-22df72aa74e5e3652e03",
+              "file": "ssr.test.ts",
+              "line": 33,
+              "column": 7
+            },
+            {
+              "title": "should render layout consistently",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3540,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:49:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 49
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 47 |\u001b[39m\n \u001b[90m 48 |\u001b[39m   test(\u001b[32m'should render layout consistently'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 49 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 50 |\u001b[39m\n \u001b[90m 51 |\u001b[39m     \u001b[90m// Should have proper layout structure\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'main'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()   \u001b[90m// Main content\u001b[39m\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 49
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 47 |\u001b[39m\n \u001b[90m 48 |\u001b[39m   test(\u001b[32m'should render layout consistently'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 49 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 50 |\u001b[39m\n \u001b[90m 51 |\u001b[39m     \u001b[90m// Should have proper layout structure\u001b[39m\n \u001b[90m 52 |\u001b[39m     \u001b[36mawait\u001b[39m expect(page\u001b[33m.\u001b[39mlocator(\u001b[32m'main'\u001b[39m))\u001b[33m.\u001b[39mtoBeVisible()   \u001b[90m// Main content\u001b[39m\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:49:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:03:05.509Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 49
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-d574c388f1b153e4aa79",
+              "file": "ssr.test.ts",
+              "line": 48,
+              "column": 7
+            },
+            {
+              "title": "should maintain data attributes for sections",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3553,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:57:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 57
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 55 |\u001b[39m\n \u001b[90m 56 |\u001b[39m   test(\u001b[32m'should maintain data attributes for sections'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m\n \u001b[90m 59 |\u001b[39m     \u001b[90m// Wait for main content to load\u001b[39m\n \u001b[90m 60 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'main'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 57
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 55 |\u001b[39m\n \u001b[90m 56 |\u001b[39m   test(\u001b[32m'should maintain data attributes for sections'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 57 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 58 |\u001b[39m\n \u001b[90m 59 |\u001b[39m     \u001b[90m// Wait for main content to load\u001b[39m\n \u001b[90m 60 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mwaitForSelector(\u001b[32m'main'\u001b[39m\u001b[33m,\u001b[39m { timeout\u001b[33m:\u001b[39m \u001b[35m10000\u001b[39m })\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:57:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:03:09.785Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 57
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-4e887aaa5f617c183102",
+              "file": "ssr.test.ts",
+              "line": 56,
+              "column": 7
+            },
+            {
+              "title": "should render theme classes on body",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "",
+                  "projectName": "",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 3518,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:79:16",
+                        "location": {
+                          "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                          "column": 16,
+                          "line": 79
+                        },
+                        "snippet": "\u001b[0m \u001b[90m 77 |\u001b[39m\n \u001b[90m 78 |\u001b[39m   test(\u001b[32m'should render theme classes on body'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 79 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m     \u001b[90m// Check if body has theme classes\u001b[39m\n \u001b[90m 82 |\u001b[39m     \u001b[36mconst\u001b[39m bodyClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                            "column": 16,
+                            "line": 79
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://localhost:3001/\nCall log:\n\u001b[2m  - navigating to \"http://localhost:3001/\", waiting until \"load\"\u001b[22m\n\n\n\u001b[0m \u001b[90m 77 |\u001b[39m\n \u001b[90m 78 |\u001b[39m   test(\u001b[32m'should render theme classes on body'\u001b[39m\u001b[33m,\u001b[39m \u001b[36masync\u001b[39m ({ page }) \u001b[33m=>\u001b[39m {\n\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 79 |\u001b[39m     \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mgoto(\u001b[32m'/'\u001b[39m)\n \u001b[90m    |\u001b[39m                \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\n \u001b[90m 80 |\u001b[39m\n \u001b[90m 81 |\u001b[39m     \u001b[90m// Check if body has theme classes\u001b[39m\n \u001b[90m 82 |\u001b[39m     \u001b[36mconst\u001b[39m bodyClasses \u001b[33m=\u001b[39m \u001b[36mawait\u001b[39m page\u001b[33m.\u001b[39mlocator(\u001b[32m'body'\u001b[39m)\u001b[33m.\u001b[39mgetAttribute(\u001b[32m'class'\u001b[39m)\u001b[0m\n\u001b[2m    at C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts:79:16\u001b[22m"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2025-10-26T23:03:14.074Z",
+                      "annotations": [],
+                      "attachments": [],
+                      "errorLocation": {
+                        "file": "C:\\Meus Projetos\\Lading Page\\tests\\ssr.test.ts",
+                        "column": 16,
+                        "line": 79
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "094fb4882a709ea380be-a3bc15ab4ef3a29213a8",
+              "file": "ssr.test.ts",
+              "line": 78,
+              "column": 7
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2025-10-26T23:01:57.426Z",
+    "duration": 80307.648,
+    "expected": 0,
+    "skipped": 0,
+    "unexpected": 19,
+    "flaky": 0
+  }
+}

@@ -1,0 +1,134 @@
+{
+  "technical": {
+    "performance": {
+      "chromium": [
+        {
+          "week": "2025-W08",
+          "p95": 12.1,
+          "cv": 12.3,
+          "trend": "+2.1%"
+        },
+        {
+          "week": "2025-W09",
+          "p95": 11.8,
+          "cv": 11.9,
+          "trend": "-2.5%"
+        },
+        {
+          "week": "2025-W10",
+          "p95": 12.3,
+          "cv": 12.5,
+          "trend": "+4.2%"
+        },
+        {
+          "week": "2025-W11",
+          "p95": 11.9,
+          "cv": 12.1,
+          "trend": "-3.3%"
+        }
+      ],
+      "firefox": [
+        {
+          "week": "2025-W08",
+          "p95": 13.9,
+          "cv": 14.1,
+          "trend": "+1.8%"
+        },
+        {
+          "week": "2025-W09",
+          "p95": 13.5,
+          "cv": 13.8,
+          "trend": "-3.0%"
+        },
+        {
+          "week": "2025-W10",
+          "p95": 14.1,
+          "cv": 14.2,
+          "trend": "+4.4%"
+        },
+        {
+          "week": "2025-W11",
+          "p95": 13.7,
+          "cv": 13.9,
+          "trend": "-2.8%"
+        }
+      ]
+    },
+    "reliability": [
+      {
+        "week": "2025-W08",
+        "flakeRate": 0.9,
+        "ssrWarnings": 0,
+        "buildSuccess": 47
+      },
+      {
+        "week": "2025-W09",
+        "flakeRate": 0.7,
+        "ssrWarnings": 0,
+        "buildSuccess": 52
+      },
+      {
+        "week": "2025-W10",
+        "flakeRate": 1.1,
+        "ssrWarnings": 0,
+        "buildSuccess": 49
+      },
+      {
+        "week": "2025-W11",
+        "flakeRate": 0.8,
+        "ssrWarnings": 0,
+        "buildSuccess": 51
+      }
+    ],
+    "quality": [
+      {
+        "week": "2025-W08",
+        "lighthouse": {
+          "performance": 92,
+          "accessibility": 96,
+          "seo": 95
+        },
+        "bundle": {
+          "size": 485000,
+          "chunks": 12
+        }
+      },
+      {
+        "week": "2025-W09",
+        "lighthouse": {
+          "performance": 93,
+          "accessibility": 97,
+          "seo": 94
+        },
+        "bundle": {
+          "size": 482000,
+          "chunks": 12
+        }
+      },
+      {
+        "week": "2025-W10",
+        "lighthouse": {
+          "performance": 91,
+          "accessibility": 95,
+          "seo": 93
+        },
+        "bundle": {
+          "size": 488000,
+          "chunks": 13
+        }
+      },
+      {
+        "week": "2025-W11",
+        "lighthouse": {
+          "performance": 92,
+          "accessibility": 96,
+          "seo": 94
+        },
+        "bundle": {
+          "size": 483000,
+          "chunks": 12
+        }
+      }
+    ]
+  }
+}

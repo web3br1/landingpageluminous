@@ -1,0 +1,79 @@
+{
+  "buildCommand": "pnpm build",
+  "devCommand": "pnpm dev",
+  "installCommand": "pnpm install --frozen-lockfile",
+  "framework": "nextjs",
+  "functions": {
+    "app/api/**/*.ts": {
+      "runtime": "@vercel/node"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    }
+  ],
+  "regions": ["gru1"],
+  "env": {
+    "NEXT_PUBLIC_PLAUSIBLE_DOMAIN": "staging.dataflow.com.br",
+    "NEXT_PUBLIC_GA_MEASUREMENT_ID": "G-STAGING123456",
+    "NEXT_PUBLIC_APP_URL": "https://dataflow-staging.vercel.app",
+    "NEXT_PUBLIC_NODE_ENV": "staging",
+    "NEXT_PUBLIC_EXPERIMENT_HERO_HEADLINES": "variant_b",
+    "NEXT_PUBLIC_EXPERIMENT_CTA_COLOR": "blue",
+    "EXPERIMENT_PRICING_LAYOUT": "cards",
+    "NEXT_PUBLIC_LAYOUT_DEBUG_STAGE": "12",
+    "NEXT_PUBLIC_ENABLE_DEBUG_OVERLAY": "true",
+    "SENTRY_DSN": "https://staging-sentry-dsn@sentry.io/project",
+    "LOG_LEVEL": "debug",
+    "CACHE_BACKEND": "memory",
+    "REDIS_URL": "",
+    "CSP_REPORT_ONLY": "true",
+    "NODE_ENV": "production"
+  },
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/next",
+      "config": {
+        "maxLambdaSize": "50mb"
+      }
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/staging-health",
+      "destination": "/api/health",
+      "statusCode": 200
+    }
+  ]
+}

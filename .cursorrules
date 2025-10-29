@@ -1,0 +1,155 @@
+# .cursorrules - Landing Page SaaS
+# Regras específicas para desenvolvimento seguindo Composition-First Architecture
+
+## 🎯 NOVA ARQUITETURA: Composition-First Landing System
+
+### Princípios Fundamentais
+1. **Composition Root**: Páginas compostas declarativamente via configurações
+2. **Content/UI Separation**: Conteúdo ≠ Apresentação (dados separados de componentes)
+3. **Design System Unificado**: Single source of truth em `design-system/tokens/`
+4. **Component Composition**: Seções como blocos reutilizáveis com APIs consistentes
+
+### 📁 Estrutura Atual (PÓS-REFACTORY)
+```
+src/
+├── domains/marketing/              # ← Domínio de negócio
+│   ├── content/                    # ← Conteúdo separado da UI
+│   ├── composers/                  # ← Compositores de conteúdo
+│   └── types/                      # ← Tipos específicos
+├── components/sections/            # ← Seções padronizadas
+├── design-system/                  # ← Design System unificado
+│   ├── tokens/                     # ← SINGLE SOURCE OF TRUTH
+│   ├── foundations/                # ← CSS Foundations
+│   └── variants/                   # ← Component variants
+└── lib/composition/                # ← Sistema de composição
+```
+
+### 🔧 Sistema de Composição
+1. **Content Layer**: `domains/*/content/` - Dados separados da UI
+2. **Content Composers**: `domains/*/composers/` - Orquestram conteúdo + experimentos
+3. **Composition Root**: `lib/composition/` - Orquestração declarativa de páginas
+4. **Section Components**: `components/sections/` - UI pura, recebe props
+
+### 🎨 Design System
+- **Tokens**: `design-system/tokens/` - CORES, TIPOGRAFIA, ESPAÇAMENTO
+- **Foundations**: `design-system/foundations/` - CSS base + variáveis
+- **Variants**: `design-system/variants/` - Component variants centralizadas
+
+### ✅ Regras de Implementação
+- **Conteúdo**: SEMPRE em `domains/*/content/` (nunca hardcoded em componentes)
+- **Componentes**: Recebem props, não fazem fetch ou lógica de negócio
+- **Estilos**: SOMENTE via `design-system/` tokens (não inline ou hardcoded)
+- **Páginas**: Usam `composePage()` para composição declarativa
+
+## 🚫 ANTI-PATTERNS (PROIBIDO)
+
+### ❌ Nunca Mais:
+- Hardcoded content em componentes React
+- CSS inline ou estilos hardcoded
+- Múltiplas fontes de verdade para cores/tokens
+- Componentes fazendo fetch ou lógica de negócio
+- Páginas com composição manual (loops for)
+
+### ✅ Sempre:
+- Content em `domains/*/content/`
+- Composers para orquestração
+- `composePage()` para páginas
+- `design-system/tokens/` para estilos
+- Componentes puros recebendo props
+- **SSR Safety**: Verificar `typeof window !== 'undefined'` antes de acessar browser APIs
+
+## 🛠️ Fluxos de Desenvolvimento
+
+### Criar Nova Seção:
+1. **Content**: `domains/marketing/content/section-content.ts`
+2. **Types**: `domains/marketing/types/section.types.ts`
+3. **Composer**: `domains/marketing/composers/section-composer.ts`
+4. **Component**: `components/sections/section/section.tsx`
+5. **Registry**: Adicionar em `lib/composition/section-registry.ts`
+
+### Modificar Conteúdo:
+1. Só editar arquivos em `domains/*/content/`
+2. Usar composers para experimentos/A/B testing
+3. Nunca tocar componentes React
+
+### Adicionar Estilos:
+1. Só em `design-system/tokens/`
+2. CSS auto-gerado via foundations
+3. Variants centralizadas
+
+## 📋 Checklist de Qualidade
+
+### Por Commit:
+- [ ] Content separado da UI
+- [ ] Tokens do design system usados
+- [ ] Composers para orquestração
+- [ ] Componentes recebem props puras
+- [ ] Tipos TypeScript consistentes
+- [ ] Testes incluem casos de conteúdo
+
+### Por PR:
+- [ ] Arquitetura respeitada
+- [ ] Nenhum hardcoded content
+- [ ] Design system unificado
+- [ ] Composição declarativa
+- [ ] Performance mantida
+- [ ] **SSR Safety**: Browser APIs protegidas com verificações de ambiente
+
+## 🔒 SSR Safety Guidelines
+
+### Problemas Comuns de SSR
+- ❌ `window is not defined` - Acessar `window` durante server-side rendering
+- ❌ `document is not defined` - Acessar `document` no servidor
+- ❌ `navigator is not defined` - Acessar `navigator` no servidor
+- ❌ Inicialização de singletons no topo do módulo que acessam browser APIs
+
+### ✅ Padrões SSR-Safe
+
+#### 1. Verificações de Ambiente
+```typescript
+// ❌ Errado - pode falhar no SSR
+const userAgent = navigator.userAgent
+
+// ✅ Correto - verifica ambiente primeiro
+const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : ''
+```
+
+#### 2. Inicialização Lazy de Singletons
+```typescript
+// ❌ Errado - inicializa imediatamente no topo do módulo
+const predictiveLoader = PredictiveLoader.getInstance()
+
+// ✅ Correto - inicialização lazy
+let predictiveLoader: PredictiveLoader | null = null
+function getPredictiveLoader(): PredictiveLoader {
+  if (!predictiveLoader) {
+    predictiveLoader = PredictiveLoader.getInstance()
+  }
+  return predictiveLoader
+}
+```
+
+#### 3. useEffect para Browser-Only Code
+```typescript
+// ❌ Errado - executa no servidor
+const [isOnline, setIsOnline] = useState(navigator.onLine)
+
+// ✅ Correto - usa useEffect
+const [isOnline, setIsOnline] = useState(false)
+useEffect(() => {
+  setIsOnline(navigator.onLine)
+}, [])
+```
+
+#### 4. Bibliotecas Problemáticas
+```typescript
+// ❌ Errado - isomorphic-dompurify sem verificações
+import DOMPurify from 'isomorphic-dompurify'
+
+// ✅ Correto - sanitização custom ou verificações adequadas
+function sanitizeHTML(dirty: string): string {
+  // Implementação SSR-safe
+}
+```
+
+

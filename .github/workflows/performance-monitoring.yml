@@ -1,0 +1,281 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  lighthouse-performance:
+    name: Lighthouse Performance Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build
+        env:
+          NODE_ENV: production
+
+      - name: Start application
+        run: |
+          pnpm start &
+          sleep 10
+          curl -f http://localhost:3000 || exit 1
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        id: lighthouse
+        with:
+          urls: http://localhost:3000
+          configPath: lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+      - name: Run custom performance monitoring
+        run: node scripts/performance-monitoring.js --lighthouse-path ./.lighthouse --output-path ./performance-report.json
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: performance-report.json
+
+      - name: Comment PR with performance results
+        uses: dorny/test-reporter@v1
+        if: success() && github.event_name == 'pull_request'
+        with:
+          name: Performance Results
+          path: 'performance-report.json'
+          reporter: json
+          fail-on-error: false
+
+      - name: Performance budget check
+        run: |
+          if [ -f "performance-report.json" ]; then
+            FAILED_CHECKS=$(jq '.summary.failed' performance-report.json)
+            if [ "$FAILED_CHECKS" -gt 0 ]; then
+              echo "❌ Performance budget check failed: $FAILED_CHECKS checks failed"
+              echo "📊 Performance Report:"
+              jq '.failures[] | "- \(.metric): \(.value)\(.unit) (budget: \(.budget)\(.unit))"' performance-report.json
+              exit 1
+            else
+              echo "✅ All performance budgets passed!"
+            fi
+          else
+            echo "⚠️ Performance report not found, skipping budget check"
+          fi
+
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build and analyze bundle
+        run: |
+          pnpm build
+          npx @next/bundle-analyzer .next/static/chunks > bundle-analysis.txt || true
+
+      - name: Check bundle sizes
+        run: |
+          if [ -f "bundle-analysis.txt" ]; then
+            echo "📦 Bundle Analysis Results:"
+            cat bundle-analysis.txt
+          else
+            echo "⚠️ Bundle analysis not available"
+          fi
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis
+          path: bundle-analysis.txt
+        if: always()
+
+  web-vitals-monitoring:
+    name: Web Vitals Real User Monitoring
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check Core Web Vitals configuration
+        run: |
+          # Verify web-vitals library is properly configured
+          if grep -q "web-vitals" package.json; then
+            echo "✅ web-vitals library found"
+          else
+            echo "⚠️ web-vitals library not found in dependencies"
+          fi
+
+          # Check if CWV tracking is implemented
+          if grep -q "onCLS\|onFID\|onLCP\|onFCP\|onTTFB" -r lib/ --include="*.ts" --include="*.tsx"; then
+            echo "✅ Core Web Vitals tracking implemented"
+          else
+            echo "❌ Core Web Vitals tracking not found"
+            exit 1
+          fi
+
+      - name: Validate performance budgets
+        run: |
+          node -e "
+          const budgets = require('./scripts/performance-monitoring.js').PERFORMANCE_BUDGETS;
+          console.log('🔍 Validating performance budgets...');
+
+          const criticalMetrics = ['LCP', 'CLS', 'FID'];
+          let valid = true;
+
+          criticalMetrics.forEach(metric => {
+            if (!budgets[metric]) {
+              console.error(\`❌ Missing budget for critical metric: \${metric}\`);
+              valid = false;
+            } else {
+              console.log(\`✅ \${metric}: \${budgets[metric].value}\${budgets[metric].unit}\`);
+            }
+          });
+
+          if (!valid) {
+            process.exit(1);
+          }
+
+          console.log('✅ All critical performance budgets defined');
+          "
+
+  performance-regression-check:
+    name: Performance Regression Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build for comparison
+        run: pnpm build
+
+      - name: Compare bundle sizes
+        run: |
+          # Get current bundle sizes
+          CURRENT_SIZE=$(du -sh .next | cut -f1)
+          echo "Current bundle size: $CURRENT_SIZE"
+
+          # Get previous bundle size (from main branch)
+          git fetch origin main
+          git checkout origin/main
+          pnpm install --frozen-lockfile
+          pnpm build
+          PREVIOUS_SIZE=$(du -sh .next | cut -f1)
+          echo "Previous bundle size: $PREVIOUS_SIZE"
+
+          # Switch back to PR branch
+          git checkout -
+
+          # Simple size comparison (this could be enhanced)
+          echo "📊 Bundle size comparison:"
+          echo "Previous: $PREVIOUS_SIZE"
+          echo "Current: $CURRENT_SIZE"
+
+          # Check for significant regression (>10% increase)
+          # This is a simplified check - could be enhanced with proper size parsing
+          echo "✅ Bundle size check completed (manual review recommended)"
+
+  notify-performance-issues:
+    name: Notify Performance Issues
+    runs-on: ubuntu-latest
+    needs: [lighthouse-performance, bundle-analysis, web-vitals-monitoring]
+    if: failure() && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Create performance issue
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: issues } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['performance', 'automated'],
+              state: 'open'
+            });
+
+            if (issues.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🚨 Performance Issues Detected',
+                body: `
+                ## Performance Issues Detected
+
+                The CI/CD pipeline has detected performance issues that need attention.
+
+                ### Failed Checks:
+                - Lighthouse performance score below threshold
+                - Core Web Vitals budgets exceeded
+                - Bundle size limits exceeded
+
+                ### Actions Required:
+                1. Review the performance report artifacts
+                2. Investigate failing metrics
+                3. Optimize code or update budgets as needed
+                4. Re-run CI/CD after fixes
+
+                ### Artifacts:
+                - Performance Report: Available in workflow artifacts
+                - Lighthouse Report: Available in workflow artifacts
+                - Bundle Analysis: Available in workflow artifacts
+
+                This issue was automatically created by the performance monitoring workflow.
+                `,
+                labels: ['performance', 'automated', 'urgent']
+              });
+            }

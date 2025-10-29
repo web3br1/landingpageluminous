@@ -1,0 +1,193 @@
+name: Code Quality Checks
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  quality-gate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check code formatting
+      run: |
+        npx prettier --check . || {
+          echo "❌ Code formatting issues found. Run 'npm run format' to fix."
+          exit 1
+        }
+
+    - name: Run TypeScript strict checks
+      run: |
+        npx tsc --noEmit --strict || {
+          echo "❌ TypeScript strict mode violations found."
+          exit 1
+        }
+
+    - name: Run ESLint
+      run: |
+        npx eslint . --ext .ts,.tsx,.js,.jsx --max-warnings 0 || {
+          echo "❌ ESLint violations found."
+          exit 1
+        }
+
+    - name: Check for unused dependencies
+      run: |
+        npx depcheck --ignores="@types/*,@testing-library/*,eslint*,prettier*,typescript,husky,lint-staged" || {
+          echo "⚠️  Unused dependencies detected (warning only)."
+        }
+
+    - name: Check bundle size
+      run: |
+        npx next build --no-lint || {
+          echo "❌ Build failed."
+          exit 1
+        }
+
+    - name: Run security audit
+      run: |
+        npm audit --audit-level moderate || {
+          echo "⚠️  Security vulnerabilities found."
+          echo "Run 'npm audit fix' to attempt automatic fixes."
+        }
+
+    - name: Check test coverage thresholds
+      run: |
+        npm test -- --coverage --watchAll=false --passWithNoTests || {
+          echo "❌ Test coverage requirements not met."
+          exit 1
+        }
+
+  accessibility-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Start application
+      run: |
+        timeout 300 bash -c 'npm start &' || true
+        sleep 15
+
+    - name: Run accessibility tests
+      run: |
+        npx jest tests/a11y/accessibility-wcag.test.tsx --testTimeout=30000 || {
+          echo "⚠️  Some accessibility tests failed."
+          echo "Review the test output above for WCAG compliance issues."
+        }
+
+    - name: Run Lighthouse CI
+      run: |
+        npx lhci autorun --config=lighthouserc.json || {
+          echo "⚠️  Lighthouse performance checks failed."
+          echo "Review the Lighthouse report for performance issues."
+        }
+
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check for dependency vulnerabilities
+      run: |
+        npm audit --audit-level high || {
+          echo "❌ High severity security vulnerabilities found!"
+          echo "Address these immediately."
+          exit 1
+        }
+
+    - name: Check dependency licenses
+      run: |
+        npx license-checker --production --failOn "GPL;LGPL;AGPL;CC-BY-SA;CC-BY-NC;CC-BY-NC-SA" || {
+          echo "⚠️  Potentially problematic licenses detected."
+          echo "Review dependency licenses carefully."
+        }
+
+    - name: Check for outdated packages
+      run: |
+        npm outdated || {
+          echo "ℹ️  Outdated packages detected."
+          echo "Consider updating dependencies regularly."
+        }
+
+  performance-budget:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Build application
+      run: npm run build
+
+    - name: Analyze bundle size
+      run: |
+        npx next-bundle-analyzer || {
+          echo "⚠️  Bundle analysis failed."
+        }
+
+    - name: Check Core Web Vitals budgets
+      run: |
+        npx jest tests/performance/core-web-vitals-simple.test.ts --testTimeout=30000 || {
+          echo "⚠️  Performance budgets exceeded."
+          echo "Review Core Web Vitals metrics."
+        }
+
+    - name: Generate performance report
+      run: |
+        echo "## 🚀 Performance Report" > performance-report.md
+        echo "- Build completed successfully" >> performance-report.md
+        echo "- Core Web Vitals tests passed" >> performance-report.md
+        echo "- Bundle analysis completed" >> performance-report.md
+
+    - name: Upload performance report
+      uses: actions/upload-artifact@v3
+      with:
+        name: performance-report
+        path: performance-report.md

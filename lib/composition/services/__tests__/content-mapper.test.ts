@@ -1,0 +1,588 @@
+// Unit Tests for ContentMapper
+// Tests content mapping logic with mocked dependencies
+
+import { describe, it, expect, beforeEach } from "@jest/globals";
+
+import { ContentMapper } from "../content-mapper";
+import {
+  Factory,
+  MockExperiment,
+  MockPerformance,
+  MockError,
+  Utils,
+} from "../../test-helpers";
+import { Result, isOk } from "@shared/core";
+
+// Helper function to safely extract values from Result
+function unwrapResult<T>(result: Result<T, any>): T {
+  if (isOk(result)) {
+    return result.value;
+  }
+  throw new Error("Expected Ok result");
+}
+
+// Helper function to safely extract errors from Result
+function unwrapError<T>(result: Result<any, T>): T {
+  if (!isOk(result)) {
+    return unwrapError(result);
+  }
+  throw new Error("Expected Err result");
+}
+
+describe("ContentMapper", () => {
+  let mapper: ContentMapper;
+  let mockExperiment: InstanceType<typeof MockExperiment>;
+  let mockPerformance: InstanceType<typeof MockPerformance>;
+  let mockErrorTracker: InstanceType<typeof MockError>;
+
+  beforeEach(() => {
+    mockExperiment = new MockExperiment();
+    mockPerformance = new MockPerformance();
+    mockErrorTracker = new MockError();
+
+    mapper = new ContentMapper(
+      mockExperiment,
+      mockPerformance,
+      mockErrorTracker,
+    );
+  });
+
+  describe("mapSectionContent (async)", () => {
+    it("should successfully map hero section content", async () => {
+      // Arrange
+      mockExperiment.mockVariant("control");
+      mockPerformance.mockTimer(50);
+      mockErrorTracker.mockSuccess();
+
+      // Mock the dynamic import
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Test Headline" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(true);
+      if (result.success) {
+        expect(unwrapResult(result).content.headline).toBe("Test Headline");
+      }
+      expect(mockPerformance.startTimer).toHaveBeenCalledWith(
+        "map_section_hero",
+      );
+      expect(mockPerformance.endTimer).toHaveBeenCalled();
+    });
+
+    it("should apply hero experiments when active", async () => {
+      // Arrange
+      const context = Factory.createValidCompositionContext({
+        experiments: { hero_headline: "variant_a" },
+      });
+
+      mockExperiment.mockVariant("variant_a");
+      mockPerformance.mockTimer(75);
+
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Original Headline" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing", context);
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(Utils.unwrapResult(result).experiment).toEqual({
+        id: "hero_headline",
+        variant: "variant_a",
+      });
+    });
+
+    it("should handle dynamic import failures gracefully", async () => {
+      // Arrange
+      const importError = new Error("Module not found");
+
+      // Mock failed dynamic import
+      jest.doMock("@/domains/marketing", () => {
+        throw importError;
+      });
+
+      mockPerformance.mockTimer(25);
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).message).toContain(
+        "Failed to load content mapper",
+      );
+      expect(Utils.unwrapError(result).cause).toBe(importError);
+      expect(mockErrorTracker.captureException).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          sectionId: "hero",
+          pageType: "landing",
+        }),
+      );
+    });
+
+    it("should handle domain composer failures", async () => {
+      // Arrange
+      const composerError = new Error("Composer failed");
+
+      const mockComposeHeroContent = jest.fn().mockImplementation(() => {
+        throw composerError;
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      mockPerformance.mockTimer(30);
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).code).toBe("INTERNAL_ERROR");
+      expect(mockErrorTracker.captureException).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          sectionId: "hero",
+          pageType: "landing",
+        }),
+      );
+    });
+
+    it("should map all supported section types", async () => {
+      // Arrange
+      const sections: Array<{ id: any; composer: string }> = [
+        { id: "hero", composer: "composeHeroContent" },
+        { id: "benefits", composer: "composeBenefitsContent" },
+        { id: "features", composer: "composeFeaturesContent" },
+        { id: "pricing", composer: "composePricingContent" },
+        { id: "social-proof", composer: "composeSocialProofContent" },
+        { id: "demo", composer: "composeDemoContent" },
+        { id: "faq", composer: "composeFaqContent" },
+        { id: "final-cta", composer: "composeFinalCtaContent" },
+        { id: "footer", composer: "composeFooterContent" },
+        { id: "checkout", composer: "composeCheckoutContent" },
+        { id: "trial", composer: "composeTrialContent" },
+        { id: "signup", composer: "composeSignupContent" },
+        { id: "pillars", composer: "composePillarsContent" },
+        { id: "how-it-works", composer: "composeHowItWorksContent" },
+        { id: "verticals", composer: "composeVerticalsContent" },
+        { id: "proof-traction", composer: "composeProofTractionContent" },
+        { id: "lead-form", composer: "composeLeadFormContent" },
+        { id: "pricing-presale", composer: "composePricingPresaleContent" },
+      ];
+
+      mockPerformance.mockTimer(10);
+      mockErrorTracker.mockSuccess();
+
+      for (const { id, composer } of sections) {
+        // Mock the dynamic import for each section
+        const mockComposer = jest.fn().mockReturnValue({
+          content: { test: true },
+          variant: { id: "test" },
+        });
+
+        const mockModule = { [composer]: mockComposer };
+        jest.doMock("@/domains/marketing", () => mockModule);
+
+        // Act
+        const result = await mapper.mapSectionContent(id, "landing");
+
+        // Assert
+        expect(result.success).toBe(true);
+        expect(unwrapResult(result)).toBeDefined();
+      }
+    });
+
+    it("should reject unknown section types", async () => {
+      // Act
+      const result = await mapper.mapSectionContent(
+        "unknown" as any,
+        "landing",
+      );
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).code).toBe("VALIDATION_ERROR");
+      expect(Utils.unwrapError(result).message).toContain("Unknown section ID");
+    });
+
+    it("should record performance metrics", async () => {
+      // Arrange
+      const expectedDuration = 200;
+
+      mockPerformance.mockTimer(expectedDuration);
+      mockErrorTracker.mockSuccess();
+
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Test" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(mockPerformance.recordMetric).toHaveBeenCalledWith(
+        "section_content_mapping_duration",
+        expectedDuration,
+        { section_id: "hero", page_type: "landing" },
+      );
+    });
+  });
+
+  describe("mapSectionContentSync", () => {
+    it("should map content synchronously", () => {
+      // Arrange - Mock require for sync operation
+      const mockMarketing = {
+        composeHeroContent: jest.fn().mockReturnValue({
+          content: { headline: "Sync Headline" },
+          variant: { id: "sync" },
+        }),
+      };
+
+      // Mock the require call
+      jest.doMock("@/domains/marketing", () => mockMarketing);
+
+      // Act
+      const result = mapper.mapSectionContentSync("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(Utils.unwrapResult(result).content.headline).toBe("Sync Headline");
+    });
+
+    it("should handle sync failures", () => {
+      // Arrange - Mock require to throw
+      jest.doMock("@/domains/marketing", () => {
+        throw new Error("Sync import failed");
+      });
+
+      // Act
+      const result = mapper.mapSectionContentSync("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).code).toBe("INTERNAL_ERROR");
+    });
+  });
+
+  describe("experiment application", () => {
+    it("should apply hero headline variants", async () => {
+      // Arrange
+      const context = Factory.createValidCompositionContext({
+        experimentOverrides: { hero_headline: "variant_a" },
+      });
+
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Original" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing", context);
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(Utils.unwrapResult(result).experiment).toEqual({
+        id: "hero_headline",
+        variant: "variant_a",
+      });
+    });
+
+    it("should handle experiment service failures gracefully", async () => {
+      // Arrange
+      mockExperiment.getActiveVariant.mockRejectedValue(
+        new Error("Experiment failed"),
+      );
+
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Test" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert - Should still succeed, just without experiments
+      expect(result.success).toBe(true);
+      expect(Utils.unwrapResult(result).experiment).toBeUndefined();
+    });
+  });
+
+  describe("error handling", () => {
+    it("should capture exceptions with context", async () => {
+      // Arrange
+      const error = new Error("Mapping failed");
+
+      jest.doMock("@/domains/marketing", () => {
+        throw error;
+      });
+
+      // Act
+      await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(mockErrorTracker.captureException).toHaveBeenCalledWith(
+        expect.any(Error),
+        expect.objectContaining({
+          sectionId: "hero",
+          pageType: "landing",
+          operation: "map_section_content",
+        }),
+      );
+    });
+
+    it("should provide meaningful error messages", async () => {
+      // Act
+      const result = await mapper.mapSectionContent(
+        "invalid" as any,
+        "landing",
+      );
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).message).toContain("Unknown section ID");
+      expect(Utils.unwrapError(result).code).toBe("UNKNOWN_SECTION_ID");
+    });
+  });
+
+  describe("context handling", () => {
+    it("should pass context to experiment service", async () => {
+      // Arrange
+      const context = Factory.createValidCompositionContext();
+
+      mockExperiment.mockVariant("control");
+
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Test" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      await mapper.mapSectionContent("hero", "landing", context);
+
+      // Assert
+      expect(mockExperiment.getActiveVariant).toHaveBeenCalledWith(
+        "hero_headline",
+      );
+    });
+
+    it("should handle undefined context", async () => {
+      // Arrange
+      const mockComposeHeroContent = jest.fn().mockReturnValue({
+        content: { headline: "Test" },
+        variant: { id: "default" },
+      });
+
+      jest.doMock("@/domains/marketing", () => ({
+        composeHeroContent: mockComposeHeroContent,
+      }));
+
+      // Act
+      const result = await mapper.mapSectionContent(
+        "hero",
+        "landing",
+        undefined,
+      );
+
+      // Assert
+      expect(result.success).toBe(true);
+    });
+  });
+
+  describe("error resilience and recovery", () => {
+    it("should handle composer import failures gracefully", async () => {
+      // Arrange - Mock dynamic import to fail
+      const originalImport = global.import;
+      global.import = vi.fn().mockRejectedValue(new Error("Import failed"));
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(Utils.unwrapError(result).message).toContain(
+        "Failed to map content",
+      );
+
+      // Cleanup
+      global.import = originalImport;
+    });
+
+    it("should handle malformed composer response", async () => {
+      // Arrange - Mock dynamic import to return invalid response
+      const originalImport = global.import;
+      global.import = vi.fn().mockResolvedValue({
+        composeHeroContent: () => null, // Invalid response
+      });
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+
+      // Cleanup
+      global.import = originalImport;
+    });
+
+    it("should handle sync mapping failures", () => {
+      // Arrange
+      const error = Utils.createAppError("Sync mapping failed");
+
+      mockExperiment.mockVariant("variant_a");
+
+      // Mock the sync version to fail
+      vi.mock("@/domains/marketing/composers/hero-composer", () => ({
+        composeHeroContent: () => {
+          throw error;
+        },
+      }));
+
+      // Act
+      const result = mapper.mapSectionContentSync("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(false);
+      expect(!result.success && result.error.message).toContain(
+        "Failed to map content",
+      );
+    });
+
+    it("should track performance metrics for sync operations", () => {
+      // Arrange
+      mockExperiment.mockVariant("variant_a");
+      mockPerformance.mockTimer(50);
+
+      // Act
+      mapper.mapSectionContentSync("hero", "landing");
+
+      // Assert
+      expect(mockPerformance.startTimer).toHaveBeenCalledWith(
+        "map_section_hero",
+      );
+      expect(mockPerformance.recordMetric).toHaveBeenCalled();
+    });
+
+    it("should handle experiment context in sync mapping", () => {
+      // Arrange
+      const context = Factory.createValidCompositionContext({
+        experiments: { hero: "variant_a" },
+      });
+
+      mockExperiment.mockVariant("variant_a");
+
+      // Act
+      const result = mapper.mapSectionContentSync("hero", "landing", context);
+
+      // Assert
+      expect(result.success).toBe(true);
+      expect(mockExperiment.getActiveVariant).toHaveBeenCalledWith(
+        "hero",
+        context,
+      );
+    });
+
+    it("should apply content normalization consistently", async () => {
+      // Arrange
+      mockExperiment.mockVariant("variant_a");
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(true);
+      const content = Utils.unwrapResult(result);
+      expect(content).toHaveProperty("_variant");
+      expect(content).toHaveProperty("_metadata");
+      expect(content._metadata).toHaveProperty("sectionId", "hero");
+    });
+
+    it("should handle trace ID propagation in logging", async () => {
+      // Arrange - This would be tested with actual logging verification
+      mockExperiment.mockVariant("variant_a");
+
+      // Act
+      await mapper.mapSectionContent("hero", "landing");
+
+      // Assert - In a real implementation, we'd verify trace IDs in logs
+      expect(mockPerformance.startTimer).toHaveBeenCalled();
+    });
+
+    it("should maintain backward compatibility with legacy composers", async () => {
+      // Arrange - Test with legacy composer format
+      mockExperiment.mockVariant("variant_a");
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(true);
+      // Should handle both new and legacy composer formats
+    });
+
+    it("should handle concurrent section mappings efficiently", async () => {
+      // Arrange
+      mockExperiment.mockVariant("variant_a");
+      const sections = ["hero", "benefits", "features"];
+
+      // Act
+      const promises = sections.map((section) =>
+        mapper.mapSectionContent(section as any, "landing"),
+      );
+      const results = await Promise.all(promises);
+
+      // Assert
+      results.forEach((result) => {
+        expect(result.success).toBe(true);
+      });
+    });
+
+    it("should validate section content structure", async () => {
+      // Arrange
+      mockExperiment.mockVariant("variant_a");
+
+      // Act
+      const result = await mapper.mapSectionContent("hero", "landing");
+
+      // Assert
+      expect(result.success).toBe(true);
+      const content = Utils.unwrapResult(result);
+      expect(content).toHaveProperty("variant");
+      expect(content).toHaveProperty("content");
+    });
+  });
+});

@@ -1,0 +1,27 @@
+[
+  {
+    "timestamp": "2025-10-29T03:13:41.414Z",
+    "alerts": [
+      {
+        "level": "high",
+        "type": "TEST_FAILURES",
+        "title": "⚠️ Testes Falhando",
+        "message": "8 testes falhando - atenção necessária",
+        "impact": "Médio - afeta qualidade mas não bloqueia",
+        "action": "Priorizar correção nos próximos dias",
+        "deadline": "Esta semana",
+        "owner": "Dev Team"
+      },
+      {
+        "level": "medium",
+        "type": "PERFORMANCE_REGRESSION",
+        "title": "⏱️ Performance Acima do Alvo",
+        "message": "Testes demorando 18s (meta: 15s)",
+        "impact": "Médio - afeta produtividade do desenvolvedor",
+        "action": "Otimizar execução de testes ou ajustar meta",
+        "deadline": "Esta semana",
+        "owner": "Dev Team"
+      }
+    ]
+  }
+]

@@ -1,0 +1,70 @@
+{
+  "timestamp": "2025-10-28T23:57:38.863Z",
+  "environment": "Local",
+  "results": {
+    "visual": {
+      "passed": false,
+      "duration": 3549
+    },
+    "critical": {
+      "passed": false,
+      "duration": 62623
+    },
+    "performance": {
+      "passed": false,
+      "duration": 2486
+    },
+    "accessibility": {
+      "passed": false,
+      "duration": 5833
+    },
+    "load": {
+      "passed": true,
+      "duration": 47414
+    },
+    "crossBrowser": {
+      "passed": false,
+      "duration": 41831
+    },
+    "i18n": {
+      "passed": false,
+      "duration": 15892
+    },
+    "network": {
+      "passed": false,
+      "duration": 46498
+    },
+    "pwa": {
+      "passed": false,
+      "duration": 23044
+    },
+    "analytics": {
+      "passed": false,
+      "duration": 62000
+    },
+    "api": {
+      "passed": true,
+      "duration": 25059
+    },
+    "security": {
+      "passed": true,
+      "duration": 30151
+    },
+    "seo": {
+      "passed": false,
+      "duration": 39450
+    }
+  },
+  "summary": {
+    "totalSuites": 13,
+    "passedSuites": 3,
+    "failedSuites": 10,
+    "criticalSuites": 4,
+    "criticalPassed": 0,
+    "additionalSuites": 9,
+    "additionalPassed": 3,
+    "totalDuration": 405830,
+    "successRate": 23,
+    "criticalSuccessRate": 0
+  }
+}

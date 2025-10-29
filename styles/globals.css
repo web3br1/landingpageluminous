@@ -1,0 +1,408 @@
+/* ===== DESIGN SYSTEM GLOBALS ===== */
+/* Single source of truth for all styles */
+
+@import "../design-system/foundations/theme.css";
+
+/* ===== FONT LOADING OPTIMIZATION ===== */
+/* Using Google Fonts for Inter to avoid 404 errors */
+/* Font will be loaded via next/font or Google Fonts link */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ===== UTILITY CLASSES ===== */
+/* Additional utility classes not covered by Tailwind */
+
+@layer utilities {
+  /* Section wrapper - ensures sections are visible and properly styled */
+  .section-wrapper {
+    display: block;
+    min-height: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Performance optimizations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  /* Fix for horizontal overflow on cards */
+  .card-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Ensure pricing cards don't overflow */
+  .pricing-card {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn var(--duration-normal) var(--ease-standard) both;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--duration-normal) var(--ease-standard) both;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--duration-fast) var(--ease-decelerate) both;
+  }
+
+  .animate-glass-in {
+    animation: glassIn var(--duration-slow) var(--ease-glass) both;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn var(--duration-normal) var(--ease-bounce) both;
+  }
+
+  /* Delay utilities for staggered animations */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* Contrast validation placeholder */
+  .contrast-ok {
+    /* Placeholder for contrast validation utilities */
+  }
+
+  /* Focus ring utilities */
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: hsl(var(--primary) / 0.5);
+    --tw-ring-offset-color: hsl(var(--bg));
+  }
+
+  /* Container utilities */
+  .container-sm { max-width: var(--container-sm); }
+  .container-md { max-width: var(--container-md); }
+  .container-lg { max-width: var(--container-lg); }
+  .container-xl { max-width: var(--container-xl); }
+  .container-2xl { max-width: var(--container-2xl); }
+}
+
+/* ===== KEYFRAME DEFINITIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glassIn {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== ACCESSIBILITY & MOTION ===== */
+/* Respect user preferences for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== CLS PREVENTION ===== */
+/* Prevent Cumulative Layout Shift (CLS) */
+
+/* Reserve space for images */
+img, picture, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Next.js Image component optimization */
+.__next-image-wrapper {
+  display: block !important;
+  position: relative !important;
+}
+
+/* Prevent layout shifts from font loading */
+* {
+  font-display: swap;
+}
+
+/* Reserve space for common UI elements */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* Prevent layout shifts from dynamic content */
+[data-section] {
+  contain: layout style paint;
+}
+
+/* Optimize for Core Web Vitals */
+html {
+  /* Prevent flash of unstyled content */
+  visibility: visible;
+}
+
+/* Reduce layout shifts from animations */
+.animate-pulse,
+.animate-bounce,
+.animate-spin {
+  will-change: transform;
+}
+/* Additional utility classes not covered by Tailwind */
+
+@layer utilities {
+  /* Section wrapper - ensures sections are visible and properly styled */
+  .section-wrapper {
+    display: block;
+    min-height: 0;
+    opacity: 1;
+    visibility: visible;
+  }
+
+  /* Performance optimizations */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  /* Fix for horizontal overflow on cards */
+  .card-container {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Ensure pricing cards don't overflow */
+  .pricing-card {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .will-change-opacity {
+    will-change: opacity;
+  }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fadeIn var(--duration-normal) var(--ease-standard) both;
+  }
+
+  .animate-slide-up {
+    animation: slideUp var(--duration-normal) var(--ease-standard) both;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn var(--duration-fast) var(--ease-decelerate) both;
+  }
+
+  .animate-glass-in {
+    animation: glassIn var(--duration-slow) var(--ease-glass) both;
+  }
+
+  .animate-bounce-in {
+    animation: bounceIn var(--duration-normal) var(--ease-bounce) both;
+  }
+
+  /* Delay utilities for staggered animations */
+  .delay-100 { animation-delay: 100ms; }
+  .delay-200 { animation-delay: 200ms; }
+  .delay-300 { animation-delay: 300ms; }
+  .delay-400 { animation-delay: 400ms; }
+  .delay-500 { animation-delay: 500ms; }
+
+  /* Contrast validation placeholder */
+  .contrast-ok {
+    /* Placeholder for contrast validation utilities */
+  }
+
+  /* Focus ring utilities */
+  .focus-ring {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2;
+    --tw-ring-color: hsl(var(--primary) / 0.5);
+    --tw-ring-offset-color: hsl(var(--bg));
+  }
+
+  /* Container utilities */
+  .container-sm { max-width: var(--container-sm); }
+  .container-md { max-width: var(--container-md); }
+  .container-lg { max-width: var(--container-lg); }
+  .container-xl { max-width: var(--container-xl); }
+  .container-2xl { max-width: var(--container-2xl); }
+}
+
+/* ===== KEYFRAME DEFINITIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes glassIn {
+  from {
+    opacity: 0;
+    filter: blur(6px);
+    transform: translateY(0.5rem);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes bounceIn {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== ACCESSIBILITY & MOTION ===== */
+/* Respect user preferences for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== CLS PREVENTION ===== */
+/* Prevent Cumulative Layout Shift (CLS) */
+
+/* Reserve space for images */
+img, picture, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Next.js Image component optimization */
+.__next-image-wrapper {
+  display: block !important;
+  position: relative !important;
+}
+
+/* Prevent layout shifts from font loading */
+* {
+  font-display: swap;
+}
+
+/* Reserve space for common UI elements */
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* Prevent layout shifts from dynamic content */
+[data-section] {
+  contain: layout style paint;
+}
+
+/* Optimize for Core Web Vitals */
+html {
+  /* Prevent flash of unstyled content */
+  visibility: visible;
+}
+
+/* Reduce layout shifts from animations */
+.animate-pulse,
+.animate-bounce,
+.animate-spin {
+  will-change: transform;
+}

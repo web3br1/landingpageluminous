@@ -1,0 +1,230 @@
+/* Demo Controls Styles */
+
+.demo-controls {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: hsl(var(--bg-base) / 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid hsl(var(--border-base));
+  padding: 0.75rem 0;
+}
+
+.controls-bar {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.controls-bar.secondary {
+  padding-top: 0.5rem;
+  border-top: 1px solid hsl(var(--border-subtle));
+  margin-top: 0.5rem;
+}
+
+.controls-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.control-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: hsl(var(--text-primary));
+  white-space: nowrap;
+}
+
+.control-select {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid hsl(var(--border-base));
+  border-radius: 0.375rem;
+  background: hsl(var(--bg-surface));
+  color: hsl(var(--text-primary));
+  font-size: 0.875rem;
+  min-width: 120px;
+}
+
+.control-slider {
+  width: 80px;
+  height: 6px;
+  border-radius: 3px;
+  background: hsl(var(--border-base));
+  outline: none;
+  -webkit-appearance: none;
+}
+
+.control-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+}
+
+.control-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  cursor: pointer;
+  border: none;
+}
+
+.control-value {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: hsl(var(--text-secondary));
+  min-width: 2.5rem;
+  text-align: center;
+}
+
+.control-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  font-size: 0.875rem;
+  color: hsl(var(--text-primary));
+  cursor: pointer;
+}
+
+.control-checkbox input[type="checkbox"] {
+  width: 1rem;
+  height: 1rem;
+  accent-color: hsl(var(--primary));
+}
+
+/* Theme Info Section */
+.controlsBar.info {
+  background: hsl(var(--bg-surface) / 0.95);
+  border-top: 1px solid hsl(var(--border-subtle));
+  padding: 0.5rem 0;
+}
+
+.themeInfo {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+}
+
+.infoLabel {
+  color: hsl(var(--text-secondary));
+}
+
+.infoLabel strong {
+  color: hsl(var(--text-primary));
+  font-weight: 600;
+}
+
+/* Experiment Results Section */
+.controlsBar.results {
+  background: hsl(var(--bg-surface) / 0.95);
+  border-top: 1px solid hsl(var(--border-subtle));
+  padding: 0.5rem 0;
+}
+
+.experimentResults {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  font-size: 0.875rem;
+}
+
+.resultsTitle {
+  font-weight: 600;
+  color: hsl(var(--text-primary));
+}
+
+.resultItem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  background: hsl(var(--bg-subtle));
+  border-radius: 4px;
+  border: 1px solid hsl(var(--border-base));
+}
+
+.variantLabel {
+  font-weight: 500;
+  color: hsl(var(--text-primary));
+}
+
+.metricValue {
+  color: hsl(var(--text-secondary));
+}
+
+.confidence {
+  font-size: 0.75rem;
+  color: hsl(var(--text-secondary));
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .controls-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .controls-bar.secondary {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .control-label {
+    justify-content: space-between;
+    width: 100%;
+  }
+
+  .control-select {
+    min-width: auto;
+    flex: 1;
+  }
+
+  .control-slider {
+    flex: 1;
+  }
+
+  .themeInfo,
+  .experimentResults {
+    flex-direction: column;
+    gap: 0.5rem;
+    text-align: center;
+  }
+
+  .resultItem {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .controls-bar.secondary {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .controls-group {
+    justify-content: space-between;
+  }
+
+  .themeInfo,
+  .experimentResults {
+    font-size: 0.75rem;
+  }
+}

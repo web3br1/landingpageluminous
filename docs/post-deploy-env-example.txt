@@ -1,0 +1,14 @@
+# Post-Deploy Validation Environment Variables
+# Copy this to your .env file for post-deploy validation
+
+# URL para validar deploy (usar em produção/staging)
+POST_DEPLOY_URL=https://your-production-domain.com
+
+# Habilitar modo debug com screenshots
+DEBUG=false
+
+# Timeout para operações em ms
+TIMEOUT=30000
+
+# Layout debug stage (para desenvolvimento - habilita UX components)
+NEXT_PUBLIC_LAYOUT_DEBUG_STAGE=8

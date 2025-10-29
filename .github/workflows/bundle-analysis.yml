@@ -1,0 +1,133 @@
+name: 🚀 Bundle Analysis & Budget Check
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'package.json'
+      - 'next.config.mjs'
+
+  push:
+    branches: [ main ]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'package.json'
+      - 'next.config.mjs'
+
+jobs:
+  bundle-analysis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v4
+
+      - name: 🔧 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: 📦 Install dependencies
+        run: npm ci
+
+      - name: 🏗️ Build application
+        run: npm run build
+        env:
+          ANALYZE: true
+
+      - name: 📊 Generate bundle analysis report
+        run: node scripts/bundle-analysis-report.mjs
+
+      - name: 🚨 Validate bundle budgets
+        run: node scripts/ci-bundle-gate.mjs
+
+      - name: 💾 Upload bundle analysis artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bundle-analysis-${{ github.run_number }}
+          path: |
+            reports/
+            .next/analyze/
+          retention-days: 30
+
+      - name: 📋 Comment PR with bundle analysis
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+            const path = require('path')
+
+            // Ler relatório mais recente
+            const reportsDir = path.join(process.cwd(), 'reports')
+            const files = fs.readdirSync(reportsDir)
+              .filter(f => f.startsWith('bundle-analysis-'))
+              .filter(f => f.endsWith('.md'))
+              .sort()
+              .reverse()
+
+            if (files.length === 0) {
+              console.log('No bundle analysis report found')
+              return
+            }
+
+            const reportPath = path.join(reportsDir, files[0])
+            const report = fs.readFileSync(reportPath, 'utf8')
+
+            // Ler dados JSON para status
+            const jsonPath = path.join(reportsDir, 'bundle-analysis-latest.json')
+            const jsonData = JSON.parse(fs.readFileSync(jsonPath, 'utf8'))
+
+            // Determinar status
+            const hasErrors = Object.values(jsonData.comparisons).some(comp => comp.sizePercent > 15)
+            const hasWarnings = Object.values(jsonData.comparisons).some(comp => comp.sizePercent > 5 && comp.sizePercent <= 15)
+
+            let statusEmoji = '✅'
+            let statusText = 'Bundle analysis passed'
+
+            if (hasErrors) {
+              statusEmoji = '❌'
+              statusText = 'Bundle budget exceeded!'
+            } else if (hasWarnings) {
+              statusEmoji = '⚠️'
+              statusText = 'Bundle approaching limits'
+            }
+
+            // Comentar no PR
+            const body = `${statusEmoji} **Bundle Analysis Report**
+
+            ${statusText}
+
+            ## 📊 Summary
+            - **Total Size:** ${(jsonData.analysis.total.size / 1024 / 1024).toFixed(2)} MB
+            - **Chunks:** ${jsonData.analysis.total.chunks}
+            - **Compressed:** ${(jsonData.analysis.total.compressedSize / 1024).toFixed(1)} KB
+
+            ${hasErrors || hasWarnings ? '## 🔍 Details\n' + report.split('## 💡 Recommendations')[0].split('## 🎯 Performance Metrics')[1] : ''}
+
+            ${hasErrors ? '## 🚨 Action Required\nBundle size exceeds budget. Please optimize before merging.' : ''}
+
+            [📈 View full report](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}})`
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: body
+            })
+
+      - name: 🔍 Check for critical regressions
+        if: failure()
+        run: |
+          echo "🚨 Bundle budget exceeded!"
+          echo "Check the bundle analysis report for details"
+          echo "Consider optimizing imports or lazy loading components"
+          exit 1

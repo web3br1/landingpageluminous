@@ -1,0 +1,303 @@
+/* ===== CSS LAYER SYSTEM ===== */
+/* Isolates theme variables from component styles for better cascade control */
+
+/* Base layer - HTML element defaults and resets */
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    /* Critical rendering path defaults */
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -moz-tab-size: 4;
+    tab-size: 4;
+  }
+
+  body {
+    /* Theme-dependent defaults set via JavaScript/data attributes */
+    margin: 0;
+    font-family: var(--font-body, system-ui, sans-serif);
+    background-color: var(--background, #ffffff);
+    color: var(--foreground, #000000);
+    transition: background-color 0.2s ease, color 0.2s ease;
+  }
+
+  /* Focus management */
+  :focus-visible {
+    outline: 2px solid var(--primary, #0066cc);
+    outline-offset: 2px;
+  }
+
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    :root {
+      --border: hsl(0 0% 50%);
+      --foreground: hsl(0 0% 0%);
+      --background: hsl(0 0% 100%);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --foreground: hsl(0 0% 100%);
+        --background: hsl(0 0% 0%);
+      }
+    }
+  }
+
+  /* Reduced motion support */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+/* Themes layer - ONLY theme variables, no component styles */
+@layer themes {
+  /* Theme variable overrides - isolated from component styles */
+  /* This layer only contains CSS custom properties */
+
+  :root[data-theme="liquid-glass"] {
+    --background: oklch(99% 0.02 250);
+    --foreground: oklch(16% 0.03 260);
+    --primary: oklch(63% 0.18 270);
+    --primary-foreground: oklch(98% 0.01 250);
+    --secondary: oklch(65% 0.15 220);
+    --accent: oklch(75% 0.17 330);
+    --muted: color-mix(in oklab, var(--background) 85%, #7b7b7b);
+    --border: oklch(88% 0.02 250);
+    --destructive: oklch(65% 0.18 25);
+    --success: oklch(75% 0.15 142);
+    --warning: oklch(85% 0.12 85);
+
+    /* Motion overrides */
+    --ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --duration-normal: 350ms;
+    --duration-slow: 500ms;
+
+    /* Layout overrides */
+    --radius: 20px;
+    --radius-lg: 24px;
+    --radius-xl: 32px;
+    --radius-2xl: 40px;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 3px rgb(20 20 60 / 0.08);
+    --shadow-lg: 0 8px 24px rgb(20 20 60 / 0.15);
+  }
+
+  :root[data-theme="tech-blueprint"] {
+    --background: oklch(20% 0.03 220);
+    --foreground: oklch(95% 0.03 220);
+    --primary: oklch(60% 0.23 200);
+    --primary-foreground: oklch(95% 0.03 220);
+    --secondary: oklch(55% 0.17 160);
+    --secondary-foreground: oklch(95% 0.03 220);
+    --accent: oklch(60% 0.23 40);
+    --accent-foreground: oklch(95% 0.03 220);
+    --muted: oklch(25% 0.02 220);
+    --muted-foreground: oklch(70% 0.05 220);
+    --border: oklch(25% 0.08 220);
+    --destructive: oklch(65% 0.25 25);
+    --destructive-foreground: oklch(95% 0.03 220);
+    --success: oklch(75% 0.22 142);
+    --success-foreground: oklch(95% 0.03 220);
+    --warning: oklch(85% 0.18 85);
+    --warning-foreground: oklch(95% 0.03 220);
+    --card: oklch(22% 0.04 220);
+    --card-foreground: oklch(95% 0.03 220);
+    --popover: oklch(22% 0.04 220);
+    --popover-foreground: oklch(95% 0.03 220);
+
+    /* Motion overrides */
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+    --duration-normal: 250ms;
+    --duration-slow: 350ms;
+
+    /* Layout overrides */
+    --radius: 0.25rem;
+    --radius-lg: 0.5rem;
+    --radius-xl: 0.75rem;
+    --radius-2xl: 1rem;
+
+    /* Blueprint shadows */
+    --shadow-sm: 0 0 0 1px hsl(var(--border));
+    --shadow-md: 0 0 8px rgb(0 20 60 / 0.3), 0 0 0 1px hsl(var(--border));
+    --shadow-lg: 0 0 16px rgb(0 20 60 / 0.4), 0 0 0 1px hsl(var(--border));
+  }
+
+  /* Surface hierarchy - semantic surface tokens */
+  :root {
+    /* Primary surfaces */
+    --surface-1: var(--background);
+    --surface-2: var(--card, color-mix(in oklab, var(--background) 95%, black));
+    --surface-3: var(--popover, color-mix(in oklab, var(--background) 90%, black));
+
+    /* Container surfaces (for nested elements) */
+    --container-1: var(--surface-1);
+    --container-2: color-mix(in oklab, var(--surface-1) 98%, var(--foreground) 2%);
+    --container-3: color-mix(in oklab, var(--surface-1) 96%, var(--foreground) 4%);
+  }
+
+  /* Derived tokens using color-mix() for consistency */
+  :root {
+    /* Hover states */
+    --primary-hover: color-mix(in oklab, var(--primary) 90%, black);
+    --secondary-hover: color-mix(in oklab, var(--secondary) 90%, black);
+    --accent-hover: color-mix(in oklab, var(--accent) 90%, black);
+
+    /* Outline variants */
+    --primary-outline: color-mix(in oklab, var(--primary) 20%, var(--background));
+    --secondary-outline: color-mix(in oklab, var(--secondary) 20%, var(--background));
+
+    /* Muted variants */
+    --muted-hover: color-mix(in oklab, var(--muted) 110%, var(--foreground));
+    --border-hover: color-mix(in oklab, var(--border) 120%, var(--foreground));
+  }
+
+  /* RTL support */
+  :root[dir="rtl"] {
+    --direction: rtl;
+  }
+
+  /* System theme support */
+  @media (prefers-color-scheme: dark) {
+    :root[data-theme="system"] {
+      /* Dark theme variables would go here */
+    }
+  }
+}
+
+/* Components layer - Component styles that use theme variables */
+@layer components {
+  /* Component styles that depend on theme variables */
+  /* This layer can override themes layer but not utilities */
+
+  .btn-primary {
+    background-color: var(--primary);
+    color: var(--primary-foreground);
+    border: 1px solid var(--primary);
+    transition: background-color var(--duration-normal) var(--ease-standard);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-hover);
+  }
+
+  .btn-outline {
+    background-color: transparent;
+    color: var(--primary);
+    border: 1px solid var(--primary-outline);
+  }
+
+  .btn-outline:hover {
+    background-color: var(--primary-outline);
+  }
+
+  .card {
+    background-color: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+  }
+
+  .input {
+    background-color: var(--surface-1);
+    border: 1px solid var(--border);
+    color: var(--foreground);
+  }
+
+  .input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-outline);
+  }
+}
+
+/* Utilities layer - Highest specificity, utility classes */
+@layer utilities {
+  /* Utility classes that always win */
+
+  .bg-surface-1 { background-color: var(--surface-1); }
+  .bg-surface-2 { background-color: var(--surface-2); }
+  .bg-surface-3 { background-color: var(--surface-3); }
+
+  .text-on-surface { color: var(--foreground); }
+  .text-muted { color: var(--muted-foreground); }
+
+  .border-default { border-color: var(--border); }
+  .border-hover { border-color: var(--border-hover); }
+
+  /* Animation utilities */
+  .animate-fade-in {
+    animation: fade-in var(--duration-normal) var(--ease-standard);
+  }
+
+  .animate-slide-up {
+    animation: slide-up var(--duration-normal) var(--ease-entrance);
+  }
+
+  /* Container utilities */
+  .container-surface {
+    background-color: var(--container-1);
+    border-radius: var(--radius);
+  }
+
+  .container-elevated {
+    background-color: var(--container-2);
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Performance optimizations */
+  .performance-contain {
+    contain: layout style paint;
+  }
+
+  .performance-content-visibility {
+    content-visibility: auto;
+    contain-intrinsic-size: 200px;
+  }
+}
+
+/* Animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] .rtl-flip {
+  transform: scaleX(-1);
+}
+
+/* RTL Layout adjustments */
+[dir="rtl"] .space-x-4 > * + * {
+  margin-left: 0;
+  margin-right: 1rem;
+}
+
+[dir="rtl"] .space-x-6 > * + * {
+  margin-left: 0;
+  margin-right: 1.5rem;
+}
+
+[dir="rtl"] .space-x-8 > * + * {
+  margin-left: 0;
+  margin-right: 2rem;
+}

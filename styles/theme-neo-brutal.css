@@ -1,0 +1,177 @@
+/* ===== THEME PACK: Neo Brutal ===== */
+/* Bold borders, hard shadows, and sharp edges */
+
+:root[data-theme="neo-brutal"] {
+  /* Color overrides - high contrast, bold colors */
+  --bg: oklch(98% 0.02 95);
+  --fg: oklch(18% 0.04 95);
+  --primary: oklch(70% 0.25 35);
+  --primary-contrast: oklch(98% 0.01 95);
+  --secondary: oklch(75% 0.22 55);
+  --accent: oklch(80% 0.25 25);
+  --muted: oklch(94% 0.02 95);
+  --border: oklch(30% 0.07 95);
+  --destructive: oklch(65% 0.25 25);
+  --success: oklch(75% 0.22 142);
+  --warning: oklch(85% 0.18 85);
+
+  /* Motion overrides - sharp and direct */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-decelerate: cubic-bezier(0, 0, 0.2, 1);
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-slow: 200ms;
+
+  /* Layout overrides - minimal radius */
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+
+  /* Shadow overrides - hard, directional shadows */
+  --shadow-sm: 3px 3px 0 0 var(--border);
+  --shadow-md: 6px 6px 0 0 var(--border);
+  --shadow-lg: 9px 9px 0 0 var(--border);
+  --shadow-xl: 12px 12px 0 0 var(--border);
+  --shadow-2xl: 15px 15px 0 0 var(--border);
+}
+
+/* Brutal effect utilities */
+.brutal-card {
+  border: 3px solid var(--border);
+  box-shadow: var(--shadow-md);
+  background: var(--bg);
+}
+
+.brutal-elevated {
+  border: 4px solid var(--border);
+  box-shadow: var(--shadow-lg);
+  background: var(--bg);
+  position: relative;
+}
+
+.brutal-border {
+  border: 2px solid var(--border);
+  background: transparent;
+}
+
+.brutal-thick {
+  border: 5px solid var(--border);
+  box-shadow: var(--shadow-xl);
+}
+
+/* Typography refinements for brutal theme */
+.brutal-heading {
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  font-size: var(--font-size-4xl);
+}
+
+.brutal-subheading {
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+/* Animation refinements - direct and punchy */
+.brutal-enter {
+  animation: brutalPop var(--duration-fast) var(--ease-decelerate) both;
+}
+
+.brutal-slide {
+  animation: brutalSlide var(--duration-normal) var(--ease-standard) both;
+}
+
+@keyframes brutalPop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes brutalSlide {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Button variants for brutal theme */
+.btn-brutal {
+  border: 2px solid var(--border);
+  background: var(--primary);
+  color: var(--primary-contrast);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all var(--duration-fast) var(--ease-standard);
+  position: relative;
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-brutal:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-brutal:active {
+  transform: translate(1px, 1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-brutal-outline {
+  border: 2px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  transition: all var(--duration-fast) var(--ease-standard);
+}
+
+.btn-brutal-outline:hover {
+  background: var(--primary);
+  color: var(--primary-contrast);
+  transform: translate(-1px, -1px);
+}
+
+/* Interactive elements */
+.brutal-interactive {
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-standard);
+  user-select: none;
+}
+
+.brutal-interactive:hover {
+  transform: translate(-1px, -1px);
+  box-shadow: var(--shadow-md);
+}
+
+.brutal-interactive:active {
+  transform: translate(0px, 0px);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Layout helpers */
+.brutal-grid {
+  display: grid;
+  gap: var(--space-4);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+}
+
+.brutal-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}

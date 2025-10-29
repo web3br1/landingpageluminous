@@ -1,0 +1,265 @@
+name: TDD Quality Analysis
+
+on:
+  pull_request:
+    branches: [ main, develop, staging ]
+    types: [ opened, synchronize, reopened, ready_for_review ]
+  push:
+    branches: [ main, develop ]
+
+concurrency:
+  group: tdd-quality-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tdd-quality-gate:
+    name: TDD Quality Gate
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Para análise de mudanças
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Cache TDD results
+      uses: actions/cache@v4
+      id: tdd-cache
+      with:
+        path: tmp/tdd-cache
+        key: tdd-${{ runner.os }}-${{ hashFiles('src/**', 'tests/**', 'package.json') }}
+        restore-keys: |
+          tdd-${{ runner.os }}-${{ hashFiles('src/**', 'package.json') }}
+          tdd-${{ runner.os }}-
+
+    - name: Run TDD Quality Analysis
+      id: tdd-analysis
+      run: |
+        echo "🚀 Executando TDD Quality Analysis..."
+        npm run tdd:analyze
+
+        # Captura métricas importantes para próximos steps
+        if [ -f "tmp/tdd-reports/tdd-report.json" ]; then
+          SCORE=$(jq -r '.summary.finalScore // 0' tmp/tdd-reports/tdd-report.json)
+          MATURITY=$(jq -r '.summary.maturity.level // "unknown"' tmp/tdd-reports/tdd-report.json)
+          CRITICAL=$(jq -r '.summary.issues.critical // 0' tmp/tdd-reports/tdd-report.json)
+
+          echo "score=$SCORE" >> $GITHUB_OUTPUT
+          echo "maturity=$MATURITY" >> $GITHUB_OUTPUT
+          echo "critical_issues=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "✅ Análise concluída - Score: $SCORE, Maturidade: $MATURITY"
+        else
+          echo "❌ Relatório não encontrado"
+          exit 1
+        fi
+
+    - name: Run Quality Gate
+      id: tdd-gate
+      run: |
+        echo "🚦 Executando Quality Gate..."
+        npm run tdd:gate
+
+    - name: Upload TDD Reports
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: tdd-reports-${{ github.run_number }}
+        path: |
+          tmp/tdd-reports/
+          tmp/tdd-safe-tests.json
+          tmp/tdd-history.json
+        retention-days: 30
+
+    - name: Comment PR with Results
+      if: always() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs')
+          const path = require('path')
+
+          // Lê o relatório Markdown
+          let reportContent = '## 🎯 TDD Quality Analysis\n\n'
+          reportContent += '❌ Relatório não foi gerado ou está indisponível.'
+
+          try {
+            const reportPath = path.join(process.cwd(), 'tmp', 'tdd-reports', 'tdd-report.md')
+            if (fs.existsSync(reportPath)) {
+              reportContent = fs.readFileSync(reportPath, 'utf8')
+            }
+          } catch (error) {
+            console.log('Erro ao ler relatório:', error.message)
+          }
+
+          // Adiciona informações do CI
+          const score = ${{ steps.tdd-analysis.outputs.score || 0 }}
+          const maturity = '${{ steps.tdd-analysis.outputs.maturity }}'
+          const criticalIssues = ${{ steps.tdd-analysis.outputs.critical_issues || 0 }}
+
+          const ciInfo = `\n\n---\n\n**📊 CI Summary**\n\n- **Score**: ${score}/100\n- **Maturidade**: ${maturity}\n- **Issues Críticos**: ${criticalIssues}\n- **Status**: ${{ steps.tdd-gate.outcome == 'success' ? '✅ Aprovado' : '❌ Reprovado' }}\n\n[📈 Ver Relatórios Detalhados](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+
+          reportContent += ciInfo
+
+          // Busca comentário existente
+          const comments = await github.rest.issues.listComments({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          })
+
+          const existingComment = comments.data.find(comment =>
+            comment.body.includes('🎯 TDD Quality Analysis') &&
+            comment.user.type === 'Bot'
+          )
+
+          if (existingComment) {
+            // Atualiza comentário existente
+            await github.rest.issues.updateComment({
+              comment_id: existingComment.id,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: reportContent
+            })
+          } else {
+            // Cria novo comentário
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: reportContent
+            })
+          }
+
+    - name: Update Branch Protection
+      if: failure() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // Marca PR como não pronto para merge se gate falhar
+          await github.rest.issues.addLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['🚫 quality-gate-failed']
+          })
+
+          // Remove label de aprovado se existir
+          try {
+            await github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['✅ quality-gate-passed']
+            })
+          } catch (error) {
+            // Label não existia, continua
+          }
+
+    - name: Update Branch Protection (Success)
+      if: success() && github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          // Remove label de falha se existir
+          try {
+            await github.rest.issues.removeLabel({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: ['🚫 quality-gate-failed']
+            })
+          } catch (error) {
+            // Label não existia, continua
+          }
+
+          // Adiciona label de aprovado
+          await github.rest.issues.addLabels({
+            issue_number: context.issue.number,
+            owner: context.repo.owner,
+            repo: context.repo.repo,
+            labels: ['✅ quality-gate-passed']
+          })
+
+  # Job adicional para alertas em push para main
+  tdd-alerts-main:
+    name: TDD Alerts (Main Branch)
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    needs: tdd-quality-gate
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+      with:
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Check for Alerts
+      run: |
+        echo "🔔 Verificando alertas ativos..."
+        npm run tdd:alerts
+
+        if [ -f "tmp/tdd-reports/tdd-alerts.json" ]; then
+          ALERTS_COUNT=$(jq '.alerts | length' tmp/tdd-reports/tdd-alerts.json)
+          CRITICAL_COUNT=$(jq '[.alerts[] | select(.severity == "high")] | length' tmp/tdd-reports/tdd-alerts.json)
+
+          echo "📊 Alertas encontrados: $ALERTS_COUNT total, $CRITICAL_COUNT críticos"
+
+          if [ "$CRITICAL_COUNT" -gt 0 ]; then
+            echo "🚨 Alertas críticos detectados - notificando equipe..."
+            # Aqui você pode adicionar notificações Slack, email, etc.
+          fi
+        fi
+
+  # Job para geração de dashboard (execução semanal)
+  tdd-dashboard:
+    name: Generate TDD Dashboard
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.event.schedule == '0 9 * * 1' # Mondays 9 AM UTC
+    needs: tdd-quality-gate
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Generate Dashboard
+      run: |
+        echo "📊 Gerando dashboard semanal..."
+        npm run tdd:dashboard
+
+    - name: Deploy Dashboard to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: tmp/tdd-reports/
+        publish_branch: tdd-dashboard
+        destination_dir: ./
+        keep_files: false

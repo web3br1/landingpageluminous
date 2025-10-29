@@ -1,0 +1,8 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Fase 1: Hooks leves para não bloquear desenvolvimento
+npx lint-staged
+
+# Validação rápida (não bloqueia)
+node scripts/daily-status.mjs || true

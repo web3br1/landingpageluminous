@@ -1,0 +1,131 @@
+/* ===== THEME PACK: Liquid Glass ===== */
+/* Minimal glassmorphism with translucent surfaces */
+
+:root[data-theme="liquid-glass"] {
+  /* Color overrides - OKLCH glass aesthetic */
+  --bg: oklch(99% 0.02 250);
+  --fg: oklch(16% 0.03 260);
+  --primary: oklch(63% 0.18 270);
+  --primary-contrast: oklch(98% 0.01 250);
+  --secondary: oklch(65% 0.15 220);
+  --accent: oklch(75% 0.17 330);
+  --muted: color-mix(in oklab, var(--bg) 85%, #7b7b7b);
+  --border: oklch(88% 0.02 250);
+  --destructive: oklch(65% 0.18 25);
+  --success: oklch(75% 0.15 142);
+  --warning: oklch(85% 0.12 85);
+
+  /* Motion overrides - smooth and fluid */
+  --ease-standard: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --ease-glass: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --duration-normal: 350ms;
+  --duration-slow: 500ms;
+
+  /* Layout overrides - softer borders */
+  --radius: 20px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+
+  /* Shadow overrides - subtle depth */
+  --shadow-sm: 0 1px 3px rgb(20 20 60 / 0.08);
+  --shadow-md: 0 4px 12px rgb(20 20 60 / 0.12);
+  --shadow-lg: 0 8px 24px rgb(20 20 60 / 0.15);
+  --shadow-xl: 0 12px 32px rgb(20 20 60 / 0.18);
+  --shadow-2xl: 0 16px 48px rgb(20 20 60 / 0.2);
+}
+
+/* Glass effect utilities */
+.glass {
+  backdrop-filter: saturate(140%) blur(10px);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / .55),
+    rgb(255 255 255 / .25)
+  );
+  border: 1px solid color-mix(in oklab, white 60%, var(--border));
+  box-shadow: var(--shadow-sm);
+}
+
+.glass-elevated {
+  backdrop-filter: saturate(160%) blur(12px);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / .7),
+    rgb(255 255 255 / .4)
+  );
+  border: 1px solid color-mix(in oklab, white 70%, var(--border));
+  box-shadow: var(--shadow-md);
+}
+
+.glass-card {
+  backdrop-filter: saturate(140%) blur(10px);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / .55),
+    rgb(255 255 255 / .25)
+  );
+  border: 1px solid color-mix(in oklab, white 60%, var(--border));
+  box-shadow: var(--shadow-sm);
+  border-radius: var(--radius-xl);
+  padding: var(--space-6);
+  transition: all var(--duration-normal) var(--ease-glass);
+}
+
+.glass-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Typography refinements for glass theme */
+.glass-heading {
+  background: linear-gradient(135deg, var(--fg), var(--primary));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* Animation refinements */
+.glass-enter {
+  animation: glassIn var(--duration-slow) var(--ease-glass) both;
+}
+
+.glass-float {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Button variants for glass theme */
+.btn-glass {
+  backdrop-filter: saturate(140%) blur(10px);
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / .55),
+    rgb(255 255 255 / .25)
+  );
+  border: 1px solid color-mix(in oklab, white 60%, var(--border));
+  box-shadow: var(--shadow-sm);
+  color: var(--fg);
+  border: 1px solid color-mix(in oklab, white 80%, var(--border));
+  transition: all var(--duration-fast) var(--ease-glass);
+}
+
+.btn-glass:hover {
+  background: linear-gradient(
+    180deg,
+    rgb(255 255 255 / .7),
+    rgb(255 255 255 / .5)
+  );
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
