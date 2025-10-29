@@ -1,141 +1,301 @@
-"use client";
+/**
+ * Analytics hooks for SSR-safe event tracking
+ * Provides client-side only analytics with proper SSR handling
+ */
 
-import { useEffect, useRef } from "react";
-import { analytics } from "../analytics-core";
-import { flags } from "../flags";
-import {
-  useDebouncedScroll,
-  useThrottledIntersectionObserver,
-} from "./use-performance-circuit-breaker";
+import { useEffect, useCallback } from 'react';
 
-// Hook para tracking de visualização de seção (SSR safe com circuit breaker)
-export function useSectionTracking(sectionName: string) {
-  const hasTracked = useRef(false);
-
-  const { ref } = useThrottledIntersectionObserver(
-    (entry) => {
-      if (entry.isIntersecting && !hasTracked.current) {
-        analytics.trackView(sectionName);
-        hasTracked.current = true;
-      }
-    },
-    { threshold: 0.5 },
-    200, // Throttle 200ms
-  );
-
-  useEffect(() => {
-    // SSR safety: only run on client-side
-    if (typeof window === "undefined" || typeof document === "undefined")
-      return;
-    if (hasTracked.current) return;
-
-    const element = document.getElementById(
-      sectionName.toLowerCase().replace(/\s+/g, "-"),
-    );
-    if (element) {
-      ref(element);
-    }
-  }, [sectionName, ref]);
+// Analytics event types
+export interface AnalyticsEvent {
+  event: string;
+  category?: string;
+  action?: string;
+  label?: string;
+  value?: number;
+  properties?: Record<string, any>;
 }
 
-// Hook para tracking de scroll depth (SSR safe com circuit breaker)
-export function useScrollTracking() {
-  const maxScrollRef = useRef(0);
+// Analytics configuration
+export interface AnalyticsConfig {
+  enabled: boolean;
+  debug: boolean;
+  trackingId?: string;
+}
 
-  useDebouncedScroll((scrollY) => {
-    try {
-      const docHeight =
-        document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = Math.round((scrollY / docHeight) * 100);
+// Default configuration
+const DEFAULT_CONFIG: AnalyticsConfig = {
+  enabled: true,
+  debug: process.env.NODE_ENV === 'development',
+};
 
-      // Track milestones: 25%, 50%, 75%, 90%
-      const milestones = [25, 50, 75, 90];
-      milestones.forEach((milestone) => {
-        if (scrollPercent >= milestone && maxScrollRef.current < milestone) {
-          analytics.trackScroll(milestone);
-          maxScrollRef.current = milestone;
+/**
+ * Check if we're in a browser environment
+ */
+function isBrowser(): boolean {
+  return typeof window !== 'undefined' && typeof document !== 'undefined';
+}
+
+/**
+ * Safe console logging for analytics events
+ */
+function logAnalytics(event: string, data: any): void {
+  if (DEFAULT_CONFIG.debug) {
+    console.log(`[Analytics] ${event}:`, data);
+  }
+}
+
+/**
+ * Track analytics event (client-side only)
+ */
+function trackEvent(event: AnalyticsEvent): void {
+  if (!isBrowser() || !DEFAULT_CONFIG.enabled) {
+    logAnalytics('skipped (SSR or disabled)', event);
+    return;
+  }
+
+  try {
+    // Placeholder for actual analytics implementation
+    // In production, this would integrate with GA4, Plausible, etc.
+    logAnalytics('tracked', event);
+
+    // Example: Send to dataLayer for GTM
+    if (window.dataLayer) {
+      window.dataLayer.push({
+        event: event.event,
+        eventCategory: event.category,
+        eventAction: event.action,
+        eventLabel: event.label,
+        eventValue: event.value,
+        ...event.properties,
+      });
+    }
+
+    // Example: Send to custom analytics endpoint
+    // fetch('/api/analytics', { method: 'POST', body: JSON.stringify(event) });
+
+  } catch (error) {
+    console.warn('Analytics tracking failed:', error);
+  }
+}
+
+/**
+ * Hook for tracking page views
+ */
+export function usePageView(pageName?: string): void {
+  useEffect(() => {
+    if (pageName) {
+      trackEvent({
+        event: 'page_view',
+        category: 'navigation',
+        action: 'view',
+        label: pageName,
+      });
+    }
+  }, [pageName]);
+}
+
+/**
+ * Hook for tracking user interactions
+ */
+export function useAnalyticsEvent() {
+  const track = useCallback((event: AnalyticsEvent) => {
+    trackEvent(event);
+  }, []);
+
+  const trackClick = useCallback((elementName: string, properties?: Record<string, any>) => {
+    trackEvent({
+      event: 'click',
+      category: 'interaction',
+      action: 'click',
+      label: elementName,
+      properties,
+    });
+  }, []);
+
+  const trackConversion = useCallback((conversionType: string, value?: number, properties?: Record<string, any>) => {
+    trackEvent({
+      event: 'conversion',
+      category: 'goal',
+      action: conversionType,
+      value,
+      properties,
+    });
+  }, []);
+
+  const trackError = useCallback((errorType: string, errorMessage?: string, properties?: Record<string, any>) => {
+    trackEvent({
+      event: 'error',
+      category: 'error',
+      action: errorType,
+      label: errorMessage,
+      properties,
+    });
+  }, []);
+
+  return {
+    track,
+    trackClick,
+    trackConversion,
+    trackError,
+  };
+}
+
+/**
+ * Hook for tracking scroll depth
+ */
+export function useScrollTracking(thresholds: number[] = [25, 50, 75, 100]): void {
+  useEffect(() => {
+    if (!isBrowser()) return;
+
+    let maxScroll = 0;
+    const trackedThresholds = new Set<number>();
+
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const windowHeight = window.innerHeight;
+      const documentHeight = Math.max(
+        document.body.scrollHeight,
+        document.body.offsetHeight,
+        document.documentElement.clientHeight,
+        document.documentElement.scrollHeight,
+        document.documentElement.offsetHeight
+      );
+
+      const scrollPercent = Math.round((scrollTop / (documentHeight - windowHeight)) * 100);
+
+      // Track new thresholds
+      thresholds.forEach(threshold => {
+        if (scrollPercent >= threshold && !trackedThresholds.has(threshold)) {
+          trackedThresholds.add(threshold);
+          trackEvent({
+            event: 'scroll_depth',
+            category: 'engagement',
+            action: 'scroll',
+            label: `${threshold}%`,
+            value: threshold,
+          });
         }
       });
-    } catch (error) {
-      // Silently handle scroll errors (e.g., during navigation)
-      console.warn("[Analytics] Scroll tracking error:", error);
-    }
-  }, 100); // Debounce 100ms
+
+      maxScroll = Math.max(maxScroll, scrollPercent);
+    };
+
+    // Throttle scroll events
+    let ticking = false;
+    const throttledScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          handleScroll();
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    window.addEventListener('scroll', throttledScroll, { passive: true });
+    return () => window.removeEventListener('scroll', throttledScroll);
+  }, [thresholds]);
 }
 
-// Hook para tracking de tempo na página (SSR safe)
-export function useTimeOnPageTracking() {
+/**
+ * Hook for tracking time spent on page
+ */
+export function useTimeTracking(pageName?: string): void {
   useEffect(() => {
-    // SSR safety: only run on client-side
-    if (typeof window === "undefined") return;
+    if (!isBrowser()) return;
 
     const startTime = Date.now();
-    let hasTracked = false;
 
     const trackTime = () => {
-      if (hasTracked) return;
-
-      const timeSpent = Math.floor((Date.now() - startTime) / 1000);
-      // Track após 30 segundos, 1 minuto, 2 minutos, 5 minutos
-      const milestones = [30, 60, 120, 300];
-
-      milestones.forEach((milestone) => {
-        if (timeSpent >= milestone && !hasTracked) {
-          analytics.trackTimeOnPage(milestone);
-          hasTracked = true;
-        }
+      const timeSpent = Math.round((Date.now() - startTime) / 1000);
+      trackEvent({
+        event: 'time_spent',
+        category: 'engagement',
+        action: 'time',
+        label: pageName || 'current_page',
+        value: timeSpent,
       });
     };
 
-    const interval = setInterval(trackTime, 10000); // Check every 10 seconds
-    return () => clearInterval(interval);
-  }, []);
-}
+    // Track time on page unload
+    const handleBeforeUnload = () => {
+      trackTime();
+    };
 
-// Hook para tracking de CTA clicks
-export function useCtaTracking(ctaText: string, location: string) {
-  const handleClick = () => {
-    try {
-      analytics.trackCtaClick(ctaText, location);
-    } catch (error) {
-      // Silently fail in production to not break user experience
-      // In tests, we want to know about analytics failures
-      if (process.env.NODE_ENV === "test") {
-        throw error;
+    // Track time on visibility change
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        trackTime();
       }
-      console.error("Analytics error:", error);
-    }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      trackTime();
+    };
+  }, [pageName]);
+}
+
+/**
+ * Hook for tracking form interactions
+ */
+export function useFormAnalytics(formName: string) {
+  const { track } = useAnalyticsEvent();
+
+  const trackFormStart = useCallback(() => {
+    track({
+      event: 'form_start',
+      category: 'form',
+      action: 'start',
+      label: formName,
+    });
+  }, [track, formName]);
+
+  const trackFormSubmit = useCallback((success: boolean) => {
+    track({
+      event: 'form_submit',
+      category: 'form',
+      action: success ? 'success' : 'error',
+      label: formName,
+      value: success ? 1 : 0,
+    });
+  }, [track, formName]);
+
+  const trackFormField = useCallback((fieldName: string, action: 'focus' | 'blur' | 'change') => {
+    track({
+      event: 'form_field',
+      category: 'form',
+      action,
+      label: `${formName}_${fieldName}`,
+    });
+  }, [track, formName]);
+
+  return {
+    trackFormStart,
+    trackFormSubmit,
+    trackFormField,
   };
-
-  return handleClick;
 }
 
-// Hook para tracking de experimentos A/B (SSR safe)
-export function useExperimentTracking(experimentId: string, variant: string) {
-  useEffect(() => {
-    // SSR safety: only run on client-side
-    if (typeof window === "undefined") return;
+/**
+ * SSR-safe analytics initialization
+ */
+export function initializeAnalytics(config: Partial<AnalyticsConfig> = {}): void {
+  if (!isBrowser()) return;
 
-    analytics.trackExperiment(experimentId, variant, "impression");
-  }, [experimentId, variant]);
+  // Merge config
+  Object.assign(DEFAULT_CONFIG, config);
+
+  logAnalytics('initialized', DEFAULT_CONFIG);
 }
 
-// Hook para tracking de formulários
-export function useFormTracking(formName: string) {
-  const trackSubmit = (success: boolean, error?: string) => {
-    analytics.trackSubmit(formName, success, error);
-  };
-
-  return trackSubmit;
-}
-
-// Hook principal que combina todos os trackings
-export function useAnalytics() {
-  useScrollTracking();
-  useTimeOnPageTracking();
-
-  // Inicializar analytics se consentimento foi dado
-  useEffect(() => {
-    analytics.init();
-  }, []);
+// Type declarations for global objects
+declare global {
+  interface Window {
+    dataLayer?: any[];
+  }
 }

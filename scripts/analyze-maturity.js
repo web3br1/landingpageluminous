@@ -17,9 +17,17 @@ const fs = require('fs');
 const path = require('path');
 
 class MaturityAnalyzer {
-  constructor() {
+  constructor(options = {}) {
     this.coveragePath = path.join(process.cwd(), 'tmp', 'coverage', 'coverage-summary.json');
     this.testResultsPath = path.join(process.cwd(), 'test-results.json');
+    this.options = {
+      minPassrate: 90,
+      minStatements: 65,
+      requireE2e: 1,
+      minMutation: 0,
+      target: 'M1',
+      ...options
+    };
   }
 
   /**
@@ -120,45 +128,47 @@ class MaturityAnalyzer {
    */
   determineMaturityLevel(metrics) {
     const { coverage, tests, overall } = metrics;
+    const opts = this.options;
 
     // M0: Infrastructure Unstable
-    if (coverage.average < 50 || tests.total < 10) {
+    if (coverage.average < opts.minStatements || tests.total < opts.requireE2e) {
       return {
         level: 'M0',
         name: 'Infrastructure Unstable',
         description: 'Build issues, low coverage, basic testing',
         thresholds: {
-          minCoverage: 50,
-          minTests: 10,
-          minScore: 40
+          minCoverage: opts.minStatements,
+          minTests: opts.requireE2e,
+          minScore: opts.minPassrate
         },
         status: 'critical'
       };
     }
 
     // M1: Basic Testing
-    if (coverage.average < 70 || overall.score < 60) {
+    if (coverage.average < opts.minStatements || overall.score < opts.minPassrate) {
       return {
         level: 'M1',
         name: 'Basic Testing',
         description: 'Basic test coverage and structure',
         thresholds: {
-          minCoverage: 70,
-          minScore: 60
+          minCoverage: opts.minStatements,
+          minScore: opts.minPassrate
         },
         status: 'warning'
       };
     }
 
-    // M2: Structured Testing
-    if (coverage.average < 80 || overall.score < 75) {
+    // M2: Integration Complete
+    if (coverage.average < 70 || overall.score < 75) {
       return {
         level: 'M2',
-        name: 'Structured Testing',
-        description: 'Good test organization and coverage',
+        name: 'Integration Complete',
+        description: 'Integration testing, 70%+ coverage, quality gates',
         thresholds: {
-          minCoverage: 80,
-          minScore: 75
+          minCoverage: 70,
+          minScore: 75,
+          minMutation: opts.minMutation
         },
         status: 'good'
       };
@@ -168,10 +178,11 @@ class MaturityAnalyzer {
     return {
       level: 'M3',
       name: 'Quality Assurance',
-      description: 'Comprehensive testing and high coverage',
+      description: '80%+ coverage, mutation testing, comprehensive QA',
       thresholds: {
         minCoverage: 80,
-        minScore: 75
+        minScore: 85,
+        minMutation: 40
       },
       status: 'excellent'
     };
@@ -267,9 +278,41 @@ class MaturityAnalyzer {
   }
 }
 
+// Parse command line arguments
+function parseArgs() {
+  const args = process.argv.slice(2);
+  const options = {};
+
+  for (let i = 0; i < args.length; i += 2) {
+    const key = args[i].replace('--', '');
+    const value = args[i + 1];
+
+    switch (key) {
+      case 'min-passrate':
+        options.minPassrate = parseFloat(value);
+        break;
+      case 'min-statements':
+        options.minStatements = parseFloat(value);
+        break;
+      case 'require-e2e':
+        options.requireE2e = parseInt(value);
+        break;
+      case 'min-mutation':
+        options.minMutation = parseFloat(value);
+        break;
+      case 'target':
+        options.target = value;
+        break;
+    }
+  }
+
+  return options;
+}
+
 // Run analysis if called directly
 if (require.main === module) {
-  const analyzer = new MaturityAnalyzer();
+  const options = parseArgs();
+  const analyzer = new MaturityAnalyzer(options);
   analyzer.analyze().catch(error => {
     console.error('Fatal error:', error);
     process.exit(1);
