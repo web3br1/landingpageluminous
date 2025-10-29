@@ -58,7 +58,7 @@ export class TDDTrends {
 
       fs.writeFileSync(this.historyFile, JSON.stringify(history, null, 2))
     } catch (error) {
-      console.warn('Error saving to history:', error.message)
+      console.warn('Error saving to history:', error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -70,7 +70,7 @@ export class TDDTrends {
       const content = fs.readFileSync(this.historyFile, 'utf8')
       return JSON.parse(content)
     } catch (error) {
-      console.warn('Error loading history:', error.message)
+      console.warn('Error loading history:', error instanceof Error ? error.message : String(error))
       return []
     }
   }
@@ -242,7 +242,7 @@ export class TDDTrends {
       fs.writeFileSync(this.historyFile, JSON.stringify(filtered, null, 2))
       console.log(`Histórico limpo: ${history.length - filtered.length} entradas removidas`)
     } catch (error) {
-      console.warn('Error cleaning history:', error.message)
+      console.warn('Error cleaning history:', error instanceof Error ? error.message : String(error))
     }
   }
 

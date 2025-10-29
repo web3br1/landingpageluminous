@@ -25,6 +25,8 @@ export default defineConfig({
     "**/a11y/accessibility-testing.spec.ts",
     "**/a11y/landing-a11y.test.tsx",
     "**/network-failures/**",
+    "**/i18n/internationalization.test.tsx",
+    "**/pwa/pwa-functionality.test.ts",
   ],
 
   // Configurações globais

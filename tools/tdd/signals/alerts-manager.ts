@@ -191,22 +191,22 @@ export class AlertsManager {
       }
     }
 
-    // Tempo de execução longo
-    const executionTime = results.executionTime || 0
-    if (executionTime > 60000) { // 1 minuto
-      this.addAlert({
-        id: 'slow-analysis-time',
-        level: 'warning',
-        category: 'performance',
-        title: 'Análise muito lenta',
-        description: `Análise levou ${Math.round(executionTime / 1000)}s - acima do recomendado`,
-        impact: 'Feedback lento para desenvolvedores, possível gargalo em CI',
-        recommendation: 'Otimizar componentes ou implementar cache mais agressivo',
-        evidence: { executionTime, threshold: 60000 },
-        actionable: true,
-        tags: ['performance', 'ci', 'feedback']
-      })
-    }
+    // Tempo de execução longo - TODO: Add executionTime to TDDResults
+    // const executionTime = results.executionTime || 0
+    // if (executionTime > 60000) { // 1 minuto
+    //   this.addAlert({
+    //     id: 'slow-analysis-time',
+    //     level: 'warning',
+    //     category: 'performance',
+    //     title: 'Análise muito lenta',
+    //     description: `Análise levou ${Math.round(executionTime / 1000)}s - acima do recomendado`,
+    //     impact: 'Feedback lento para desenvolvedores, possível gargalo em CI',
+    //     recommendation: 'Otimizar componentes ou implementar cache mais agressivo',
+    //     evidence: { executionTime, threshold: 60000 },
+    //     actionable: true,
+    //     tags: ['performance', 'ci', 'feedback']
+    //   })
+    // }
   }
 
   /**
@@ -214,7 +214,7 @@ export class AlertsManager {
    */
   private checkCoverageAlerts(results: TDDResults): void {
     // Cobertura muito baixa para maturidade
-    const coverage = results.scores.coverage || 0
+    const coverage = results.engine?.scores?.coverage || 0
     const maturity = results.maturity.level
 
     const expectedMin = { M0: 0, M1: 10, M2: 50, M3: 80 }[maturity] || 0

@@ -423,7 +423,12 @@ export class StructuredReporter {
         estimatedDuration: result.subset.totalEstimatedDuration,
         categories: result.subset.coverage
       },
-      results: result.summary,
+      results: {
+        ...result.summary,
+        successRate: result.reliability.successRate,
+        averageDuration: 0,
+        flakyTests: []
+      },
       reliability: {
         score: Math.round(result.reliability.successRate),
         trend: 'stable', // TODO: calcular baseado em histórico
@@ -443,7 +448,7 @@ export class StructuredReporter {
 
     let source: 'real' | 'proxy' | 'hybrid' = 'proxy'
     let overall = 0
-    const byFile: StructuredReport['coverage']['byFile'] = []
+    const byFile: any[] = []
 
     if (engineCoverage !== undefined && proxyCoverage !== undefined) {
       source = 'hybrid'
@@ -457,7 +462,7 @@ export class StructuredReporter {
     }
 
     // Adiciona arquivos se disponíveis
-    if (coverageProxy?.byFile) {
+    if (coverageProxy?.byFile && Array.isArray(coverageProxy.byFile)) {
       coverageProxy.byFile.slice(0, 10).forEach(file => {
         byFile.push({
           file: file.file,
@@ -526,7 +531,7 @@ export class StructuredReporter {
         return JSON.parse(content)
       }
     } catch (error) {
-      console.warn('Error loading structured report:', error.message)
+      console.warn('Error loading structured report:', error instanceof Error ? error.message : String(error))
     }
     return null
   }

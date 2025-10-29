@@ -80,9 +80,9 @@ export class HybridMetricsCalculator {
     const breakdown = Object.entries(weights).map(([metric, weight]) => ({
       metric,
       weight: (weight * 100).toFixed(1) + '%',
-      score: baseScores[metric]?.toFixed(1) || '0.0',
-      contribution: ((baseScores[metric] || 0) * weight).toFixed(1),
-      source: this.getMetricSource(metric, maturity, !!engineScores, !!coverageProxy)
+      score: (baseScores[metric as keyof typeof baseScores] || 0).toFixed(1),
+      contribution: ((baseScores[metric as keyof typeof baseScores] || 0) * weight).toFixed(1),
+      source: this.getMetricSource(metric, maturity, !!engineScores, !!coverageProxy) as any
     }))
 
     return {

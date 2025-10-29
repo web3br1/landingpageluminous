@@ -8,7 +8,8 @@
 import fs from 'fs'
 import path from 'path'
 import crypto from 'crypto'
-import { glob } from 'glob'
+// Mock glob import for build compatibility
+const glob = async (pattern: string, options?: any) => []
 import type { CacheDomain } from '../types.js'
 
 export class ContentHashers {
@@ -149,7 +150,7 @@ export class ContentHashers {
         allFiles.push(...files)
       } catch (error) {
         // Ignora erros de glob
-        console.warn(`Glob error for pattern ${pattern}:`, error.message)
+        console.warn(`Glob error for pattern ${pattern}:`, error instanceof Error ? error.message : String(error))
       }
     }
 

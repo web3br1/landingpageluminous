@@ -1107,7 +1107,7 @@ export class RouteBasedLazyLoading {
   /**
    * Get cache size
    */
-  static get getCacheSize(): number {
+  static getCacheSize(): number {
     return this.componentCache.size;
   }
 }

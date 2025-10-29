@@ -89,7 +89,7 @@ export class ABTestingManager {
         return JSON.parse(content)
       }).filter(exp => exp.status === 'active')
     } catch (error) {
-      console.warn('Error loading experiments:', error.message)
+      console.warn('Error loading experiments:', error instanceof Error ? error.message : String(error))
       this.activeExperiments = []
     }
   }
@@ -142,15 +142,16 @@ export class ABTestingManager {
 
     // Métricas simples para exemplo
     const score = results.scores.finalScore
-    const executionTime = results.executionTime || 0
+    // const executionTime = results.executionTime || 0
     const criticalCount = results.classifier.redTests?.length || 0
 
     // Atualizar médias
     const oldAvgScore = variant.metrics.avgScore
     const oldAvgTime = variant.metrics.avgExecutionTime
+    // const executionTime = 0 // TODO: Add to TDDResults type
 
     variant.metrics.avgScore = (oldAvgScore * (variant.sampleSize - 1) + score) / variant.sampleSize
-    variant.metrics.avgExecutionTime = (oldAvgTime * (variant.sampleSize - 1) + executionTime) / variant.sampleSize
+    // variant.metrics.avgExecutionTime = (oldAvgTime * (variant.sampleSize - 1) + executionTime) / variant.sampleSize
     variant.metrics.criticalIssues = (variant.metrics.criticalIssues * (variant.sampleSize - 1) + criticalCount) / variant.sampleSize
 
     // Conversão: score >= 70 é considerado sucesso

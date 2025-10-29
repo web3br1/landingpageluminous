@@ -127,7 +127,7 @@ export class CacheManager {
           reason = 'No cache entry'
         }
       } catch (error) {
-        reason = `Cache error: ${error.message}`
+        reason = `Cache error: ${error instanceof Error ? error.message : String(error)}`
       }
 
       decisions.push({
@@ -155,7 +155,7 @@ export class CacheManager {
           }
         }
       } catch (error) {
-        decisions.forEach(d => d.reason = `Load error: ${error.message}`)
+        decisions.forEach(d => d.reason = `Load error: ${error instanceof Error ? error.message : String(error)}`)
       }
     }
 
@@ -201,7 +201,7 @@ export class CacheManager {
       // Limpa cache antigo (LRU)
       this.cleanupLRU()
     } catch (error) {
-      console.warn('Cache write error:', error.message)
+      console.warn('Cache write error:', error instanceof Error ? error.message : String(error))
     }
 
     const domainsHit = decisions.filter(d => d.hit).length
@@ -254,7 +254,7 @@ export class CacheManager {
         fs.unlinkSync(domainCachePath)
       }
     } catch (error) {
-      console.warn(`Cache invalidation error for ${domain}:`, error.message)
+      console.warn(`Cache invalidation error for ${domain}:`, error instanceof Error ? error.message : String(error))
     }
   }
 
@@ -272,7 +272,7 @@ export class CacheManager {
         }
       })
     } catch (error) {
-      console.warn('Cache clear error:', error.message)
+      console.warn('Cache clear error:', error instanceof Error ? error.message : String(error))
     }
   }
 

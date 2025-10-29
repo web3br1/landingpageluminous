@@ -7,12 +7,12 @@
 
 import fs from 'fs'
 import path from 'path'
-import type { TDDResults, SafeTestResult, AlertSummary } from '../types.js'
+import type { TDDResults, SafeTestResult } from '../types'
 
 export interface DashboardData {
   results: TDDResults
   safeTests?: SafeTestResult
-  alerts: AlertSummary
+  alerts: any
   trends: any[] // Histórico de execuções
   generatedAt: string
 }
@@ -107,7 +107,7 @@ export class DashboardGenerator {
             </div>
             <div class="detail-item">
                 <span class="label">Tempo de Análise:</span>
-                <span class="value">${Math.round((data.results.executionTime || 0) / 1000)}s</span>
+                <span class="value">N/A s</span>
             </div>
         </div>
     </div>`
@@ -123,12 +123,10 @@ export class DashboardGenerator {
     <div class="card quality-metrics">
         <h3>🎯 Métricas de Qualidade</h3>
         <div class="metrics-grid">
-            ${this.buildMetricBar('Isolation', scores.isolation || 0, 'Testes isolados e confiáveis')}
-            ${this.buildMetricBar('Structure', scores.structure || 0, 'Organização do código')}
-            ${this.buildMetricBar('Naming', scores.naming || 0, 'Qualidade de nomenclatura')}
-            ${this.buildMetricBar('Coverage', scores.coverage || 0, 'Cobertura de testes')}
-            ${this.buildMetricBar('Performance', scores.performance || 0, 'Performance do sistema')}
-            ${this.buildMetricBar('Complexity', scores.complexity || 0, 'Complexidade do código')}
+            ${this.buildMetricBar('Score Final', scores.finalScore || 0, 'Pontuação geral')}
+            ${this.buildMetricBar('Maturity', scores.maturity === 'M3' ? 100 : scores.maturity === 'M2' ? 75 : scores.maturity === 'M1' ? 50 : 25, 'Nível de maturidade')}
+            ${this.buildMetricBar('Weights', Object.keys(scores.weights || {}).length * 10, 'Métricas ponderadas')}
+            ${this.buildMetricBar('Breakdown', scores.breakdown?.length || 0, 'Análise detalhada')}
         </div>
     </div>`
   }
@@ -172,7 +170,7 @@ export class DashboardGenerator {
   /**
    * Constrói lista de alertas
    */
-  private buildAlertsList(alerts: AlertSummary): string {
+  private buildAlertsList(alerts: any): string {
     const allAlerts = [...alerts.critical, ...alerts.warnings.slice(0, 5)]
 
     return `
@@ -194,7 +192,7 @@ export class DashboardGenerator {
    * Constrói gráfico de cobertura
    */
   private buildCoverageChart(data: DashboardData): string {
-    const coverage = data.results.scores.coverage || 0
+    const coverage = data.results.engine?.scores?.coverage || 0
     const hasRealCoverage = data.results.engine?.scores?.coverage !== undefined
 
     return `
@@ -265,8 +263,8 @@ export class DashboardGenerator {
       </div>`
     }
 
-    const successRate = safeTests.results.successRate
-    const flakyCount = safeTests.results.flakyTests.length
+    const successRate = safeTests.results.filter(r => r.passed).length / safeTests.results.length * 100
+    const flakyCount = safeTests.results.filter(r => r.flaky).length
 
     return `
     <div class="card safe-tests-panel">
@@ -274,7 +272,7 @@ export class DashboardGenerator {
         <div class="safe-tests-summary">
             <div class="safe-tests-metric">
                 <span class="metric-label">Testes no Subset:</span>
-                <span class="metric-value">${safeTests.subset.totalTests}</span>
+                <span class="metric-value">${safeTests.subset.tests.length}</span>
             </div>
             <div class="safe-tests-metric">
                 <span class="metric-label">Taxa de Sucesso:</span>
@@ -286,7 +284,7 @@ export class DashboardGenerator {
             </div>
             <div class="safe-tests-metric">
                 <span class="metric-label">Tempo Estimado:</span>
-                <span class="metric-value">${Math.round(safeTests.subset.estimatedDuration / 1000)}s</span>
+                <span class="metric-value">${Math.round(safeTests.subset.totalEstimatedDuration / 1000)}s</span>
             </div>
         </div>
     </div>`

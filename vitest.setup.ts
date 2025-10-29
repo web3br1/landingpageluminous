@@ -2,57 +2,63 @@ import * as React from "react";
 import { beforeEach, afterEach } from "vitest";
 import "@testing-library/jest-dom";
 
-// Canvas API support for tests
-import { createCanvas } from "canvas";
-
-// Configure Canvas API globally for tests
-const Canvas = createCanvas.Canvas;
-const Image = createCanvas.Image;
-const CanvasRenderingContext2D = createCanvas.CanvasRenderingContext2D;
-
-// Set up Canvas API on global object
-global.HTMLCanvasElement = Canvas as any;
-global.Canvas = Canvas as any;
-global.Image = Image as any;
-global.CanvasRenderingContext2D = CanvasRenderingContext2D as any;
-
-// Configure canvas prototype methods
+// Canvas API support for tests - mocked to avoid native dependencies
+// Mock canvas globally to prevent native module loading issues
 if (typeof window !== "undefined") {
-  // Override jsdom window with canvas support
+  // Create mock canvas classes
+  class MockCanvas {
+    width = 300;
+    height = 150;
+    getContext(type: string) {
+      if (type === "2d") {
+        return {
+          fillRect: vi.fn(),
+          clearRect: vi.fn(),
+          getImageData: vi.fn(() => ({ data: new Uint8ClampedArray(1200) })),
+          putImageData: vi.fn(),
+          createImageData: vi.fn(() => ({ data: new Uint8ClampedArray(1200) })),
+          setTransform: vi.fn(),
+          drawImage: vi.fn(),
+          save: vi.fn(),
+          restore: vi.fn(),
+          beginPath: vi.fn(),
+          moveTo: vi.fn(),
+          lineTo: vi.fn(),
+          closePath: vi.fn(),
+          stroke: vi.fn(),
+          fill: vi.fn(),
+        };
+      }
+      return null;
+    }
+    toDataURL() {
+      return "data:image/png;base64,mock";
+    }
+  }
+
+  class MockImage {
+    src = "";
+    onload: (() => void) | null = null;
+    onerror: (() => void) | null = null;
+  }
+
+  // Set up Canvas API on global object
   Object.defineProperty(window, "HTMLCanvasElement", {
-    value: Canvas,
+    value: MockCanvas,
     writable: true,
   });
   Object.defineProperty(window, "Canvas", {
-    value: Canvas,
+    value: MockCanvas,
     writable: true,
   });
   Object.defineProperty(window, "Image", {
-    value: Image,
+    value: MockImage,
     writable: true,
   });
   Object.defineProperty(window, "CanvasRenderingContext2D", {
-    value: CanvasRenderingContext2D,
+    value: {},
     writable: true,
   });
-
-  // Ensure canvas getContext method works
-  if (
-    window.HTMLCanvasElement &&
-    !window.HTMLCanvasElement.prototype.getContext
-  ) {
-    window.HTMLCanvasElement.prototype.getContext = function (type: string) {
-      if (type === "2d") {
-        try {
-          return createCanvas.createCanvas(300, 150).getContext("2d");
-        } catch (e) {
-          // Fallback: return null if canvas creation fails
-          return null;
-        }
-      }
-      return null;
-    };
-  }
 }
 
 // ===== FRENTE A: INFRA DE TESTE =====
