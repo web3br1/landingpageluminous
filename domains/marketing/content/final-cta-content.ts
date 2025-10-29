@@ -6,8 +6,14 @@ export interface FinalCtaContent {
   subheadline: string;
   primaryButton: {
     text: string;
-    link: string;
-  };
+    link: string;,
+    tracking: {
+      section: "final-cta",
+      sectionId: "final-cta",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    };
   secondaryButton?: {
     text: string;
     link: string;
@@ -23,11 +29,23 @@ export const finalCtaContentVariants: Record<string, FinalCtaContent> = {
       "Junte-se a milhares de empresas que já descobriram o poder da inteligência artificial aplicada aos negócios.",
     primaryButton: {
       text: "Começar Grátis",
-      link: "/signup",
+      link: "/signup",,
+    tracking: {
+      section: "final-cta",
+      sectionId: "final-cta",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     secondaryButton: {
       text: "Agendar Demo",
-      link: "/demo",
+      link: "/demo",,
+    tracking: {
+      section: "final-cta",
+      sectionId: "final-cta",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     urgencyText: "Trial gratuito por 14 dias • Sem cartão de crédito",
   },
@@ -38,11 +56,23 @@ export const finalCtaContentVariants: Record<string, FinalCtaContent> = {
       "Soluções robustas e escaláveis para grandes organizações. Suporte dedicado e conformidade total.",
     primaryButton: {
       text: "Falar com Especialista",
-      link: "/enterprise-demo",
+      link: "/enterprise-demo",,
+    tracking: {
+      section: "final-cta",
+      sectionId: "final-cta",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     secondaryButton: {
       text: "Ver Casos de Sucesso",
-      link: "/cases",
+      link: "/cases",,
+    tracking: {
+      section: "final-cta",
+      sectionId: "final-cta",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     urgencyText: "Implementação completa em 30 dias",
   },

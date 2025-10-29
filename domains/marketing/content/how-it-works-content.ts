@@ -24,8 +24,14 @@ export const howItWorksContentVariants: Record<string, HowItWorksContent> = {
           "OCR inteligente para documentos",
           "Processamento automático de dados",
         ],
-        order: 1,
-      },
+        order: 1,,
+    tracking: {
+      section: "how-it-works",
+      sectionId: "how-it-works",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         step: 2,
         icon: "MessageSquare",
@@ -75,8 +81,14 @@ export const howItWorksContentVariants: Record<string, HowItWorksContent> = {
           "Sincronização em tempo real",
           "Backup automático de dados",
         ],
-        order: 1,
-      },
+        order: 1,,
+    tracking: {
+      section: "how-it-works",
+      sectionId: "how-it-works",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         step: 2,
         icon: "Brain",
@@ -127,8 +139,14 @@ export const howItWorksContentVariants: Record<string, HowItWorksContent> = {
 
 export const howItWorksConfiguration: {
   variants: HowItWorksVariant[];
-  defaultVariant: string;
-} = {
+  defaultVariant: string;,
+    tracking: {
+      section: "how-it-works",
+      sectionId: "how-it-works",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    } = {
   variants: [
     {
       id: "default",

@@ -19,8 +19,14 @@ export const pricingContentVariants: Record<string, PricingContent> = {
         price: {
           monthly: 99,
           annual: 79,
-          currency: "BRL",
-        },
+          currency: "BRL",,
+    tracking: {
+      section: "pricing",
+      sectionId: "pricing",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
         features: [
           { name: "Até 5 usuários", included: true },
           { name: "10GB de armazenamento", included: true },
@@ -40,8 +46,14 @@ export const pricingContentVariants: Record<string, PricingContent> = {
         price: {
           monthly: 299,
           annual: 239,
-          currency: "BRL",
-        },
+          currency: "BRL",,
+    tracking: {
+      section: "pricing",
+      sectionId: "pricing",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
         features: [
           { name: "Até 25 usuários", included: true },
           { name: "100GB de armazenamento", included: true },
@@ -63,8 +75,14 @@ export const pricingContentVariants: Record<string, PricingContent> = {
         price: {
           monthly: 999,
           annual: 799,
-          currency: "BRL",
-        },
+          currency: "BRL",,
+    tracking: {
+      section: "pricing",
+      sectionId: "pricing",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
         features: [
           { name: "Usuários ilimitados", included: true },
           { name: "Armazenamento ilimitado", included: true },
@@ -79,7 +97,13 @@ export const pricingContentVariants: Record<string, PricingContent> = {
     ],
     billingToggle: {
       enabled: true,
-      defaultPeriod: "monthly",
+      defaultPeriod: "monthly",,
+    tracking: {
+      section: "pricing",
+      sectionId: "pricing",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     highlightPopular: true,
     disclaimer:

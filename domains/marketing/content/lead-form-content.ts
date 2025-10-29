@@ -16,8 +16,14 @@ export const leadFormContentVariants: Record<string, LeadFormContent> = {
         label: "Nome completo",
         type: "text",
         required: true,
-        placeholder: "Seu nome completo",
-      },
+        placeholder: "Seu nome completo",,
+    tracking: {
+      section: "lead-form",
+      sectionId: "lead-form",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         name: "email",
         label: "E-mail profissional",
@@ -49,7 +55,13 @@ export const leadFormContentVariants: Record<string, LeadFormContent> = {
     ],
     submitButton: {
       text: "Enviar mensagem",
-      // loadingText: "Enviando..."
+      // loadingText: "Enviando...",
+    tracking: {
+      section: "lead-form",
+      sectionId: "lead-form",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     privacyText: "Seus dados estão seguros conosco. Não enviamos spam.",
     successMessage:
@@ -65,8 +77,14 @@ export const leadFormContentVariants: Record<string, LeadFormContent> = {
         label: "Nome completo",
         type: "text",
         required: true,
-        placeholder: "Seu nome completo",
-      },
+        placeholder: "Seu nome completo",,
+    tracking: {
+      section: "lead-form",
+      sectionId: "lead-form",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         name: "email",
         label: "E-mail profissional",
@@ -103,7 +121,13 @@ export const leadFormContentVariants: Record<string, LeadFormContent> = {
     ],
     submitButton: {
       text: "Agendar demonstração",
-      // loadingText: "Agendando..."
+      // loadingText: "Agendando...",
+    tracking: {
+      section: "lead-form",
+      sectionId: "lead-form",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     privacyText:
       "Ao agendar, você concorda em receber comunicações sobre nossa demonstração.",

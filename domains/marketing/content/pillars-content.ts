@@ -14,8 +14,14 @@ export const pillarsContentVariants: Record<string, PillarsContent> = {
         title: "Segurança e Confiabilidade",
         description:
           "Seus dados estão protegidos com criptografia de ponta a ponta e infraestrutura enterprise-grade.",
-        order: 1,
-      },
+        order: 1,,
+    tracking: {
+      section: "pillars",
+      sectionId: "pillars",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         icon: "Zap",
         title: "Performance e Velocidade",
@@ -49,8 +55,14 @@ export const pillarsContentVariants: Record<string, PillarsContent> = {
         title: "Precisão Analítica",
         description:
           "Algoritmos avançados garantem insights precisos e acionáveis para tomada de decisão.",
-        order: 1,
-      },
+        order: 1,,
+    tracking: {
+      section: "pillars",
+      sectionId: "pillars",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         icon: "Rocket",
         title: "Agilidade Empresarial",

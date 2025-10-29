@@ -35,8 +35,14 @@ export const faqContentVariants: Record<string, FaqContent> = {
         question: "Como funciona a automação de relatórios?",
         answer:
           "Nossa IA analisa seus dados automaticamente e gera relatórios executivos personalizados. Você conecta suas fontes de dados uma vez, e o sistema cuida do resto - atualização em tempo real, alertas inteligentes e dashboards prontos para apresentação.",
-        category: "funcionalidades",
-      },
+        category: "funcionalidades",,
+    tracking: {
+      section: "faq",
+      sectionId: "faq",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         question: "Quais tipos de dados posso conectar?",
         answer:
@@ -86,8 +92,14 @@ export const faqContentVariants: Record<string, FaqContent> = {
         question: "Suportam compliance SOX e auditorias?",
         answer:
           "Sim. Nossa plataforma é certificada SOC 2 Type II, atende requisitos SOX e facilita auditorias com logs completos, versionamento de dados e controles de acesso granulares.",
-        category: "compliance",
-      },
+        category: "compliance",,
+    tracking: {
+      section: "faq",
+      sectionId: "faq",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       {
         question: "Como funciona a integração com sistemas legados?",
         answer:

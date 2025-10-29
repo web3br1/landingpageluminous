@@ -49,8 +49,14 @@ export interface DemoContent {
   tourSteps?: DemoTourStep[];
   features: {
     title: string;
-    items: string[];
-  };
+    items: string[];,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    };
   stats?: {
     label: string;
     value: string;
@@ -58,7 +64,13 @@ export interface DemoContent {
   cta: {
     primary: {
       text: string;
-      link: string;
+      link: string;,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     };
     secondary?: {
       text: string;
@@ -86,7 +98,13 @@ export const demoContentVariants: Record<string, DemoContent> = {
       poster: "/images/demo-poster.jpg",
       title: "Demonstração Completa da Luminaris",
       duration: "3:24",
-      format: "mp4",
+      format: "mp4",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     screenshots: [
       {
@@ -100,8 +118,14 @@ export const demoContentVariants: Record<string, DemoContent> = {
           y: 30,
           label: "Filtros Avançados",
           description:
-            "Personalize visualizações por período, segmento ou métrica",
-        },
+            "Personalize visualizações por período, segmento ou métrica",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       },
       {
         src: "/images/screenshots/screenshot-reports.svg",
@@ -125,7 +149,13 @@ export const demoContentVariants: Record<string, DemoContent> = {
         "Alertas inteligentes por email/SMS",
         "Compartilhamento seguro com stakeholders",
         "Análises preditivas avançadas",
-      ],
+      ],,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     stats: [
       { label: "Tempo médio de implementação", value: "2 dias" },
@@ -135,19 +165,37 @@ export const demoContentVariants: Record<string, DemoContent> = {
     cta: {
       primary: {
         text: "Assistir Demo Completa",
-        link: "/demo",
-      },
+        link: "/demo",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       secondary: {
         text: "Agendar Consultoria Gratuita",
-        link: "/consultoria",
-      },
+        link: "/consultoria",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
     },
     testimonial: {
       quote:
         "A demo nos convenceu completamente. Implementamos em uma semana e já recuperamos o investimento.",
       author: "Roberto Fernandes",
       role: "CTO",
-      company: "TechStart Brasil",
+      company: "TechStart Brasil",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
   },
 
@@ -162,7 +210,13 @@ export const demoContentVariants: Record<string, DemoContent> = {
       title: "Tour Completo da Plataforma",
       duration: "5:47",
       format: "youtube",
-      videoId: "demo-video-id",
+      videoId: "demo-video-id",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     features: {
       title: "Recursos demonstrados:",
@@ -172,13 +226,25 @@ export const demoContentVariants: Record<string, DemoContent> = {
         "Dashboards responsivos",
         "Relatórios exportáveis",
         "Suporte multilíngue",
-      ],
+      ],,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     cta: {
       primary: {
         text: "Assistir no YouTube",
-        link: "https://youtube.com/watch?v=demo-video-id",
-      },
+        link: "https://youtube.com/watch?v=demo-video-id",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
     },
   },
 
@@ -196,12 +262,24 @@ export const demoContentVariants: Record<string, DemoContent> = {
         screenshot: {
           src: "/images/screenshots/screenshot-chat.svg",
           alt: "Tela de conexão de fontes de dados",
-          title: "Conectores Universais",
-        },
+          title: "Conectores Universais",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
         cta: {
           text: "Ver conectores disponíveis",
-          link: "/integrations",
-        },
+          link: "/integrations",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       },
       {
         title: "2. Crie dashboards personalizados",
@@ -210,8 +288,14 @@ export const demoContentVariants: Record<string, DemoContent> = {
         screenshot: {
           src: "/images/screenshots/screenshot-dashboard.svg",
           alt: "Interface de construção de dashboards",
-          title: "Builder Visual",
-        },
+          title: "Builder Visual",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       },
       {
         title: "3. Configure alertas inteligentes",
@@ -220,8 +304,14 @@ export const demoContentVariants: Record<string, DemoContent> = {
         screenshot: {
           src: "/images/screenshots/screenshot-reports.svg",
           alt: "Configuração de alertas e notificações",
-          title: "Alertas Inteligentes",
-        },
+          title: "Alertas Inteligentes",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       },
       {
         title: "4. Compartilhe insights",
@@ -230,8 +320,14 @@ export const demoContentVariants: Record<string, DemoContent> = {
         screenshot: {
           src: "/images/screenshots/screenshot-chat.svg",
           alt: "Opções de compartilhamento e permissões",
-          title: "Compartilhamento Seguro",
-        },
+          title: "Compartilhamento Seguro",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       },
     ],
     features: {
@@ -242,17 +338,35 @@ export const demoContentVariants: Record<string, DemoContent> = {
         "Drill-down interativo",
         "Export para PDF/PNG",
         "Integração com Power BI/Tableau",
-      ],
+      ],,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
     },
     cta: {
       primary: {
         text: "Iniciar Tour Interativo",
-        link: "/tour",
-      },
+        link: "/tour",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
       secondary: {
         text: "Agendar Demo Personalizada",
-        link: "/demo-personalizada",
-      },
+        link: "/demo-personalizada",,
+    tracking: {
+      section: "demo",
+      sectionId: "demo",
+      eventCategory: "landing_page",
+      eventAction: "section_interaction",
+    }
+    },
     },
   },
 };
