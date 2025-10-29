@@ -184,7 +184,7 @@
     "msw": "^2.11.6",
     "typescript": "5.9.3",
     "vercel": "^48.6.0",
-    "vitest": "^4.0.1",
+    "vitest": "^4.0.4",
     "wait-on": "^8.0.5",
     "web-vitals": "^5.1.0"
   },
