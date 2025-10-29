@@ -17,14 +17,8 @@ export const proofTractionContentVariants: Record<
       {
         value: "500+",
         label: "Empresas atendidas",
-        description: "De startups a Fortune 500",,
-    tracking: {
-      section: "proof-traction",
-      sectionId: "proof-traction",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        description: "De startups a Fortune 500",
+      },
       {
         value: "60%",
         label: "Redução no tempo de relatórios",
@@ -67,14 +61,8 @@ export const proofTractionContentVariants: Record<
       {
         value: "75%",
         label: "Aumento na produtividade",
-        description: "Equipes focam em estratégia",,
-    tracking: {
-      section: "proof-traction",
-      sectionId: "proof-traction",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        description: "Equipes focam em estratégia",
+      },
       {
         value: "40h",
         label: "Economia mensal por usuário",

@@ -44,14 +44,8 @@ export const pricingPresaleContentVariants: Record<
         ctaText: "Entrar na pré-venda",
         popular: true,
         limitedTime: true,
-        guarantee: "30 dias de garantia total",,
-    tracking: {
-      section: "pricing-presale",
-      sectionId: "pricing-presale",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        guarantee: "30 dias de garantia total",
+      },
     ],
     guarantee:
       "Garantia de 30 dias. Sem perguntas, reembolso total se não ficar satisfeito.",
@@ -86,14 +80,8 @@ export const pricingPresaleContentVariants: Record<
         ctaText: "Garantir desconto anual",
         popular: true,
         limitedTime: true,
-        guarantee: "30 dias de garantia total",,
-    tracking: {
-      section: "pricing-presale",
-      sectionId: "pricing-presale",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        guarantee: "30 dias de garantia total",
+      },
     ],
     guarantee:
       "Garantia de 30 dias. Sem perguntas, reembolso total se não ficar satisfeito.",
@@ -103,14 +91,8 @@ export const pricingPresaleContentVariants: Record<
 
 export const pricingPresaleConfiguration: {
   variants: PricingPresaleVariant[];
-  defaultVariant: string;,
-    tracking: {
-      section: "pricing-presale",
-      sectionId: "pricing-presale",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    } = {
+  defaultVariant: string;
+} = {
   variants: [
     {
       id: "founder",

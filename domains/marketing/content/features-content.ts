@@ -19,14 +19,8 @@ export const featuresContentVariants: Record<string, FeaturesContent> = {
         title: "Integração Universal de Dados",
         description:
           "Conecte qualquer fonte de dados: ERPs, CRMs, planilhas, APIs e bancos de dados. Suporte nativo para mais de 50 sistemas empresariais.",
-        highlight: "50+ integrações",,
-    tracking: {
-      section: "features",
-      sectionId: "features",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        highlight: "50+ integrações",
+      },
       {
         icon: "Zap",
         title: "Processamento em Tempo Real",
@@ -75,14 +69,8 @@ export const featuresContentVariants: Record<string, FeaturesContent> = {
         title: "Integração Universal de Dados",
         description:
           "Conecte qualquer fonte de dados: ERPs, CRMs, planilhas, APIs e bancos de dados. Suporte nativo para mais de 50 sistemas empresariais.",
-        highlight: "50+ integrações",,
-    tracking: {
-      section: "features",
-      sectionId: "features",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        highlight: "50+ integrações",
+      },
       {
         icon: "Globe",
         title: "Multi-Tenant Seguro",
@@ -131,14 +119,8 @@ export const featuresConfiguration: FeaturesConfiguration = {
       content: featuresContentVariants.enterprise,
       weight: 20,
       conditions: {
-        userType: "enterprise",,
-    tracking: {
-      section: "features",
-      sectionId: "features",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        userType: "enterprise",
+      },
     },
   ],
   defaultVariant: "default",

@@ -16,14 +16,8 @@ export const benefitsContentVariants: Record<string, BenefitsContent> = {
         title: "75% menos tempo em relatórios",
         description:
           "De dias para minutos: automatize a geração de relatórios de vendas, financeiro e operações com dashboards prontos para uso executivo",
-        metric: "De 2 dias para 30 min",,
-    tracking: {
-      section: "benefits",
-      sectionId: "benefits",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        metric: "De 2 dias para 30 min",
+      },
       {
         icon: "TrendingUp",
         title: "Identifique oportunidades perdidas",
@@ -73,14 +67,8 @@ export const benefitsContentVariants: Record<string, BenefitsContent> = {
         title: "Arquitetura Enterprise",
         description:
           "Multi-tenant, horizontalmente escalável, com isolamento completo de dados entre clientes",
-        metric: "1000+ usuários simultâneos",,
-    tracking: {
-      section: "benefits",
-      sectionId: "benefits",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        metric: "1000+ usuários simultâneos",
+      },
       {
         icon: "Shield",
         title: "Segurança de nível bancário",
@@ -130,14 +118,8 @@ export const benefitsContentVariants: Record<string, BenefitsContent> = {
         title: "Setup em minutos",
         description:
           "Comece a gerar insights hoje mesmo. Conecte suas fontes de dados e veja resultados imediatos",
-        metric: "Setup em 5 min",,
-    tracking: {
-      section: "benefits",
-      sectionId: "benefits",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        metric: "Setup em 5 min",
+      },
       {
         icon: "DollarSign",
         title: "Custo acessível",
@@ -202,13 +184,7 @@ export const benefitsVariants: Array<{
     content: benefitsContentVariants.startup,
     weight: 25,
     conditions: {
-      userType: "startup",,
-    tracking: {
-      section: "benefits",
-      sectionId: "benefits",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      userType: "startup",
     },
   },
   {
@@ -218,13 +194,7 @@ export const benefitsVariants: Array<{
     content: benefitsContentVariants.enterprise,
     weight: 15,
     conditions: {
-      userType: "enterprise",,
-    tracking: {
-      section: "benefits",
-      sectionId: "benefits",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      userType: "enterprise",
     },
   },
 ];

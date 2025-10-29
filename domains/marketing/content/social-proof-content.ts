@@ -25,14 +25,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
         alt: "Empresa Parceira 1",
         href: "#",
         width: 120,
-        height: 40,,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        height: 40,
+      },
       {
         src: "/images/logos/company-2.svg",
         alt: "Empresa Parceira 2",
@@ -77,14 +71,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Ana Carolina Santos",
           role: "Diretora de Business Intelligence",
           company: "TechCorp Brasil",
-          avatar: "/images/avatars/avatar-carlos.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-carlos.svg",
+        },
         rating: 5,
         featured: true,
       },
@@ -95,14 +83,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Carlos Eduardo Lima",
           role: "Head de Dados",
           company: "DataFlow Solutions",
-          avatar: "/images/avatars/avatar-mariana.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-mariana.svg",
+        },
         rating: 5,
       },
       {
@@ -112,14 +94,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Mariana Costa",
           role: "Gerente de Analytics",
           company: "RetailMax",
-          avatar: "/images/avatars/avatar-carlos.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-carlos.svg",
+        },
         rating: 5,
       },
     ],
@@ -162,14 +138,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
         src: "/images/logos/company-1.svg",
         alt: "Empresa Parceira 1",
         width: 120,
-        height: 40,,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        height: 40,
+      },
       {
         src: "/images/logos/company-2.svg",
         alt: "Empresa Parceira 2",
@@ -218,14 +188,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Ana Carolina Santos",
           role: "Diretora de Business Intelligence",
           company: "TechCorp Brasil",
-          avatar: "/images/avatars/avatar-carlos.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-carlos.svg",
+        },
         rating: 5,
         featured: true,
       },
@@ -236,14 +200,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Carlos Eduardo Lima",
           role: "Head de Dados",
           company: "DataFlow Solutions",
-          avatar: "/images/avatars/avatar-mariana.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-mariana.svg",
+        },
         rating: 5,
       },
       {
@@ -253,14 +211,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
           name: "Mariana Costa",
           role: "Gerente de Analytics",
           company: "RetailMax",
-          avatar: "/images/avatars/avatar-carlos.svg",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+          avatar: "/images/avatars/avatar-carlos.svg",
+        },
         rating: 5,
       },
     ],
@@ -278,14 +230,8 @@ export const socialProofContentVariants: Record<string, SocialProofContent> = {
         label: "Empresas Ativas",
         description: "Clientes usando nossa plataforma diariamente",
         trend: "up",
-        trendValue: "+15% este mês",,
-    tracking: {
-      section: "social-proof",
-      sectionId: "social-proof",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        trendValue: "+15% este mês",
+      },
       {
         value: "99.9%",
         label: "Uptime Garantido",

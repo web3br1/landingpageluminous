@@ -24,14 +24,8 @@ export const verticalsContentVariants: Record<string, VerticalsContent> = {
           "Relatórios de performance",
         ],
         useCase: "Aumente conversões em 40% com insights automáticos",
-        order: 1,,
-    tracking: {
-      section: "verticals",
-      sectionId: "verticals",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        order: 1,
+      },
       {
         id: "finance",
         name: "Financeiro",
@@ -127,14 +121,8 @@ export const verticalsContentVariants: Record<string, VerticalsContent> = {
           "Customizações avançadas",
         ],
         useCase: "Reduza custos operacionais em 40%",
-        order: 1,,
-    tracking: {
-      section: "verticals",
-      sectionId: "verticals",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        order: 1,
+      },
       {
         id: "smb",
         name: "Pequenas Empresas",
@@ -158,14 +146,8 @@ export const verticalsContentVariants: Record<string, VerticalsContent> = {
 
 export const verticalsConfiguration: {
   variants: VerticalsVariant[];
-  defaultVariant: string;,
-    tracking: {
-      section: "verticals",
-      sectionId: "verticals",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    } = {
+  defaultVariant: string;
+} = {
   variants: [
     {
       id: "default",

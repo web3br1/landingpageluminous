@@ -35,14 +35,8 @@ export interface FooterContent {
   logo: {
     src: string;
     alt: string;
-    href?: string;,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    };
+    href?: string;
+  };
   tagline?: string;
   linkGroups: FooterLinkGroup[];
   socialLinks: FooterSocialLink[];
@@ -55,14 +49,8 @@ export interface FooterContent {
   };
   legal: {
     copyright: string;
-    links: FooterLink[];,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    };
+    links: FooterLink[];
+  };
 }
 
 export const footerContentVariants: Record<string, FooterContent> = {
@@ -70,13 +58,7 @@ export const footerContentVariants: Record<string, FooterContent> = {
     logo: {
       src: "/images/brand/logo.svg",
       alt: "Luminaris",
-      href: "/",,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      href: "/",
     },
     tagline: "Transformando dados em decisões inteligentes",
     linkGroups: [
@@ -145,37 +127,18 @@ export const footerContentVariants: Record<string, FooterContent> = {
     ],
     contact: {
       email: "contato@luminaris.com.br",
-      phone: "+55 11 9999-9999",,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      phone: "+55 11 9999-9999",
     },
     newsletter: {
       title: "Fique por dentro das novidades",
       placeholder: "Seu melhor e-mail",
       buttonText: "Inscrever-se",
-      privacyText: "Respeitamos sua privacidade. Cancele a qualquer momento.",,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      privacyText: "Respeitamos sua privacidade. Cancele a qualquer momento.",
     },
     legal: {
       copyright: "© 2025 Luminaris. Todos os direitos reservados.",
       links: [
-        { label: "Termos", href: "/terms",
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        { label: "Termos", href: "/terms" },
         { label: "Privacidade", href: "/privacy" },
         { label: "Cookies", href: "/cookies" },
       ],
@@ -186,13 +149,7 @@ export const footerContentVariants: Record<string, FooterContent> = {
     logo: {
       src: "/images/brand/logo-icon.svg",
       alt: "Luminaris",
-      href: "/",,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      href: "/",
     },
     linkGroups: [
       {
@@ -226,25 +183,12 @@ export const footerContentVariants: Record<string, FooterContent> = {
       },
     ],
     contact: {
-      email: "contato@luminaris.com.br",,
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
+      email: "contato@luminaris.com.br",
     },
     legal: {
       copyright: "© 2025 Luminaris.",
       links: [
-        { label: "Termos", href: "/terms",
-    tracking: {
-      section: "footer",
-      sectionId: "footer",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
-    }
-    },
+        { label: "Termos", href: "/terms" },
         { label: "Privacidade", href: "/privacy" },
       ],
     },
