@@ -82,7 +82,7 @@ jobs:
 
     - name: Comment PR with Results
       if: always() && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           const fs = require('fs')
@@ -142,7 +142,7 @@ jobs:
 
     - name: Update Branch Protection
       if: failure() && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           // Marca PR como não pronto para merge se gate falhar
@@ -167,7 +167,7 @@ jobs:
 
     - name: Update Branch Protection (Success)
       if: success() && github.event_name == 'pull_request'
-      uses: actions/github-script@v7
+      uses: actions/github-script@v8
       with:
         script: |
           // Remove label de falha se existir
