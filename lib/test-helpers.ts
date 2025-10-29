@@ -129,13 +129,13 @@ export async function freezeAnimationsForScreenshots(page: Page) {
     // Mock Date.now para screenshots consistentes
     const originalNow = Date.now;
     const frozenTime = originalNow();
-    (window as Window & { originalDateNow: () => number }).originalDateNow = originalNow;
+    (window as any).originalDateNow = originalNow;
     Date.now = () => frozenTime;
 
     // Mock Math.random para consistência
     const originalRandom = Math.random;
     let randomSeed = 0.12345; // Seed consistente
-    (window as Window & { originalRandom: () => number }).originalRandom = originalRandom;
+    (window as any).originalRandom = originalRandom;
     Math.random = () => {
       randomSeed = (randomSeed * 9301 + 49297) % 233280;
       return randomSeed / 233280;

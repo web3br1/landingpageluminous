@@ -31,6 +31,9 @@ const nextConfig = {
     webpackBuildWorker: true,
   },
 
+  // Turbopack configuration (empty to disable warnings)
+  turbopack: {},
+
   // 🚨 BUNDLE BUDGETS - Sprint 3: Governância
   // Falha no build se exceder estes limites
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {

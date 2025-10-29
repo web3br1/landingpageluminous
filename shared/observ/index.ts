@@ -50,7 +50,7 @@ export function timedDecorator(operation: string) {
 }
 
 // Function wrapper version for easier usage
-export function timed<T extends (...args: unknown[]) => Promise<unknown>>(
+export function timed<T extends (...args: unknown[]) => Promise<any>>(
   operation: string,
   fn: T,
 ): T {

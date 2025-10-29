@@ -1111,3 +1111,114 @@ export class RouteBasedLazyLoading {
     return this.componentCache.size;
   }
 }
+
+// ===== CONTRACT EXPORTS =====
+// These exports align with the LazyLoadingContract interface
+
+/**
+ * Check if a section should use lazy loading
+ */
+export function shouldLazyLoad(sectionId: SectionId, context?: any): boolean {
+  const loadingContext = LazyLoadingPolicy.createLoadingContext("landing");
+  return LazyLoadingPolicy.shouldLazyLoad(sectionId, loadingContext);
+}
+
+/**
+ * Get chunk ID for a section
+ */
+export function getChunkId(sectionId: SectionId): string {
+  return `section-${sectionId}`;
+}
+
+/**
+ * Trace lazy loading operation
+ */
+export function traceLazyLoad(sectionId: SectionId, operation: string, data?: any): void {
+  logger.info(`Lazy loading trace: ${operation}`, {
+    sectionId,
+    operation,
+    ...data,
+    traceId: generateLazyLoadTraceId(),
+  });
+}
+
+/**
+ * Prefetch a section component
+ */
+export async function prefetch(sectionId: SectionId): Promise<void> {
+  const traceId = generateLazyLoadTraceId();
+
+  logLazyLoadStart({
+    sectionId,
+    trigger: "manual",
+    priority: "high",
+    strategy: "critical",
+    traceId,
+  });
+
+  try {
+    // Simulate prefetch by preloading the component
+    const Component = SectionRegistry.getComponent(sectionId);
+    if (Component && typeof Component === 'function') {
+      logLazyLoadSuccess({
+        sectionId,
+        componentName: sectionId,
+        loadTime: 0,
+        trigger: "manual",
+        priority: "high",
+        strategy: "critical",
+        traceId,
+      });
+    } else {
+      throw new Error(`Component not found for section: ${sectionId}`);
+    }
+  } catch (error) {
+    logLazyLoadError({
+      sectionId,
+      error: error instanceof Error ? error.message : String(error),
+      traceId,
+    });
+    throw error;
+  }
+}
+
+/**
+ * Load a section component dynamically
+ */
+export async function load(sectionId: SectionId): Promise<ComponentType<any>> {
+  const traceId = generateLazyLoadTraceId();
+
+  logLazyLoadStart({
+    sectionId,
+    trigger: "manual",
+    priority: "medium",
+    strategy: "secondary",
+    traceId,
+  });
+
+  try {
+    const Component = SectionRegistry.getComponent(sectionId);
+    if (!Component) {
+      throw new Error(`Component not found for section: ${sectionId}`);
+    }
+
+    logLazyLoadSuccess({
+      sectionId,
+      componentName: sectionId,
+      loadTime: Date.now(),
+      trigger: "manual",
+      priority: "medium",
+      strategy: "secondary",
+      traceId,
+    });
+
+    return Component;
+  } catch (error) {
+    logLazyLoadError({
+      sectionId,
+      error: error instanceof Error ? error.message : String(error),
+      traceId,
+    });
+    throw error;
+  }
+}

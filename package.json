@@ -16,6 +16,7 @@
     "test:coverage:gaps": "node scripts/coverage-gaps.mjs",
     "test:quality": "node scripts/test-quality-check.cjs",
     "test:ci": "npm run test:quality && npm run test:coverage",
+    "ci:quality-gate": "node scripts/ci-quality-gate.mjs",
     "analyze:tdd": "node scripts/tdd-analysis-engine.mjs",
     "analyze:tdd:incremental": "node scripts/tdd-analysis-engine.mjs --incremental",
     "analyze:tdd:dashboard": "node scripts/tdd-dashboard.mjs",
