@@ -185,7 +185,7 @@
     "typescript": "5.9.3",
     "vercel": "^48.6.0",
     "vitest": "^4.0.1",
-    "wait-on": "^8.0.5",
+    "wait-on": "^9.0.1",
     "web-vitals": "^5.1.0"
   },
   "dependencies": {
