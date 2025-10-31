@@ -11,7 +11,7 @@ import { SectionErrorBoundary } from "@/lib/utils/error-boundary";
 interface LayoutComposerProps {
   layoutId: string;
   children: ReactNode;
-  sections?: Array<{ id: string; content?: any }>;
+  sections?: Array<{ id: string; content?: unknown }>;
   className?: string;
 }
 
@@ -72,7 +72,7 @@ export function LayoutComposer({
 
     if (shouldRender) {
       content = (
-        <ProviderComponent key={index} {...(providerConfig.props || {})}>
+        <ProviderComponent key={index} {...(providerConfig.props as any || {})}>
           {content}
         </ProviderComponent>
       );
@@ -97,9 +97,11 @@ export function LayoutComposer({
 
   // Ensure Wrapper is a valid React component
   if (typeof Wrapper === "string") {
-    return React.createElement(Wrapper as any, wrapperProps, content);
+    const Element = Wrapper as keyof React.JSX.IntrinsicElements;
+    return <Element {...(wrapperProps as any)}>{content}</Element>;
   }
-  return React.createElement(Wrapper as any, wrapperProps, content);
+  const Component = Wrapper as React.ComponentType<any>;
+  return <Component {...(wrapperProps as any)}>{content}</Component>;
 }
 
 // Hook for programmatic layout composition

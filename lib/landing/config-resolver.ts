@@ -13,7 +13,7 @@ export interface PageConfig {
     id: string;
     kind: string;
     visible: boolean;
-    props: Record<string, any>;
+    props: Record<string, unknown>;
   }>;
   theme: "light" | "dark" | "brand";
   locale: string;

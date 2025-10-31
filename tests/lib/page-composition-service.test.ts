@@ -12,7 +12,7 @@ import {
   MockPerformance,
   MockError,
   Utils,
-} from "../../lib/composition/test-helpers";
+} from "../__shared__/lib/composition-test-helpers";
 import { Result, isOk } from "@shared/core/Result";
 
 // Helper function for test compatibility
@@ -480,7 +480,9 @@ describe("PageCompositionService", () => {
       mockFallback.mockSuccess();
 
       // Mock validation to fail by making jest.mock work
-      const originalValidate = await import("../../lib/composition/composer-validation");
+      const originalValidate = await import(
+        "../../lib/composition/composer-validation"
+      );
       const mockValidate = vi.fn().mockReturnValue({
         success: false,
         error: { message: "Invalid composition structure" },

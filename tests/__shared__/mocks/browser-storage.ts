@@ -2,7 +2,7 @@
 // Utilitários centralizados para mocks de localStorage, sessionStorage e window
 // Segue padrões Vitest para evitar problemas de restoreWindow
 
-import { vi } from 'vitest';
+import { vi } from "vitest";
 
 /**
  * Cria uma implementação em memória de Storage API (localStorage/sessionStorage)
@@ -49,13 +49,13 @@ export function createMockWindow(): Window & typeof globalThis {
     localStorage: createMemoryStorage(),
     sessionStorage: createMemoryStorage(),
     location: {
-      href: 'http://localhost:3000',
-      pathname: '/',
-      search: '',
-      hash: '',
+      href: "http://localhost:3000",
+      pathname: "/",
+      search: "",
+      hash: "",
     },
     navigator: {
-      userAgent: 'test-user-agent',
+      userAgent: "test-user-agent",
     },
     document: global.document,
     addEventListener: vi.fn(),
@@ -63,7 +63,7 @@ export function createMockWindow(): Window & typeof globalThis {
     dispatchEvent: vi.fn(),
     matchMedia: vi.fn().mockReturnValue({
       matches: false,
-      media: '',
+      media: "",
       addListener: vi.fn(),
       removeListener: vi.fn(),
       addEventListener: vi.fn(),
@@ -88,9 +88,9 @@ export function setupBrowserStorageMocks(): () => void {
   mockWindow.sessionStorage = sessionStorageMock;
 
   // Stub globals com Vitest - ORDEM IMPORTA!
-  vi.stubGlobal('window', mockWindow);
-  vi.stubGlobal('localStorage', localStorageMock);
-  vi.stubGlobal('sessionStorage', sessionStorageMock);
+  vi.stubGlobal("window", mockWindow);
+  vi.stubGlobal("localStorage", localStorageMock);
+  vi.stubGlobal("sessionStorage", sessionStorageMock);
 
   // Retorna função de cleanup
   return () => {
@@ -104,7 +104,7 @@ export function setupBrowserStorageMocks(): () => void {
  */
 export function setupSSREnvironment(): () => void {
   // Stub window como undefined para simular SSR
-  vi.stubGlobal('window', undefined);
+  vi.stubGlobal("window", undefined);
 
   // Retorna função de cleanup
   return () => {
@@ -119,7 +119,7 @@ export function setupSSREnvironment(): () => void {
 export function setupFullBrowserEnvironment(): () => void {
   const mockWindow = createMockWindow();
 
-  vi.stubGlobal('window', mockWindow);
+  vi.stubGlobal("window", mockWindow);
 
   // Retorna função de cleanup
   return () => {

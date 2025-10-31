@@ -1,5 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 // Accessibility optimization for touch targets
 // Ensures all interactive elements meet minimum 44px touch target size
@@ -170,21 +171,21 @@ export function useFocusTrap(containerRef: React.RefObject<HTMLElement>) {
     const focusableElements = container.querySelectorAll(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[
-      focusableElements.length - 1
-    ] as HTMLElement;
+    const firstElement = isHTMLElement(focusableElements[0]) ? focusableElements[0] : null;
+    const lastElement = isHTMLElement(focusableElements[focusableElements.length - 1])
+      ? focusableElements[focusableElements.length - 1]
+      : null;
 
     function handleTabKey(e: KeyboardEvent) {
       if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          lastElement.focus();
+        if (document.activeElement === firstElement && lastElement) {
+          (lastElement as HTMLElement).focus();
           e.preventDefault();
         }
       } else {
-        if (document.activeElement === lastElement) {
+        if (document.activeElement === lastElement && firstElement) {
           firstElement.focus();
           e.preventDefault();
         }

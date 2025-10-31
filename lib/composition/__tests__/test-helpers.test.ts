@@ -38,7 +38,7 @@ import {
   MockErrorTracker,
   TestUtils,
   TestScenarios,
-} from "../test-helpers";
+} from "../../../tests/__shared__/lib/test-helpers";
 
 describe("Test Helpers", () => {
   describe("TestDataFactory", () => {

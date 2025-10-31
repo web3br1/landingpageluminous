@@ -10,11 +10,41 @@ import {
 
 // ===== TYPES & INTERFACES =====
 
+export interface ExperimentVariantConfig {
+  // UI Configuration
+  ui?: {
+    theme?: "light" | "dark" | "auto";
+    layout?: "default" | "compact" | "expanded";
+    animations?: boolean;
+  };
+  // Content Configuration
+  content?: {
+    headline?: string;
+    subheadline?: string;
+    ctaText?: string;
+    mediaUrl?: string;
+  };
+  // Behavior Configuration
+  behavior?: {
+    autoScroll?: boolean;
+    lazyLoad?: boolean;
+    prefetch?: boolean;
+  };
+  // Analytics Configuration
+  analytics?: {
+    trackClicks?: boolean;
+    trackViews?: boolean;
+    customEvents?: string[];
+  };
+  // Custom properties for specific experiments
+  [key: string]: unknown;
+}
+
 export interface ExperimentVariant {
   id: string;
   name: string;
   weight: number;
-  config: Record<string, any>;
+  config: ExperimentVariantConfig;
   isControl?: boolean;
 }
 
@@ -82,7 +112,7 @@ export interface ExperimentEvent {
   metric: string;
   value: number;
   timestamp: number;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 export interface ABTestingConfig {
@@ -434,7 +464,7 @@ class ExperimentManager {
     variantId: string,
     eventType: string,
     value: number = 1,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ): void {
     // Skip tracking during SSR to avoid hydration issues
     if (this.isSSR()) {
@@ -660,6 +690,24 @@ class ExperimentManager {
   }
 }
 
+// ===== TYPES =====
+
+export interface ExperimentStatus {
+  id: string;
+  name: string;
+  status: "draft" | "running" | "paused" | "completed";
+  startTime?: number;
+  endTime?: number;
+  totalParticipants: number;
+  totalConversions: number;
+  conversionRate: number;
+  confidenceLevel?: number;
+  winnerVariantId?: string;
+  isSignificant: boolean;
+  lastUpdated: number;
+  errors?: string[];
+}
+
 // ===== REACT HOOKS =====
 
 export function useExperiment(
@@ -691,7 +739,11 @@ export function useExperiment(
   }, [experimentId, userContext?.userId]);
 
   const trackEvent = useCallback(
-    (eventType: string, value: number = 1, context?: Record<string, any>) => {
+    (
+      eventType: string,
+      value: number = 1,
+      context?: Record<string, unknown>,
+    ) => {
       if (variant) {
         const manager = ExperimentManager.getInstance();
         manager.trackEvent(experimentId, variant.id, eventType, value, context);
@@ -710,7 +762,12 @@ export function useExperiment(
 
 export function useExperimentResults(experimentId: string) {
   const [results, setResults] = useState<ExperimentResult[]>([]);
-  const [status, setStatus] = useState<any>(null);
+  const [status, setStatus] = useState<{
+    experiment: ExperimentDefinition;
+    results: ExperimentResult[];
+    totalVisitors: number;
+    daysRunning: number;
+  } | null>(null);
 
   const refresh = useCallback(() => {
     const manager = ExperimentManager.getInstance();

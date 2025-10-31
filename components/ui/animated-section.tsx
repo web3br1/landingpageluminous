@@ -100,7 +100,7 @@ export function AnimatedButton({
 }: {
   children: React.ReactNode;
   className?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }) {
   const { animations } = useAnimations();
 

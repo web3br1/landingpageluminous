@@ -11,8 +11,11 @@ export interface CMSContent {
 export interface CMSClient {
   getContent(id: string): Promise<CMSContent | null>;
   getAllContent(): Promise<CMSContent[]>;
-  createContent(content: Omit<CMSContent, 'id'>): Promise<CMSContent>;
-  updateContent(id: string, content: Partial<CMSContent>): Promise<CMSContent | null>;
+  createContent(content: Omit<CMSContent, "id">): Promise<CMSContent>;
+  updateContent(
+    id: string,
+    content: Partial<CMSContent>,
+  ): Promise<CMSContent | null>;
   deleteContent(id: string): Promise<boolean>;
 }
 
@@ -21,7 +24,7 @@ export class MockCMSClient implements CMSClient {
   private content: Map<string, CMSContent> = new Map();
 
   constructor(initialContent: CMSContent[] = []) {
-    initialContent.forEach(item => {
+    initialContent.forEach((item) => {
       this.content.set(item.id, item);
     });
   }
@@ -34,14 +37,19 @@ export class MockCMSClient implements CMSClient {
     return Array.from(this.content.values());
   }
 
-  async createContent(contentData: Omit<CMSContent, 'id'>): Promise<CMSContent> {
+  async createContent(
+    contentData: Omit<CMSContent, "id">,
+  ): Promise<CMSContent> {
     const id = `mock-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
     const content: CMSContent = { ...contentData, id };
     this.content.set(id, content);
     return content;
   }
 
-  async updateContent(id: string, updates: Partial<CMSContent>): Promise<CMSContent | null> {
+  async updateContent(
+    id: string,
+    updates: Partial<CMSContent>,
+  ): Promise<CMSContent | null> {
     const existing = this.content.get(id);
     if (!existing) return null;
 
@@ -56,22 +64,24 @@ export class MockCMSClient implements CMSClient {
 }
 
 // Factory function
-export function createMockCMSClient(initialContent: CMSContent[] = []): CMSClient {
+export function createMockCMSClient(
+  initialContent: CMSContent[] = [],
+): CMSClient {
   return new MockCMSClient(initialContent);
 }
 
 // Default instance
 export const mockCMSClient = createMockCMSClient([
   {
-    id: 'hero-content',
-    title: 'Hero Section',
-    content: 'Welcome to our platform',
-    metadata: { type: 'hero', priority: 1 }
+    id: "hero-content",
+    title: "Hero Section",
+    content: "Welcome to our platform",
+    metadata: { type: "hero", priority: 1 },
   },
   {
-    id: 'features-content',
-    title: 'Features Section',
-    content: 'Our amazing features',
-    metadata: { type: 'features', priority: 2 }
-  }
+    id: "features-content",
+    title: "Features Section",
+    content: "Our amazing features",
+    metadata: { type: "features", priority: 2 },
+  },
 ]);

@@ -1,0 +1,81 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "activatedAt": "2025-10-31T16:13:10.236Z",
+    "activatedBy": "migration-script"
+  },
+  "policies": {
+    "legacyInitialStrike": 1,
+    "depreciationCycleDays": 30,
+    "removalCriteria": {
+      "minStrikes": 2,
+      "maxUnusedDays": 90,
+      "requireNoObjections": true
+    },
+    "notifications": {
+      "strikeWarningDays": 7,
+      "finalWarningDays": 1,
+      "removalNotification": true
+    }
+  },
+  "immediateDeprecation": [
+    "ci-quality-gates-v2",
+    "ci-quality-gate-check",
+    "run-quality-gates",
+    "run-quality-gates-simple",
+    "test-quality-dashboard",
+    "bulk-quality-fixes",
+    "fix-critical-ts-errors",
+    "eslint-systematic-fixes",
+    "quick-unused-vars-fix",
+    "fix-unused-vars",
+    "lote-1-unused-vars-fix",
+    "code-quality-fix",
+    "performance-optimization",
+    "performance-real-validation",
+    "bundle-analysis-report",
+    "post-deploy-checklist",
+    "deploy-vercel",
+    "ci-deployment-ready"
+  ],
+  "protectedScripts": [
+    "quality-gate",
+    "ci-gate",
+    "quality-fixer",
+    "dashboard-quality",
+    "dashboard-tdd",
+    "dashboard-audit",
+    "dashboard-trends",
+    "perf-monitor",
+    "bundle-analyze",
+    "analytics-monitor",
+    "deploy",
+    "post-deploy"
+  ],
+  "removalSchedule": {
+    "phase1": {
+      "scripts": [
+        "ci-quality-gates-v2",
+        "bulk-quality-fixes"
+      ],
+      "removalDate": "2025-11-30T16:13:10.237Z",
+      "reason": "Redundante com scripts oficiais"
+    },
+    "phase2": {
+      "scripts": [
+        "eslint-systematic-fixes",
+        "performance-optimization"
+      ],
+      "removalDate": "2025-12-30T16:13:10.237Z",
+      "reason": "Funcionalidade consolidada"
+    },
+    "phase3": {
+      "scripts": [
+        "fix-critical-ts-errors",
+        "bundle-analysis-report"
+      ],
+      "removalDate": "2026-01-29T16:13:10.237Z",
+      "reason": "Manutenção técnica completa"
+    }
+  }
+}

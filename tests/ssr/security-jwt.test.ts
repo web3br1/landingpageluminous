@@ -1,11 +1,23 @@
 import { describe, it, expect, vi } from "vitest";
-import { verifyJWT, isJWTExpired } from "@/lib/security/jwt";
+import { verifyJWT, isJWTExpired, __setJoseMock } from "@/lib/security/jwt";
 
-// Mock the jose library to avoid signature verification issues in tests
+// Mock the jose library globally
 vi.mock("jose", () => ({
   jwtVerify: vi.fn(),
   importJWK: vi.fn(),
 }));
+
+// Mock crypto globally for JWT verification
+Object.defineProperty(global, "crypto", {
+  value: {
+    getRandomValues: vi.fn((arr) => arr.fill(0)),
+    subtle: {
+      importKey: vi.fn(),
+      verify: vi.fn(),
+    },
+  },
+  writable: true,
+});
 
 describe("JWT Security SSR", () => {
   const secret = "test-secret-key-for-jwt-verification";
@@ -18,10 +30,13 @@ describe("JWT Security SSR", () => {
 
   it("verifica JWT válido", async () => {
     // Mock successful verification
-    const { jwtVerify } = await import("jose");
-    vi.mocked(jwtVerify).mockResolvedValueOnce({
-      payload: { sub: "user123", exp: 1735719200, iat: 1735715600 },
-    });
+    __setJoseMock({
+      jwtVerify: vi.fn().mockResolvedValue({
+        payload: { sub: "user123", exp: 1735719200, iat: 1735715600 },
+        protectedHeader: { alg: "HS256" },
+      }),
+      importJWK: vi.fn().mockResolvedValue({ type: "secret" }),
+    } as any);
 
     const testDate = new Date("2024-01-01");
     const result = await verifyJWT(validToken, secret, {
@@ -34,10 +49,12 @@ describe("JWT Security SSR", () => {
 
   it("falha com token expirado", async () => {
     // Mock expired token error
-    const { jwtVerify } = await import("jose");
-    vi.mocked(jwtVerify).mockRejectedValueOnce(new Error("JWT expired"));
+    __setJoseMock({
+      jwtVerify: vi.fn().mockRejectedValue(new Error("JWT expired")),
+      importJWK: vi.fn().mockResolvedValue({ type: "secret" }),
+    } as any);
 
-    const currentDate = new Date();
+    const currentDate = new Date(Date.now() + 24 * 60 * 60 * 1000); // Future date to force expiration
     await expect(
       verifyJWT(expiredToken, secret, { currentDate }),
     ).rejects.toThrow("JWT verification failed");
@@ -45,10 +62,10 @@ describe("JWT Security SSR", () => {
 
   it("falha com secret incorreto", async () => {
     // Mock signature verification error
-    const { jwtVerify } = await import("jose");
-    vi.mocked(jwtVerify).mockRejectedValueOnce(
-      new Error("signature verification failed"),
-    );
+    __setJoseMock({
+      jwtVerify: vi.fn().mockRejectedValue(new Error("signature verification failed")),
+      importJWK: vi.fn().mockResolvedValue({ type: "secret" }),
+    } as any);
 
     const testDate = new Date("2024-01-01");
     await expect(

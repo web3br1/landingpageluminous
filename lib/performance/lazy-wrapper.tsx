@@ -41,7 +41,7 @@ export function withLazyLoading<P extends object>(
     config?.fallback ||
     (() => <DefaultFallback componentName={componentName} />);
 
-  return React.forwardRef<any, P>((props, ref) => (
+  return React.forwardRef<unknown, P>((props, ref) => (
     <Suspense fallback={<Fallback />}>
       <LazyComponent {...props} ref={ref} />
     </Suspense>
@@ -70,7 +70,7 @@ export function createLazyComponent<P extends object>(
     config.fallback ||
     (() => <DefaultFallback componentName={componentName} />);
 
-  return React.forwardRef<any, P>((props, ref) => (
+  return React.forwardRef<unknown, P>((props, ref) => (
     <Suspense fallback={<Fallback />}>
       <LazyComponent {...props} ref={ref} />
     </Suspense>
@@ -78,11 +78,11 @@ export function createLazyComponent<P extends object>(
 }
 
 // Factory function for creating lazy components with proper typing
-export function createLazyComponentWithType<P = any>(
+export function createLazyComponentWithType<P = unknown>(
   componentName: string,
   importFunc: () => Promise<{ default: React.ComponentType<P> }>,
 ) {
-  return createLazyComponent(componentName, importFunc as any);
+  return createLazyComponent(componentName, importFunc as unknown);
 }
 
 // Utility hook for conditional lazy loading

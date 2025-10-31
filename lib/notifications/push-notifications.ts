@@ -7,7 +7,7 @@ export interface PushNotification {
   icon?: string;
   badge?: string;
   image?: string;
-  data?: any;
+  data?: unknown;
   actions?: NotificationAction[];
   requireInteraction?: boolean;
   silent?: boolean;
@@ -84,7 +84,7 @@ export class PushNotificationManager {
         userVisibleOnly: true,
         applicationServerKey: this.urlBase64ToUint8Array(
           process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
-        ) as any,
+        ) as unknown,
       });
 
       analytics.track("push_subscription_success", {

@@ -4,6 +4,7 @@
 
 "use client";
 
+import React, { useMemo, useCallback } from "react";
 import Image from "next/image";
 // SectionWrapper/SectionHeader removidos: renderer fornece <section> e headingId
 import { cn } from "@/lib/utils";
@@ -20,6 +21,10 @@ import {
   Code,
   Settings,
 } from "lucide-react";
+import { useValidatedProps } from "@/lib/architecture/component-props";
+import { withComponentContext } from "@/lib/architecture/logger-pattern";
+import { useAnalytics } from "@/lib/analytics/use-analytics";
+import { usePerformanceMonitor } from "@/lib/performance/optimized-lazy-loading";
 
 // Define types locally to avoid import issues
 interface FeatureContent {
@@ -63,18 +68,48 @@ const iconMap = {
   Settings,
 } as const;
 
-export function Features({
-  content,
-  variant = "default",
-  tracking,
-  onFeatureClick,
-  headingId,
-  id,
-}: FeaturesProps) {
+export function Features(props: FeaturesProps) {
+
+  let { content, variant = "default", tracking, onFeatureClick, headingId, id } = props;
+
+  const logger = withComponentContext("features", "render");
+  const analytics = useAnalytics({
+    trackErrors: true,
+    customTracking: { component: "features", variant }
+  });
+  const performanceMonitor = usePerformanceMonitor("MemoizedFeatures");
+
+  // Log component initialization
+  logger.debug("Initializing features component", {
+    variant,
+    featureCount: content?.features?.length || 0,
+    hasTracking: !!tracking,
+    experimentId: tracking?.experimentId
+  });
+
+  // Track component mount
+  React.useEffect(() => {
+    analytics.trackEvent("component", "mount", "features", undefined, {
+      variant,
+      featureCount: content?.features?.length || 0,
+      experimentId: tracking?.experimentId,
+    }).catch(err => logger.warn("Failed to track component mount", { error: err }));
+
+    // Track component unmount
+    return () => {
+      analytics.trackEvent("component", "unmount", "features", undefined, {
+        variant,
+        renderCount: performanceMonitor.renderCount,
+        sessionDuration: Date.now() - performanceMonitor.renderCount * 1000, // Rough estimate
+      }).catch(err => logger.warn("Failed to track component unmount", { error: err }));
+    };
+  }, [analytics, logger, variant, content?.features?.length, tracking?.experimentId, performanceMonitor.renderCount]);
+
   // Safety check - if content is undefined or features is undefined, provide minimal fallback
   if (!content || !content.features || !Array.isArray(content.features)) {
-    console.warn(
-      "Features component received undefined content, features, or features is not an array, using fallback",
+    logger.warn(
+      "Invalid features content received, using fallback",
+      { hasContent: !!content, hasFeatures: !!(content?.features), featuresIsArray: Array.isArray(content?.features) }
     );
     content = {
       title: "Recursos",
@@ -92,6 +127,30 @@ export function Features({
   }
 
   const layout = content?.layout || "grid";
+
+  // Memoize icon mapping to avoid recreation on every render
+  const iconComponents = useMemo(() => {
+    return content.features.map((feature) => ({
+      ...feature,
+      IconComponent: iconMap[feature.icon as keyof typeof iconMap] || Database,
+    }));
+  }, [content.features]);
+
+  // Memoize click handler to prevent unnecessary re-renders
+  const handleFeatureClick = useCallback((index: number) => {
+    const feature = iconComponents[index];
+
+    // Track feature interaction
+    analytics.trackEvent("feature", "click", feature.title, index, {
+      icon: feature.icon,
+      hasHighlight: !!feature.highlight,
+      experimentId: tracking?.experimentId,
+      variant: tracking?.variant,
+      componentVariant: variant,
+    }).catch(err => logger.warn("Failed to track feature click", { error: err, featureIndex: index }));
+
+    onFeatureClick?.(index);
+  }, [onFeatureClick, analytics, iconComponents, tracking, variant, logger]);
 
   return (
     <div
@@ -124,9 +183,8 @@ export function Features({
         {/* Features Grid */}
         {layout === "grid" && (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-            {content.features.map((feature, index) => {
-              const IconComponent =
-                iconMap[feature.icon as keyof typeof iconMap] || Database;
+            {iconComponents.map((feature, index) => {
+              const { IconComponent } = feature;
 
               return (
                 <article
@@ -138,7 +196,7 @@ export function Features({
                     "transition-all duration-300 hover:-translate-y-1",
                     "cursor-pointer",
                   )}
-                  onClick={() => onFeatureClick?.(index)}
+                  onClick={() => handleFeatureClick(index)}
                   data-tracking="feature-card"
                   data-experiment={tracking?.experimentId}
                   role="article"
@@ -235,3 +293,23 @@ export function Features({
     </div>
   );
 }
+
+// Memoize the component to prevent unnecessary re-renders
+export const MemoizedFeatures = React.memo(Features, (prevProps, nextProps) => {
+  // Custom comparison function for performance optimization
+  return (
+    prevProps.content === nextProps.content &&
+    prevProps.variant === nextProps.variant &&
+    prevProps.tracking?.experimentId === nextProps.tracking?.experimentId &&
+    prevProps.tracking?.variant === nextProps.tracking?.variant &&
+    prevProps.headingId === nextProps.headingId &&
+    prevProps.id === nextProps.id &&
+    prevProps.onFeatureClick === nextProps.onFeatureClick
+  );
+});
+
+// Export the memoized version as default
+export default MemoizedFeatures;
+
+// Export the original for specific use cases
+export { Features as FeaturesComponent };

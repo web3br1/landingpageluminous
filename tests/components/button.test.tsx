@@ -14,16 +14,25 @@ const Button = ({
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
-  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  variant?:
+    | "default"
+    | "destructive"
+    | "outline"
+    | "secondary"
+    | "ghost"
+    | "link";
   size?: "default" | "sm" | "lg" | "icon";
   className?: string;
 }) => {
-  const baseClasses = "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+  const baseClasses =
+    "inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
 
   const variantClasses = {
     default: "bg-primary text-primary-foreground hover:bg-primary/90",
-    destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-    outline: "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+    destructive:
+      "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+    outline:
+      "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
     secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
     ghost: "hover:bg-accent hover:text-accent-foreground",
     link: "text-primary underline-offset-4 hover:underline",
@@ -36,7 +45,8 @@ const Button = ({
     icon: "h-10 w-10",
   };
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
+  const classes =
+    `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${className}`.trim();
 
   return (
     <button
@@ -74,7 +84,10 @@ describe("Button Component", () => {
     expect(screen.getByTestId("button")).toHaveClass("hover:bg-accent");
 
     rerender(<Button variant="link">Link</Button>);
-    expect(screen.getByTestId("button")).toHaveClass("text-primary", "underline-offset-4");
+    expect(screen.getByTestId("button")).toHaveClass(
+      "text-primary",
+      "underline-offset-4",
+    );
   });
 
   it("should render with different sizes", () => {
@@ -98,11 +111,18 @@ describe("Button Component", () => {
 
   it("should be disabled when disabled prop is true", () => {
     const handleClick = vi.fn();
-    render(<Button onClick={handleClick} disabled>Disabled</Button>);
+    render(
+      <Button onClick={handleClick} disabled>
+        Disabled
+      </Button>,
+    );
 
     const button = screen.getByTestId("button");
     expect(button).toBeDisabled();
-    expect(button).toHaveClass("disabled:pointer-events-none", "disabled:opacity-50");
+    expect(button).toHaveClass(
+      "disabled:pointer-events-none",
+      "disabled:opacity-50",
+    );
 
     fireEvent.click(button);
     expect(handleClick).not.toHaveBeenCalled();
@@ -129,7 +149,7 @@ describe("Button Component", () => {
       <Button>
         <span>Icon</span>
         <span>Text</span>
-      </Button>
+      </Button>,
     );
 
     expect(screen.getByTestId("button")).toHaveTextContent("IconText");

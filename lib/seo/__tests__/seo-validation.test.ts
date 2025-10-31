@@ -1,7 +1,7 @@
 // Comprehensive SEO validation tests
 import { describe, it, expect, beforeEach } from "vitest";
 import { Metadata } from "next";
-import { defaultSeo, jsonLd, stringifyForScript } from "../seo";
+import { defaultSeo, jsonLd, stringifyForScript } from "../../seo";
 import {
   generateCanonicalUrl,
   generatePaginatedCanonicalUrl,

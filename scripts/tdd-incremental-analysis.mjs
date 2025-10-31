@@ -12,7 +12,9 @@
 
 import fs from 'fs'
 import path from 'path'
-import crypto from 'crypto'
+
+// Import secure crypto utilities (replaces insecure MD5)
+import { sha256Hash } from '../lib/architecture/crypto-utils.js'
 import { execSync } from 'child_process'
 
 class TDDIncrementalAnalysis {
@@ -55,7 +57,7 @@ class TDDIncrementalAnalysis {
   calculateFileHash(filePath) {
     try {
       const content = fs.readFileSync(filePath, 'utf8')
-      return crypto.createHash('md5').update(content).digest('hex')
+      return sha256Hash(content)
     } catch {
       return null
     }

@@ -28,6 +28,20 @@ export interface CoreWebVitals {
 }
 
 /**
+ * Extended Performance Entry interfaces
+ */
+interface ExtendedPerformanceEntry {
+  startTime: number;
+  processingStart?: number;
+  processingEnd?: number;
+  hadRecentInput?: boolean;
+  value?: number;
+  name?: string;
+  transferSize?: number;
+  priority?: string;
+}
+
+/**
  * Performance Metrics
  */
 export interface PerformanceMetrics {
@@ -178,7 +192,7 @@ export function usePerformanceMonitor() {
       // LCP - Largest Contentful Paint
       new PerformanceObserver((list) => {
         const entries = list.getEntries();
-        const lastEntry = entries[entries.length - 1] as any;
+        const lastEntry = entries[entries.length - 1] as ExtendedPerformanceEntry;
         if (lastEntry) {
           const lcp = lastEntry.startTime;
           updateCoreWebVitals({ lcp });
@@ -189,10 +203,10 @@ export function usePerformanceMonitor() {
       // CLS - Cumulative Layout Shift
       let clsValue = 0;
       new PerformanceObserver((list) => {
-        const entries = list.getEntries() as any[];
+        const entries = list.getEntries() as ExtendedPerformanceEntry[];
         entries.forEach((entry) => {
           if (!entry.hadRecentInput) {
-            clsValue += entry.value;
+            clsValue += entry.value || 0;
           }
         });
         updateCoreWebVitals({ cls: clsValue });
@@ -201,9 +215,9 @@ export function usePerformanceMonitor() {
 
       // FID - First Input Delay
       new PerformanceObserver((list) => {
-        const entries = list.getEntries() as any[];
+        const entries = list.getEntries() as ExtendedPerformanceEntry[];
         entries.forEach((entry) => {
-          const fid = entry.processingStart - entry.startTime;
+          const fid = (entry.processingStart || 0) - entry.startTime;
           updateCoreWebVitals({ fid });
           monitoring.recordCoreWebVitals({ fid });
         });
@@ -211,9 +225,9 @@ export function usePerformanceMonitor() {
 
       // INP - Interaction to Next Paint
       new PerformanceObserver((list) => {
-        const entries = list.getEntries() as any[];
+        const entries = list.getEntries() as ExtendedPerformanceEntry[];
         const inp = Math.max(
-          ...entries.map((entry) => entry.processingEnd - entry.startTime),
+          ...entries.map((entry) => (entry.processingEnd || 0) - entry.startTime),
         );
         if (inp > 0) {
           updateCoreWebVitals({ inp });
@@ -233,7 +247,7 @@ export function usePerformanceMonitor() {
   const monitorBasicWebVitals = useCallback(() => {
     // FCP - First Contentful Paint
     new PerformanceObserver((list) => {
-      const entries = list.getEntries() as any[];
+      const entries = list.getEntries() as ExtendedPerformanceEntry[];
       entries.forEach((entry) => {
         if (entry.name === "first-contentful-paint") {
           const fcp = entry.startTime;
@@ -305,7 +319,7 @@ export function usePerformanceMonitor() {
 
     logger.debug("Navigation timing collected", {
       ...navigationMetrics,
-    } as any);
+    });
   }, []);
 
   // Monitor Resource Timing
@@ -317,9 +331,9 @@ export function usePerformanceMonitor() {
         name: entry.name,
         type: getResourceType(entry.initiatorType),
         duration: entry.responseEnd - entry.requestStart,
-        size: (entry as any).transferSize,
+        size: (entry as ExtendedPerformanceEntry).transferSize || 0,
         cached: isResourceCached(entry),
-        priority: (entry as any).priority,
+        priority: (entry as ExtendedPerformanceEntry).priority || "auto",
       }));
 
       setMetrics((prev) =>
@@ -833,7 +847,7 @@ function getResourceType(initiatorType: string): string {
 }
 
 function isResourceCached(entry: PerformanceResourceTiming): boolean {
-  return (entry as any).transferSize === 0 && entry.decodedBodySize > 0;
+  return (entry as ExtendedPerformanceEntry).transferSize === 0 && entry.decodedBodySize > 0;
 }
 
 function getVitalStatus(

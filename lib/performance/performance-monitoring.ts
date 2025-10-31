@@ -2,11 +2,12 @@
 // Safe browser API access with SSR protection
 
 import { logger } from "@/lib/logger";
+import { safePerformanceEntryAccess } from "@/lib/utils/browser-api-helpers";
 
 // Type-safe performance monitoring
 export class PerformanceMonitor {
   private static observers: Map<string, PerformanceObserver> = new Map();
-  private static metrics: Map<string, any> = new Map();
+  private static metrics: Map<string, unknown> = new Map();
 
   // Safe browser check
   private static isBrowser(): boolean {
@@ -22,10 +23,11 @@ export class PerformanceMonitor {
       if ("PerformanceObserver" in window) {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1] as any;
+          const lastEntry = entries[entries.length - 1];
           if (lastEntry) {
-            this.metrics.set("lcp", lastEntry.startTime);
-            logger.debug("LCP recorded", { value: lastEntry.startTime });
+            const startTime = safePerformanceEntryAccess(lastEntry, (e) => e.startTime, 0);
+            this.metrics.set("lcp", startTime);
+            logger.debug("LCP recorded", { value: startTime });
           }
         });
         lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
@@ -34,9 +36,9 @@ export class PerformanceMonitor {
         // CLS Observer
         const clsObserver = new PerformanceObserver((list) => {
           let clsValue = 0;
-          for (const entry of list.getEntries() as any[]) {
-            if (!entry.hadRecentInput) {
-              clsValue += entry.value;
+          for (const entry of list.getEntries()) {
+            if (safePerformanceEntryAccess(entry, (e) => e.hadRecentInput, true) === false) {
+              clsValue += safePerformanceEntryAccess(entry, (e) => e.value, 0);
             }
           }
           this.metrics.set("cls", clsValue);
@@ -47,8 +49,10 @@ export class PerformanceMonitor {
 
         // FID Observer
         const fidObserver = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries() as any[]) {
-            const fid = entry.processingStart - entry.startTime;
+          for (const entry of list.getEntries()) {
+            const processingStart = safePerformanceEntryAccess(entry, (e) => e.processingStart, 0);
+            const startTime = safePerformanceEntryAccess(entry, (e) => e.startTime, 0);
+            const fid = processingStart - startTime;
             this.metrics.set("fid", fid);
             logger.debug("FID recorded", { value: fid });
           }
@@ -58,9 +62,10 @@ export class PerformanceMonitor {
 
         // FCP Observer
         const fcpObserver = new PerformanceObserver((list) => {
-          for (const entry of list.getEntries() as any[]) {
-            this.metrics.set("fcp", entry.startTime);
-            logger.debug("FCP recorded", { value: entry.startTime });
+          for (const entry of list.getEntries()) {
+            const startTime = safePerformanceEntryAccess(entry, (e) => e.startTime, 0);
+            this.metrics.set("fcp", startTime);
+            logger.debug("FCP recorded", { value: startTime });
           }
         });
         fcpObserver.observe({ entryTypes: ["paint"] });
@@ -83,10 +88,10 @@ export class PerformanceMonitor {
     }
 
     return {
-      lcp: this.metrics.get("lcp"),
-      cls: this.metrics.get("cls"),
-      fid: this.metrics.get("fid"),
-      fcp: this.metrics.get("fcp"),
+      lcp: this.metrics.get("lcp") as number | undefined,
+      cls: this.metrics.get("cls") as number | undefined,
+      fid: this.metrics.get("fid") as number | undefined,
+      fcp: this.metrics.get("fcp") as number | undefined,
     };
   }
 
@@ -124,7 +129,7 @@ export class PerformanceMonitor {
       observer.observe({ entryTypes: ["longtask"] });
 
       // Return any previously recorded long tasks
-      return this.metrics.get("longTasks") || [];
+      return (this.metrics.get("longTasks") as PerformanceEntry[]) || [];
     } catch (error) {
       logger.warn("Failed to observe long tasks", { error });
       return [];

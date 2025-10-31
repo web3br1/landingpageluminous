@@ -9,8 +9,8 @@ import { NotificationProvider } from "@/lib/notifications";
 
 // Layout configuration types
 export interface ProviderConfig {
-  component: React.ComponentType<any>;
-  props?: Record<string, any>;
+  component: React.ComponentType<unknown>;
+  props?: Record<string, unknown>;
   condition?: () => boolean;
 }
 
@@ -35,7 +35,7 @@ export interface LayoutConfig {
   metadata?: {
     title?: string;
     description?: string;
-    structuredData?: any;
+    structuredData?: unknown;
   };
 
   // Error boundaries

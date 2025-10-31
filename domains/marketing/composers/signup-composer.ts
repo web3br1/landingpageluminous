@@ -111,8 +111,8 @@ const signupConfig: SignupConfiguration = {
   ],
 };
 
-export function composeSignupContent(): ComposedSignupData {
-  return withCompositionValidation(() => {
+export async function composeSignupContent(): Promise<ComposedSignupData> {
+  return await withCompositionValidation(async () => {
     const experimentVariant = flags.getExperimentVariant("signup_variant");
     let activeVariant: SignupVariant;
 

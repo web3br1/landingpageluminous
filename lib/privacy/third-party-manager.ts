@@ -1,5 +1,10 @@
 import { ConsentManager } from "./consent-manager";
 import type { ConsentState } from "@/components/cookie-banner";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
 
 export interface ThirdPartyScript {
   id: string;
@@ -30,7 +35,7 @@ export class ThirdPartyManager {
         </script>
       `,
       loadCondition: () =>
-        typeof window !== "undefined" && !(window as any).gtag,
+        typeof window !== "undefined" && !((window as any).gtag),
     },
 
     // Facebook Pixel
@@ -53,7 +58,7 @@ export class ThirdPartyManager {
         </script>
       `,
       loadCondition: () =>
-        typeof window !== "undefined" && !(window as any).fbq,
+        typeof window !== "undefined" && !((window as any).fbq),
     },
 
     // Hotjar
@@ -73,9 +78,25 @@ export class ThirdPartyManager {
           })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
         </script>
       `,
-      loadCondition: () => typeof window !== "undefined" && !(window as any).hj,
+      loadCondition: () =>
+        typeof window !== "undefined" && !((window as any).hj),
     },
   ];
+
+  static hasCategoryConsent(category: string): boolean {
+    switch (category) {
+      case 'analytics':
+        return ConsentManager.hasAnalyticsConsent();
+      case 'marketing':
+        return ConsentManager.hasMarketingConsent();
+      case 'functional':
+        return ConsentManager.hasFunctionalConsent();
+      case 'essential':
+        return ConsentManager.hasEssentialConsent();
+      default:
+        return false;
+    }
+  }
 
   static loadScriptIfConsented(scriptId: string): boolean {
     const script = this.SCRIPTS.find((s) => s.id === scriptId);

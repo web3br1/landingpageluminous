@@ -14,8 +14,30 @@ import { Section } from "@/components/ui/section";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FadeUp } from "@/components/ui/fade-up";
-import { CtaButton } from "@/components/ui/cta-button";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
+import { CtaButton } from "@/components/ui/cta-button-unified";
+
+// ===== TYPES =====
+
+export interface DemoUserAnswers {
+  // Business information
+  companySize?: string;
+  industry?: string;
+  currentTools?: string;
+
+  // Pain points
+  mainChallenge?: string;
+  timeSpent?: string;
+  budget?: string;
+
+  // Goals
+  primaryGoal?: string;
+  timeline?: string;
+  teamSize?: string;
+
+  // Custom demo answers
+  [questionId: string]: string | undefined;
+}
 
 interface DemoStep {
   id: string;
@@ -92,7 +114,7 @@ export function DemoPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
-  const [userAnswers, setUserAnswers] = useState<Record<string, string>>({});
+  const [userAnswers, setUserAnswers] = useState<DemoUserAnswers>({});
 
   const currentDemoStep = demoSteps[currentStep];
 
@@ -392,7 +414,7 @@ export function DemoPage() {
 
         {/* Benefits Section */}
         <Section className="mt-16">
-          <FadeUp>
+          <FadeUp duration="normal" lazy={false}>
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">
                 Por que escolher o Luminaris?

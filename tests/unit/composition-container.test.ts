@@ -13,33 +13,33 @@ import {
 
 // Mock service classes
 vi.mock("@/lib/composition/services/page-composition-service", () => ({
-  PageCompositionService: vi.fn().mockImplementation(function() {
+  PageCompositionService: vi.fn().mockImplementation(function () {
     this.composePage = vi.fn();
     this.composePageSync = vi.fn();
   }),
 }));
 
 vi.mock("@/lib/composition/services/content-mapper", () => ({
-  ContentMapper: vi.fn().mockImplementation(function() {
+  ContentMapper: vi.fn().mockImplementation(function () {
     this.mapContent = vi.fn();
   }),
 }));
 
 vi.mock("@/lib/composition/services/fallback-provider", () => ({
-  FallbackProvider: vi.fn().mockImplementation(function() {
+  FallbackProvider: vi.fn().mockImplementation(function () {
     this.getFallback = vi.fn();
   }),
 }));
 
 vi.mock("@/lib/composition/services/ssr-adapter", () => ({
-  SSRAdapter: vi.fn().mockImplementation(function() {
+  SSRAdapter: vi.fn().mockImplementation(function () {
     this.isServerContext = vi.fn(() => typeof window === "undefined");
     this.safeConsoleLog = vi.fn();
   }),
 }));
 
 vi.mock("@/lib/composition/services/page-configuration-provider", () => ({
-  PageConfigurationProvider: vi.fn().mockImplementation(function() {
+  PageConfigurationProvider: vi.fn().mockImplementation(function () {
     this.getConfiguration = vi.fn();
   }),
 }));
@@ -99,13 +99,17 @@ describe("Composition Container", () => {
 
     it("should initialize lazy services on first access", () => {
       // Initially should be null (lazy)
-      expect(compositionContainer.services.get("IPageCompositionService")).toBeNull();
+      expect(
+        compositionContainer.services.get("IPageCompositionService"),
+      ).toBeNull();
 
       // Access should initialize
       const service = compositionContainer.pageCompositionService;
 
       expect(service).toBeDefined();
-      expect(compositionContainer.services.get("IPageCompositionService")).not.toBeNull();
+      expect(
+        compositionContainer.services.get("IPageCompositionService"),
+      ).not.toBeNull();
     });
   });
 
@@ -141,7 +145,9 @@ describe("Composition Container", () => {
       compositionContainer.pageCompositionService;
 
       expect(compositionContainer.hasService("ISSRAdapter")).toBe(true);
-      expect(compositionContainer.hasService("IPageCompositionService")).toBe(true);
+      expect(compositionContainer.hasService("IPageCompositionService")).toBe(
+        true,
+      );
 
       // Reset
       compositionContainer.reset();
@@ -149,7 +155,9 @@ describe("Composition Container", () => {
       // Should still have core services initialized
       expect(compositionContainer.hasService("ISSRAdapter")).toBe(true);
       // Application services should be reset to null (lazy)
-      expect(compositionContainer.services.get("IPageCompositionService")).toBeNull();
+      expect(
+        compositionContainer.services.get("IPageCompositionService"),
+      ).toBeNull();
     });
 
     it("should allow service replacement for testing", () => {

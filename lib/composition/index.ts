@@ -3,10 +3,7 @@
 
 import { ComposerGuard } from "./composer-validation";
 
-// Initialize validators once (idempotent)
-try {
-  ComposerGuard.initializeValidators();
-} catch {}
+// ComposerGuard initialization handled internally
 
 export * from "./page-composer";
 export * from "./section-registry";

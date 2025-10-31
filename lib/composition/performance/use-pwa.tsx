@@ -131,7 +131,7 @@ export function usePWA() {
     }
   };
 
-  const sendMessageToSW = (message: any) => {
+  const sendMessageToSW = (message: unknown) => {
     if (pwaState.registration?.active) {
       pwaState.registration.active.postMessage(message);
     }
@@ -167,7 +167,8 @@ export function useOfflineStatus() {
   return {
     isOnline,
     isOffline: !isOnline,
-    connectionType: (navigator as any).connection?.effectiveType || "unknown",
+    connectionType:
+      (navigator as any).connection?.effectiveType || "unknown",
   };
 }
 

@@ -139,8 +139,12 @@ describe("Environment Manager", () => {
     it("should check feature flag status", () => {
       vi.stubEnv("NODE_ENV", "development");
 
-      expect(envManager.isFeatureEnabled(FeatureFlag.DEBUG_OVERLAYS)).toBe(true);
-      expect(envManager.isFeatureEnabled(FeatureFlag.ADVANCED_METRICS)).toBe(true);
+      expect(envManager.isFeatureEnabled(FeatureFlag.DEBUG_OVERLAYS)).toBe(
+        true,
+      );
+      expect(envManager.isFeatureEnabled(FeatureFlag.ADVANCED_METRICS)).toBe(
+        true,
+      );
     });
   });
 
@@ -247,7 +251,9 @@ describe("Environment Manager", () => {
     });
 
     it("should allow feature flag overrides", () => {
-      const originalValue = envManager.isFeatureEnabled(FeatureFlag.DEBUG_OVERLAYS);
+      const originalValue = envManager.isFeatureEnabled(
+        FeatureFlag.DEBUG_OVERLAYS,
+      );
 
       // This would require implementation of override methods
       // For now, just test that the method exists

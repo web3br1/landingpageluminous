@@ -3,6 +3,13 @@
 
 import { AppError, ErrorType, createError } from "./error-handling";
 import { analytics } from "./analytics-core";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+  safeNavigatorConnection,
+  safePerformanceMemory,
+} from "@/lib/utils/browser-api-helpers";
 
 // ===== CORE WEB VITALS MONITORING =====
 
@@ -75,6 +82,7 @@ export class ProductionMonitor {
   private sessionId: string;
   private observers: PerformanceObserver[] = [];
   private isTrackingError = false; // Prevent infinite loops
+  private lastErrorTime = 0; // Throttle error tracking
 
   private constructor() {
     this.sessionId = this.generateSessionId();
@@ -170,14 +178,14 @@ export class ProductionMonitor {
 
   // ===== ERROR TRACKING =====
 
-  trackError(error: Error | string | unknown, context?: any): void {
+  trackError(error: Error | string | unknown, context?: unknown): void {
     // Prevent infinite loops - multiple protection layers
     if (this.isTrackingError) return;
 
     // Additional protection: limit error tracking frequency
     const now = Date.now();
-    if (now - (this as any).lastErrorTime < 100) return; // Throttle to max 10 errors per second
-    (this as any).lastErrorTime = now;
+    if (now - this.lastErrorTime < 100) return; // Throttle to max 10 errors per second
+    this.lastErrorTime = now;
 
     this.isTrackingError = true;
 
@@ -284,7 +292,7 @@ export class ProductionMonitor {
     return "low";
   }
 
-  private buildErrorContext(additionalContext?: any): ErrorContext {
+  private buildErrorContext(additionalContext?: unknown): ErrorContext {
     return {
       url: typeof window !== "undefined" ? window.location.href : "",
       userAgent:
@@ -298,19 +306,9 @@ export class ProductionMonitor {
               height: window.innerHeight,
             }
           : { width: 0, height: 0 },
-      connection:
-        typeof window !== "undefined" && "connection" in window.navigator
-          ? (window.navigator as any).connection
-          : { effectiveType: "unknown", downlink: 0 },
-      memory:
-        typeof window !== "undefined" && (window as any).performance?.memory
-          ? {
-              used: (window as any).performance.memory.usedJSHeapSize,
-              total: (window as any).performance.memory.totalJSHeapSize,
-              limit: (window as any).performance.memory.jsHeapSizeLimit,
-            }
-          : undefined,
-      ...additionalContext,
+      connection: safeNavigatorConnection() || { effectiveType: "unknown", downlink: 0 },
+      memory: safePerformanceMemory() || undefined,
+      ...(additionalContext && typeof additionalContext === 'object' ? additionalContext : {}),
     };
   }
 
@@ -351,9 +349,9 @@ export class ProductionMonitor {
       try {
         const lcpObserver = new PerformanceObserver((list) => {
           const entries = list.getEntries();
-          const lastEntry = entries[entries.length - 1] as any;
+          const lastEntry = entries[entries.length - 1] as unknown;
           if (lastEntry) {
-            this.trackWebVital("lcp", lastEntry.startTime);
+            this.trackWebVital("lcp", (lastEntry as any).startTime);
           }
         });
         lcpObserver.observe({ entryTypes: ["largest-contentful-paint"] });
@@ -504,10 +502,10 @@ export class ProductionMonitor {
     this.performanceMetrics.resourceTiming = entries.slice(-50);
   }
 
-  private trackPerformanceIssue(type: string, data: any): void {
+  private trackPerformanceIssue(type: string, data: unknown): void {
     analytics.track("performance_issue", {
       type,
-      ...data,
+      ...(data && typeof data === 'object' ? data : {}),
       session_id: this.sessionId,
       timestamp: new Date().toISOString(),
     });
@@ -515,14 +513,14 @@ export class ProductionMonitor {
     // Send to monitoring service
     this.sendToMonitoringService({
       type: "performance_issue",
-      data: { ...data, type, sessionId: this.sessionId },
+      data: { ...(data && typeof data === 'object' ? data : {}), type, sessionId: this.sessionId },
     });
   }
 
   // ===== MONITORING SERVICE INTEGRATION =====
 
   private sendToMonitoringService(
-    error: AppError | any,
+    error: AppError | unknown,
     context?: ErrorContext,
   ): void {
     // In production, send to your monitoring service (Sentry, LogRocket, etc.)
@@ -618,14 +616,8 @@ export class ProductionMonitor {
       },
       navigationTiming: null,
       resourceTiming: [],
-      memoryUsage:
-        typeof window !== "undefined" && (window as any).performance?.memory
-          ? (window as any).performance.memory.usedJSHeapSize
-          : null,
-      connectionSpeed:
-        typeof window !== "undefined" && "connection" in window.navigator
-          ? (window.navigator as any).connection?.effectiveType || "unknown"
-          : "unknown",
+      memoryUsage: safePerformanceMemory()?.used || null,
+      connectionSpeed: safeNavigatorConnection()?.effectiveType || "unknown",
     };
   }
 }
@@ -636,7 +628,7 @@ export function useProductionMonitoring() {
   const monitor = ProductionMonitor.getInstance();
 
   return {
-    trackError: (error: Error | string, context?: any) =>
+    trackError: (error: Error | string, context?: unknown) =>
       monitor.trackError(error, context),
     getErrorPatterns: () => monitor.getErrorPatterns(),
     getPerformanceMetrics: () => monitor.getPerformanceMetrics(),

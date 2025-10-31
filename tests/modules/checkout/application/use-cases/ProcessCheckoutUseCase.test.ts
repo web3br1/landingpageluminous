@@ -48,11 +48,17 @@ describe("ProcessCheckoutUseCase", () => {
       // Arrange
       const expectedCheckout = Checkout.create(validInput);
       mockCheckoutRepository.findByLeadId.mockResolvedValue(Result.ok([]));
-      mockCheckoutRepository.save.mockImplementation(async (checkout) => Result.ok(checkout));
-      mockPaymentService.processPayment.mockImplementation(async (checkout) =>
-        Result.ok({ paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}` })
+      mockCheckoutRepository.save.mockImplementation(async (checkout) =>
+        Result.ok(checkout),
       );
-      mockCheckoutRepository.updateStatus.mockImplementation(async (id, status) => Result.ok(expectedCheckout));
+      mockPaymentService.processPayment.mockImplementation(async (checkout) =>
+        Result.ok({
+          paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}`,
+        }),
+      );
+      mockCheckoutRepository.updateStatus.mockImplementation(
+        async (id, status) => Result.ok(expectedCheckout),
+      );
 
       // Act
       const result = await useCase.execute(validInput);
@@ -66,7 +72,9 @@ describe("ProcessCheckoutUseCase", () => {
       expect(output.checkout.getPlanId()).toBe("plan-pro");
       expect(output.checkout.getPaymentMethod()).toBe("credit_card");
       expect(output.checkout.getAmount()).toBe(99.9);
-      expect(output.paymentUrl).toContain("https://payment.example.com/checkout/");
+      expect(output.paymentUrl).toContain(
+        "https://payment.example.com/checkout/",
+      );
       expect(output.estimatedCompletion).toBeInstanceOf(Date);
 
       expect(mockCheckoutRepository.findByLeadId).toHaveBeenCalledWith(
@@ -93,7 +101,9 @@ describe("ProcessCheckoutUseCase", () => {
         .mockResolvedValueOnce(Result.ok(pixCheckout))
         .mockResolvedValueOnce(Result.ok(boletoCheckout));
       mockPaymentService.processPayment.mockImplementation(async (checkout) =>
-        Result.ok({ paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}` })
+        Result.ok({
+          paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}`,
+        }),
       );
       mockCheckoutRepository.updateStatus
         .mockResolvedValueOnce(Result.ok(pixCheckout))
@@ -194,9 +204,14 @@ describe("ProcessCheckoutUseCase", () => {
       mockCheckoutRepository.findByLeadId.mockResolvedValue(Result.ok([]));
       mockCheckoutRepository.save.mockImplementation(async (c) => Result.ok(c));
       mockPaymentService.processPayment.mockImplementation(async (c) =>
-        Result.err({ type: "PAYMENT_ERROR", message: "Payment processing failed" })
+        Result.err({
+          type: "PAYMENT_ERROR",
+          message: "Payment processing failed",
+        }),
       );
-      mockCheckoutRepository.updateStatus.mockImplementation(async (id, status) => Result.ok(checkout));
+      mockCheckoutRepository.updateStatus.mockImplementation(
+        async (id, status) => Result.ok(checkout),
+      );
 
       // Act
       const result = await useCase.execute(validInput);
@@ -236,9 +251,13 @@ describe("ProcessCheckoutUseCase", () => {
       mockCheckoutRepository.findByLeadId.mockResolvedValue(Result.ok([]));
       mockCheckoutRepository.save.mockImplementation(async (c) => Result.ok(c));
       mockPaymentService.processPayment.mockImplementation(async (checkout) =>
-        Result.ok({ paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}` })
+        Result.ok({
+          paymentUrl: `https://payment.example.com/checkout/${checkout.getId()}`,
+        }),
       );
-      mockCheckoutRepository.updateStatus.mockImplementation(async (id, status) => Result.ok(Checkout.create(validInput)));
+      mockCheckoutRepository.updateStatus.mockImplementation(
+        async (id, status) => Result.ok(Checkout.create(validInput)),
+      );
 
       // Act
       await useCase.execute(validInput);

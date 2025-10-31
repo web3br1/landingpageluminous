@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { CtaButton } from "./cta-button";
+import { CtaButton } from "./cta-button-unified";
 import { consent, type ConsentState } from "../../../../lib/analytics";
 import { notify } from "../../../../lib/notifications";
 
@@ -11,17 +11,21 @@ export function ConsentBanner() {
 
   useEffect(() => {
     // Verifica se já deu consentimento
-    const currentConsent = consent.get();
-    const hasAnyConsent =
-      currentConsent.analytics ||
-      currentConsent.marketing ||
-      currentConsent.functional;
+    const checkConsent = async () => {
+      const currentConsent = await consent.get();
+      const hasAnyConsent =
+        currentConsent.analytics ||
+        currentConsent.marketing ||
+        currentConsent.functional;
 
-    if (!hasAnyConsent) {
-      // Pequeno delay para não aparecer imediatamente
-      const timer = setTimeout(() => setIsVisible(true), 2000);
-      return () => clearTimeout(timer);
-    }
+      if (!hasAnyConsent) {
+        // Pequeno delay para não aparecer imediatamente
+        const timer = setTimeout(() => setIsVisible(true), 2000);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    checkConsent();
   }, []);
 
   const handleAcceptAll = () => {
@@ -166,8 +170,8 @@ export function ConsentBanner() {
                   id="analytics"
                   defaultChecked={false}
                   className="mt-1"
-                  onChange={(e) => {
-                    const current = consent.get();
+                  onChange={async (e) => {
+                    const current = await consent.get();
                     handleCustomSettings({
                       ...current,
                       analytics: e.target.checked,
@@ -195,8 +199,8 @@ export function ConsentBanner() {
                   id="marketing"
                   defaultChecked={false}
                   className="mt-1"
-                  onChange={(e) => {
-                    const current = consent.get();
+                  onChange={async (e) => {
+                    const current = await consent.get();
                     handleCustomSettings({
                       ...current,
                       marketing: e.target.checked,
@@ -220,7 +224,7 @@ export function ConsentBanner() {
 
             <div className="mt-6 flex gap-3">
               <CtaButton
-                onClick={() => handleCustomSettings(consent.get())}
+                onClick={async () => handleCustomSettings(await consent.get())}
                 className="bg-primary hover:bg-primary-600 text-white px-6 py-2 text-sm"
               >
                 Salvar Preferências

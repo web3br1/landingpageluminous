@@ -71,8 +71,8 @@ export function useConditionalRender<T>(
 // Hook for A/B testing content
 export function useABContent(
   experimentId: ExperimentKey,
-  contentVariants: Record<string, any>,
-  fallback: any = null,
+  contentVariants: Record<string, unknown>,
+  fallback: unknown = null,
 ) {
   return useConditionalRender(experimentId, contentVariants, fallback);
 }

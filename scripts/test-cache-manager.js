@@ -7,7 +7,9 @@
 
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
+
+// Import secure crypto utilities (replaces insecure MD5)
+const { sha256Hash } = require("../lib/architecture/crypto-utils.js");
 
 class TestCacheManager {
   constructor() {
@@ -25,7 +27,7 @@ class TestCacheManager {
   getFileHash(filePath) {
     try {
       const content = fs.readFileSync(filePath);
-      return crypto.createHash("md5").update(content).digest("hex");
+      return sha256Hash(content);
     } catch (err) {
       return null;
     }
@@ -34,7 +36,7 @@ class TestCacheManager {
   getDirectoryHash(dirPath, extensions = [".ts", ".tsx", ".js", ".jsx"]) {
     const files = this.getFilesRecursively(dirPath, extensions);
     const hashes = files.map((file) => this.getFileHash(file)).filter(Boolean);
-    return crypto.createHash("md5").update(hashes.join("")).digest("hex");
+    return sha256Hash(hashes.join(""));
   }
 
   getFilesRecursively(dirPath, extensions) {

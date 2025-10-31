@@ -8,11 +8,11 @@ O **Sistema Paralelo de TDD** implementa uma arquitetura multi-agente para desen
 
 ### Agentes Disponíveis
 
-| Agente | Propósito | Gatilho | Prioridade | Frequência |
-|--------|-----------|---------|------------|------------|
-| **War-Room TDD** | Correções críticas e estabilização | Manual | Alta | Sob demanda |
-| **Stability Scanner** | Monitoramento contínuo e detecção de regressões | Agendado | Normal | Diária/merge |
-| **Optimization Sprint** | Melhorias incrementais e otimização | Background | Baixa | Contínua |
+| Agente                  | Propósito                                       | Gatilho    | Prioridade | Frequência   |
+| ----------------------- | ----------------------------------------------- | ---------- | ---------- | ------------ |
+| **War-Room TDD**        | Correções críticas e estabilização              | Manual     | Alta       | Sob demanda  |
+| **Stability Scanner**   | Monitoramento contínuo e detecção de regressões | Agendado   | Normal     | Diária/merge |
+| **Optimization Sprint** | Melhorias incrementais e otimização             | Background | Baixa      | Contínua     |
 
 ### Controle de Concorrência
 
@@ -24,6 +24,7 @@ O **Sistema Paralelo de TDD** implementa uma arquitetura multi-agente para desen
 ## 🚀 Como Usar
 
 ### Execução Completa
+
 ```bash
 # Executa todos os agentes em paralelo
 npm run tdd:parallel
@@ -36,6 +37,7 @@ npm run tdd:agents
 ```
 
 ### Execução Individual
+
 ```bash
 # Apenas War-Room (correções críticas)
 npm run tdd:war-room
@@ -48,6 +50,7 @@ npm run tdd:optimize
 ```
 
 ### Execução Customizada
+
 ```bash
 # Executar apenas scanner e optimization
 node scripts/parallel-tdd-scheduler.mjs run stability-scanner optimization-sprint
@@ -119,9 +122,9 @@ tmp/parallel-tdd/
 
 ### Variáveis de Ambiente
 
-| Variável | Descrição | Padrão |
-|----------|-----------|--------|
-| `TDD_AGENT_ID` | ID do agente atual | Nome do script |
+| Variável         | Descrição          | Padrão           |
+| ---------------- | ------------------ | ---------------- |
+| `TDD_AGENT_ID`   | ID do agente atual | Nome do script   |
 | `TDD_OUTPUT_DIR` | Diretório de saída | `tmp/[agent-id]` |
 
 ### Configuração do Scheduler
@@ -129,18 +132,20 @@ tmp/parallel-tdd/
 ```javascript
 // Em parallel-tdd-scheduler.mjs
 const CONFIG = {
-  maxConcurrency: 2,           // Máximo de agentes simultâneos
-  niceLevels: {               // Prioridades (menor = mais prioridade)
-    'war-room': -10,
-    'stability-scanner': 0,
-    'optimization-sprint': 5,
+  maxConcurrency: 2, // Máximo de agentes simultâneos
+  niceLevels: {
+    // Prioridades (menor = mais prioridade)
+    "war-room": -10,
+    "stability-scanner": 0,
+    "optimization-sprint": 5,
   },
-  timeouts: {                  // Timeouts por agente (ms)
-    'war-room': 30 * 60 * 1000,
-    'stability-scanner': 15 * 60 * 1000,
-    'optimization-sprint': 20 * 60 * 1000,
+  timeouts: {
+    // Timeouts por agente (ms)
+    "war-room": 30 * 60 * 1000,
+    "stability-scanner": 15 * 60 * 1000,
+    "optimization-sprint": 20 * 60 * 1000,
   },
-  retryAttempts: 2,           // Tentativas de retry
+  retryAttempts: 2, // Tentativas de retry
 };
 ```
 
@@ -151,8 +156,8 @@ const CONFIG = {
 ```javascript
 class MyAgent {
   constructor() {
-    this.agentId = process.env.TDD_AGENT_ID || 'my-agent';
-    this.outputDir = process.env.TDD_OUTPUT_DIR || 'tmp/my-agent';
+    this.agentId = process.env.TDD_AGENT_ID || "my-agent";
+    this.outputDir = process.env.TDD_OUTPUT_DIR || "tmp/my-agent";
   }
 
   async execute() {
@@ -215,24 +220,28 @@ Os relatórios podem ser integrados com:
 ### Cenários de Aplicação
 
 #### **Desenvolvimento Ativo**
+
 ```bash
 # Diariamente durante desenvolvimento
 npm run tdd:parallel  # Scanner + Optimization
 ```
 
 #### **Pré-Deploy**
+
 ```bash
 # Antes de cada deploy
 npm run tdd:war-room  # Verificação crítica
 ```
 
 #### **Monitoramento Contínuo**
+
 ```bash
 # No CI/CD pipeline
 npm run tdd:stability  # Regressões
 ```
 
 #### **Otimização Background**
+
 ```bash
 # Em horários de baixa atividade
 npm run tdd:optimize   # Melhorias incrementais
@@ -252,8 +261,8 @@ jobs:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
@@ -273,6 +282,7 @@ jobs:
 ### Problemas Comuns
 
 #### **Agentes não executam**
+
 ```bash
 # Verificar se scripts existem
 npm run tdd:agents
@@ -282,18 +292,21 @@ tail -f tmp/parallel-tdd/scheduler.log
 ```
 
 #### **Timeout de agentes**
+
 ```bash
 # Aumentar timeout no CONFIG
 # Ou otimizar o agente específico
 ```
 
 #### **Conflitos de recursos**
+
 ```bash
 # Reduzir maxConcurrency
 # Executar agentes individualmente
 ```
 
 #### **Relatórios não gerados**
+
 ```bash
 # Verificar permissões de escrita
 ls -la tmp/
@@ -305,16 +318,19 @@ find tmp/parallel-tdd/ -type f
 ## 🎉 Benefícios
 
 ### Para Desenvolvedores
+
 - **Feedback Rápido**: Problemas detectados antes de impactar produção
 - **Melhorias Automáticas**: Código otimizado continuamente
 - **Redução de Débito Técnico**: Pequenas correções frequentes
 
 ### Para Equipes
+
 - **Padronização**: Abordagem consistente de qualidade
 - **Escalabilidade**: Sistema cresce com o projeto
 - **Visibilidade**: Métricas claras de maturidade
 
 ### Para Organizações
+
 - **ROI Melhorado**: Menos bugs, mais velocidade
 - **Qualidade Sustentável**: Práticas incorporadas ao workflow
 - **Inovação Acelerada**: Foco em features, não em correções

@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Path, FieldValues } from "react-hook-form";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface FormFieldProps<T extends FieldValues> {
   name: Path<T>;

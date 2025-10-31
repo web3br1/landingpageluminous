@@ -32,7 +32,7 @@ function base(
 
   const method = level === "info" ? "log" : level;
   // Use a single line JSON for easy ingestion by log processors
-  (console as any)[method](JSON.stringify(payload));
+  (console as unknown)[method](JSON.stringify(payload));
 }
 
 export const logger = {

@@ -242,7 +242,7 @@ export function OnboardingFlow() {
                   onChange={() =>
                     setUserProfile((prev) => ({
                       ...prev,
-                      experience_level: level.id as any,
+                      experience_level: level.id as "beginner" | "intermediate" | "advanced",
                     }))
                   }
                 />

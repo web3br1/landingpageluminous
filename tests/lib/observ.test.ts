@@ -34,7 +34,7 @@ describe("Observability (Telemetry)", () => {
         phase: 3,
         issue: "headers_cookies_outside_request_scope",
         timestamp: expect.any(Number),
-      })
+      }),
     );
   });
 
@@ -51,7 +51,7 @@ describe("Observability (Telemetry)", () => {
         phase: 3,
         issue: "envelope_contract_violation",
         timestamp: expect.any(Number),
-      })
+      }),
     );
   });
 
@@ -65,7 +65,7 @@ describe("Observability (Telemetry)", () => {
       expect.objectContaining({
         sectionId: "hero",
         error: undefined,
-      })
+      }),
     );
   });
 });

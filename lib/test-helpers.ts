@@ -1,4 +1,16 @@
 import { Page, BrowserContext, test } from "@playwright/test";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
+
+// Extended Window interface for test mocking
+interface TestWindow extends Window {
+  originalDateNow?: () => number;
+  originalRandom?: () => number;
+  originalPerfNow?: () => number;
+}
 
 /**
  * Test Hygiene Helpers - Garantir isolamento entre testes
@@ -129,13 +141,13 @@ export async function freezeAnimationsForScreenshots(page: Page) {
     // Mock Date.now para screenshots consistentes
     const originalNow = Date.now;
     const frozenTime = originalNow();
-    (window as any).originalDateNow = originalNow;
+    (window as TestWindow).originalDateNow = originalNow;
     Date.now = () => frozenTime;
 
     // Mock Math.random para consistência
     const originalRandom = Math.random;
     let randomSeed = 0.12345; // Seed consistente
-    (window as any).originalRandom = originalRandom;
+    (window as TestWindow).originalRandom = originalRandom;
     Math.random = () => {
       randomSeed = (randomSeed * 9301 + 49297) % 233280;
       return randomSeed / 233280;
@@ -145,7 +157,7 @@ export async function freezeAnimationsForScreenshots(page: Page) {
     if (performance && performance.now) {
       const originalNow = performance.now;
       const perfTime = 1000; // Tempo consistente
-      (window as any).originalPerfNow = originalNow;
+      (window as TestWindow).originalPerfNow = originalNow;
       performance.now = () => perfTime;
     }
   });

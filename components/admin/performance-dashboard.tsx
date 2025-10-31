@@ -113,7 +113,7 @@ export function PerformanceDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Total Metrics</h3>
             <p className="text-3xl font-bold text-blue-600">
-              {summary.totalMetrics.toLocaleString()}
+              {(summary as any).totalMetrics.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Performance data points
@@ -123,7 +123,7 @@ export function PerformanceDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Active Optimizations</h3>
             <p className="text-3xl font-bold text-green-600">
-              {summary.totalOptimizations.toLocaleString()}
+              {(summary as any).totalOptimizations.toLocaleString()}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Applied optimizations
@@ -133,7 +133,7 @@ export function PerformanceDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Geo Coverage</h3>
             <p className="text-3xl font-bold text-purple-600">
-              {summary.geoCoverage.length}
+              {(summary as any).geoCoverage.length}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
               Countries covered
@@ -143,8 +143,8 @@ export function PerformanceDashboard() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Data Freshness</h3>
             <p className="text-lg font-bold text-orange-600">
-              {summary.timeRange.newest
-                ? formatTimestamp(summary.timeRange.newest).split(",")[0]
+              {(summary as any).timeRange.newest
+                ? formatTimestamp((summary as any).timeRange.newest).split(",")[0]
                 : "No data"}
             </p>
             <p className="text-sm text-gray-600 dark:text-gray-400">
@@ -155,11 +155,11 @@ export function PerformanceDashboard() {
       )}
 
       {/* Geographic Coverage */}
-      {summary && summary.geoCoverage.length > 0 && (
+      {summary && (summary as any).geoCoverage.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Geographic Coverage</h2>
           <div className="flex flex-wrap gap-2">
-            {summary.geoCoverage.map((country) => (
+            {(summary as any).geoCoverage.map((country) => (
               <span
                 key={country}
                 className="px-3 py-1 bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 rounded-full text-sm"
@@ -172,28 +172,28 @@ export function PerformanceDashboard() {
       )}
 
       {/* Recent Optimizations */}
-      {summary && summary.recentOptimizations.length > 0 && (
+      {summary && (summary as any).recentOptimizations.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h2 className="text-xl font-semibold mb-4">Recent Optimizations</h2>
           <div className="space-y-3">
-            {summary.recentOptimizations.slice(0, 10).map((opt: any) => (
-              <div key={opt.id} className="border rounded p-3">
+            {(summary as any).recentOptimizations.slice(0, 10).map((opt: unknown) => (
+              <div key={(opt as any).id} className="border rounded p-3">
                 <div className="flex justify-between items-center">
                   <div>
                     <div className="font-medium capitalize">
-                      {opt.type} Optimization
+                      {(opt as any).type} Optimization
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Target: {opt.target}
-                      {opt.geo && ` • Geo: ${opt.geo}`}
+                      Target: {(opt as any).target}
+                      {(opt as any).geo && ` • Geo: ${(opt as any).geo}`}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-semibold text-green-600">
-                      +{opt.improvement}%
+                      +{(opt as any).improvement}%
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {formatTimestamp(opt.timestamp)}
+                      {formatTimestamp((opt as any).timestamp)}
                     </div>
                   </div>
                 </div>

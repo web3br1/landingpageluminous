@@ -10,7 +10,16 @@ const mockLocalStorage = {
 Object.defineProperty(window, "localStorage", { value: mockLocalStorage });
 
 // Mock matchMedia
-const mockMatchMedia = vi.fn();
+const mockMatchMedia = vi.fn(() => ({
+  matches: false, // Default to light preference
+  media: "",
+  onchange: null,
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  addListener: vi.fn(), // deprecated
+  removeListener: vi.fn(), // deprecated
+  dispatchEvent: vi.fn(),
+}));
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: mockMatchMedia,
@@ -18,7 +27,6 @@ Object.defineProperty(window, "matchMedia", {
 
 // Import theme utilities after mocks
 import {
-  getTheme,
   setTheme,
   toggleTheme,
   applyTheme,
@@ -27,6 +35,8 @@ import {
   getSystemTheme,
   getStoredTheme,
   watchSystemTheme,
+  getCurrentTheme,
+  initializeTheme,
 } from "@/lib/theme/theme-utils";
 
 describe("Theme System", () => {
@@ -36,8 +46,9 @@ describe("Theme System", () => {
     mockLocalStorage.setItem.mockClear();
     mockMatchMedia.mockClear();
 
-    // Reset document classes
+    // Reset document classes and attributes
     document.documentElement.className = "";
+    document.documentElement.removeAttribute("data-theme");
   });
 
   describe("Theme Constants", () => {
@@ -112,11 +123,11 @@ describe("Theme System", () => {
     });
   });
 
-  describe("getTheme", () => {
+  describe("getCurrentTheme", () => {
     it("returns stored theme when available", () => {
       mockLocalStorage.getItem.mockReturnValue("dark");
 
-      const result = getTheme();
+      const result = getCurrentTheme();
 
       expect(result).toBe("dark");
     });
@@ -129,7 +140,7 @@ describe("Theme System", () => {
         removeEventListener: vi.fn(),
       });
 
-      const result = getTheme();
+      const result = getCurrentTheme();
 
       expect(result).toBe(THEMES.DARK);
     });
@@ -142,7 +153,7 @@ describe("Theme System", () => {
         removeEventListener: vi.fn(),
       });
 
-      const result = getTheme();
+      const result = getCurrentTheme();
 
       expect(result).toBe(THEMES.LIGHT);
     });
@@ -313,7 +324,7 @@ describe("Theme System", () => {
 
       // Get theme should return stored value
       mockLocalStorage.getItem.mockReturnValue("dark");
-      const retrievedTheme = getTheme();
+      const retrievedTheme = getCurrentTheme();
       expect(retrievedTheme).toBe("dark");
     });
 
@@ -326,7 +337,7 @@ describe("Theme System", () => {
         removeEventListener: vi.fn(),
       });
 
-      const theme = getTheme();
+      const theme = getCurrentTheme();
       expect(theme).toBe(THEMES.DARK);
 
       // Should apply dark theme
@@ -349,7 +360,7 @@ describe("Theme System", () => {
 
       // Should not crash
       expect(() => {
-        const theme = getTheme();
+        const theme = getCurrentTheme();
         expect(theme).toBe(THEMES.LIGHT);
       }).not.toThrow();
     });
@@ -389,13 +400,13 @@ describe("Theme System", () => {
       // Simulate page load with stored dark theme
       mockLocalStorage.getItem.mockReturnValue("dark");
 
-      const theme = getTheme();
+      const theme = getCurrentTheme();
       applyTheme(theme);
 
       expect(document.documentElement.classList.contains("dark")).toBe(true);
 
       // Simulate another page load
-      const theme2 = getTheme();
+      const theme2 = getCurrentTheme();
       expect(theme2).toBe("dark");
     });
   });

@@ -60,7 +60,7 @@ import { designTokens } from "@/design-system/tokens";
 export { designTokens };
 
 // Utility para verificar contraste (placeholder)
-export function contrastOk(fg: string, bg: string): boolean {
+export function contrastOk(_fg: string, _bg: string): boolean {
   // Implementação simplificada - em produção usar lib como color-contrast
   return true;
 }

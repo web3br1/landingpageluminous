@@ -1,5 +1,18 @@
 import { Metadata } from "next";
 
+/**
+ * Safe property access for rich snippets data
+ */
+function safeRichSnippetAccess<T>(
+  data: unknown,
+  property: string,
+  fallback: T,
+): T {
+  if (!data || typeof data !== 'object') return fallback;
+  const obj = data as Record<string, unknown>;
+  return (obj[property] as T) ?? fallback;
+}
+
 // Schema.org types for structured data
 interface ProductSchema {
   "@context": "https://schema.org";
@@ -244,7 +257,7 @@ export function generateVideoSchema(
 }
 
 // Main function to generate all schemas for a page
-export function generatePageSchemas(pageType: string, data?: any) {
+export function generatePageSchemas(pageType: string, data?: unknown) {
   const schemas = [];
 
   // Always include organization schema
@@ -305,8 +318,9 @@ export function generatePageSchemas(pageType: string, data?: any) {
 
     case "demo":
       // Video schema for demo page
-      if (data?.videos) {
-        schemas.push(...generateVideoSchema(data.videos));
+      const videos = safeRichSnippetAccess(data, 'videos', null);
+      if (videos) {
+        schemas.push(...generateVideoSchema(videos));
       }
       break;
 
@@ -322,20 +336,22 @@ export function generatePageSchemas(pageType: string, data?: any) {
   }
 
   // FAQ schema if FAQs are provided
-  if (data?.faqs) {
-    schemas.push(generateFAQSchema(data.faqs));
+  const faqs = safeRichSnippetAccess(data, 'faqs', null);
+  if (faqs) {
+    schemas.push(generateFAQSchema(faqs));
   }
 
   // Reviews schema if reviews are provided
-  if (data?.reviews) {
-    schemas.push(generateReviewSchema(data.reviews));
+  const reviews = safeRichSnippetAccess(data, 'reviews', null);
+  if (reviews) {
+    schemas.push(generateReviewSchema(reviews));
   }
 
   return schemas;
 }
 
 // Generate JSON-LD script tags for Next.js (to be used in JSX)
-export function generateJsonLdSchemas(schemas: any[]) {
+export function generateJsonLdSchemas(schemas: unknown[]) {
   // This function should be called from a .tsx file
   // For now, return the schemas directly for use in metadata
   return schemas;

@@ -6,7 +6,7 @@ import { useEffect, useRef, useCallback } from "react";
 export interface ResourceTracker {
   id: string;
   type: "eventListener" | "interval" | "timeout" | "observer" | "subscription";
-  target?: any;
+  target?: unknown;
   eventType?: string;
   createdAt: number;
   stack?: string;
@@ -177,11 +177,14 @@ export function useMemoryLeakDetection(componentName: string) {
 
   // Detect memory spikes
   const detectMemorySpike = useCallback((thresholdBytes: number) => {
-    if (typeof window === "undefined" || !(window.performance as any)?.memory) {
+    if (
+      typeof window === "undefined" ||
+      !(window.performance as unknown)?.memory
+    ) {
       return null;
     }
 
-    const currentMemory = (window.performance as any).memory.usedJSHeapSize;
+    const currentMemory = (window.performance as unknown).memory.usedJSHeapSize;
     if (currentMemory > thresholdBytes) {
       return {
         memoryUsage: currentMemory,
@@ -215,8 +218,9 @@ export function useMemoryLeakDetection(componentName: string) {
 
         // Store leak info globally for testing
         if (typeof window !== "undefined") {
-          (window as any).__memoryLeaks = (window as any).__memoryLeaks || {};
-          (window as any).__memoryLeaks[componentIdRef.current] = {
+          (window as unknown).__memoryLeaks =
+            (window as unknown).__memoryLeaks || {};
+          (window as unknown).__memoryLeaks[componentIdRef.current] = {
             componentName,
             leakedResources: resourcesRef.current.length,
             resources: resourcesRef.current,
@@ -343,12 +347,12 @@ export function useObserverTracker() {
 export function getGlobalMemoryLeaks() {
   if (typeof window === "undefined") return {};
 
-  return (window as any).__memoryLeaks || {};
+  return (window as unknown).__memoryLeaks || {};
 }
 
 export function clearGlobalMemoryLeaks() {
   if (typeof window !== "undefined") {
-    (window as any).__memoryLeaks = {};
+    (window as unknown).__memoryLeaks = {};
   }
   resourceRegistry.clear();
 }
@@ -358,15 +362,17 @@ export function waitForCleanup(componentId?: string): Promise<void> {
   return new Promise((resolve) => {
     setTimeout(() => {
       // Force garbage collection hint (not guaranteed)
-      if (typeof window !== "undefined" && (window as any).gc) {
-        (window as any).gc();
+      if (typeof window !== "undefined" && (window as unknown).gc) {
+        (window as unknown).gc();
       }
 
       // Check for leaks
       const leaks = getGlobalMemoryLeaks();
       const hasLeaks = componentId
         ? leaks[componentId]?.leakedResources > 0
-        : Object.values(leaks).some((leak: any) => leak.leakedResources > 0);
+        : Object.values(leaks).some(
+            (leak: unknown) => leak.leakedResources > 0,
+          );
 
       if (hasLeaks) {
         console.warn("Memory leaks detected:", leaks);

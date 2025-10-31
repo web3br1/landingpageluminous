@@ -12,7 +12,7 @@ export interface WebhookEvent {
   provider: "stripe" | "pagbank" | "custom";
   eventType: string;
   eventId: string;
-  data: any;
+  data: unknown;
   metadata: WebhookMetadata;
   processing: WebhookProcessingState;
   idempotencyKey: string;
@@ -88,7 +88,7 @@ export interface WebhookProcessingResult {
   success: boolean;
   error?: string;
   retryable: boolean;
-  data?: any;
+  data?: unknown;
   processingTimeMs: number;
 }
 

@@ -10,7 +10,7 @@ import {
   SEOContentAnalyzer,
   ConversionOptimizer,
 } from "../seo-optimizer";
-import { Factory, Utils } from "../../composition/test-helpers";
+import { Factory, Utils } from "@/tests/__shared__/lib/test-helpers";
 
 // Mock Next.js router
 vi.mock("next/router", () => ({

@@ -2,16 +2,70 @@
 
 import React from "react";
 import { getSSRAdapter } from "../composition/container";
+import { withComponentContext } from "../architecture/logger-pattern";
+import { CacheManager, CacheBackend } from "../architecture/cache-manager";
+import { ExperimentDefinition } from "./ab-testing-framework";
 
 // Experiment types and interfaces
+export interface ExperimentVariantProps {
+  // Common UI props
+  className?: string;
+  style?: React.CSSProperties;
+  children?: React.ReactNode;
+  // Experiment-specific props
+  variant?: string;
+  experimentId?: string;
+  // Custom props for specific components
+  [key: string]: unknown;
+}
+
+export interface ExperimentVariantStyle {
+  // CSS properties
+  backgroundColor?: string;
+  color?: string;
+  fontSize?: string | number;
+  fontWeight?: string | number;
+  padding?: string | number;
+  margin?: string | number;
+  borderRadius?: string | number;
+  // Layout properties
+  display?: string;
+  flexDirection?: string;
+  justifyContent?: string;
+  alignItems?: string;
+  // Custom style properties
+  [key: string]: unknown;
+}
+
+export interface ExperimentVariantContent {
+  // Text content
+  headline?: string;
+  subheadline?: string;
+  description?: string;
+  ctaText?: string;
+  // Media content
+  imageUrl?: string;
+  videoUrl?: string;
+  iconName?: string;
+  // Structured content
+  items?: Array<{
+    id: string;
+    title: string;
+    description?: string;
+    icon?: string;
+  }>;
+  // Custom content properties
+  [key: string]: unknown;
+}
+
 export interface ExperimentVariant {
   id: string;
   name: string;
   weight: number; // 0-100 percentage
-  component?: React.ComponentType<any>;
-  props?: Record<string, any>;
-  style?: Record<string, any>;
-  content?: any;
+  component?: React.ComponentType<ExperimentVariantProps>;
+  props?: ExperimentVariantProps;
+  style?: ExperimentVariantStyle;
+  content?: ExperimentVariantContent;
 }
 
 export interface Experiment {
@@ -54,6 +108,8 @@ export interface ExperimentResults {
 export class ExperimentEngine {
   private experiments: Map<string, Experiment> = new Map();
   private userAssignments: Map<string, Map<string, string>> = new Map(); // userId -> experimentId -> variantId
+  private cacheManager = CacheManager.getInstance();
+  private logger = withComponentContext("experiment-engine", "cache");
 
   constructor() {
     this.loadExperiments();
@@ -68,18 +124,33 @@ export class ExperimentEngine {
         const stored = localStorage.getItem("ab_experiments");
         if (stored) {
           const experiments = JSON.parse(stored);
-          Object.entries(experiments).forEach(([id, exp]: [string, any]) => {
-            this.experiments.set(id, {
-              ...exp,
-              startDate: exp.startDate ? new Date(exp.startDate) : undefined,
-              endDate: exp.endDate ? new Date(exp.endDate) : undefined,
-            });
-          });
+          Object.entries(experiments).forEach(
+            ([id, exp]: [string, unknown]) => {
+              // Safe narrowing for experiment definition
+              const experimentData = exp as Partial<ExperimentDefinition>;
+              this.experiments.set(id, {
+                id,
+                name: experimentData.name || `Experiment ${id}`,
+                description: experimentData.description,
+                status: (experimentData.status === "running" ? "active" : experimentData.status) || "draft",
+                variants: experimentData.variants || [],
+                trafficAllocation: (experimentData as any).trafficAllocation || 0,
+                targetAudience: experimentData.targetAudience,
+                goals: { primary: "conversion", secondary: [] },
+                startDate: experimentData.startDate ? new Date(experimentData.startDate) : undefined,
+                endDate: experimentData.endDate ? new Date(experimentData.endDate) : undefined,
+                minSampleSize: experimentData.sampleSize,
+              });
+            },
+          );
         }
       }
       this.loadDefaultExperiments();
     } catch (error) {
-      console.warn("Failed to load experiments:", error);
+      withComponentContext("experiment-engine", "loadExperiments").warn(
+        "Failed to load experiments, using defaults",
+        { error: error instanceof Error ? error.message : String(error) }
+      );
       this.loadDefaultExperiments();
     }
   }
@@ -231,7 +302,7 @@ export class ExperimentEngine {
     variantId: string,
     userId: string,
     event: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): void {
     const experiment = this.experiments.get(experimentId);
     if (!experiment) return;
@@ -301,7 +372,7 @@ export class ExperimentEngine {
     experiment.results.statisticalSignificance =
       experiment.results.visitors >= (experiment.minSampleSize || 1000);
 
-    this.persistExperiments();
+    void this.persistExperiments();
   }
 
   // Get experiment results
@@ -355,18 +426,36 @@ export class ExperimentEngine {
       experiment.winner = bestVariant.id;
     }
 
-    this.persistExperiments();
+    void this.persistExperiments();
   }
 
   // Persist experiments to storage
-  private persistExperiments(): void {
-    if (typeof window === "undefined") return;
-
+  private async persistExperiments(): Promise<void> {
+    const experimentsObj = Object.fromEntries(this.experiments);
     try {
-      const experimentsObj = Object.fromEntries(this.experiments);
-      localStorage.setItem("ab_experiments", JSON.stringify(experimentsObj));
+
+      // Use cache manager with TTL of 24 hours
+      const cache = this.cacheManager.createCache("ab_experiments", {
+        backend: CacheBackend.MEMORY,
+        ttl: 24 * 60 * 60 * 1000, // 24 hours
+        namespace: "ab-testing",
+        maxSize: 100
+      });
+      await cache.set("experiments", experimentsObj);
+
+      this.logger.debug("Experiments cached successfully", {
+        experimentCount: this.experiments.size,
+        cacheKey: "ab_experiments"
+      });
     } catch (error) {
-      console.warn("Failed to persist experiments:", error);
+      this.logger.warn("Failed to cache experiments, falling back to localStorage", {
+        error: error instanceof Error ? error.message : String(error)
+      });
+
+      // Fallback to localStorage
+      if (typeof window !== "undefined") {
+        localStorage.setItem("ab_experiments", JSON.stringify(experimentsObj));
+      }
     }
   }
 
@@ -383,7 +472,10 @@ export class ExperimentEngine {
       );
       localStorage.setItem("ab_user_assignments", JSON.stringify(assignments));
     } catch (error) {
-      console.warn("Failed to persist user assignments:", error);
+      withComponentContext("experiment-engine", "persistUserAssignments").warn(
+        "Failed to persist user assignments to localStorage",
+        { error: error instanceof Error ? error.message : String(error) }
+      );
     }
   }
 
@@ -414,7 +506,7 @@ export class ExperimentEngine {
     };
 
     this.experiments.set(id, newExperiment);
-    this.persistExperiments();
+    void this.persistExperiments();
 
     return id;
   }
@@ -425,13 +517,13 @@ export class ExperimentEngine {
     if (!experiment) return;
 
     this.experiments.set(id, { ...experiment, ...updates });
-    this.persistExperiments();
+    void this.persistExperiments();
   }
 
   // Delete experiment
   deleteExperiment(id: string): void {
     this.experiments.delete(id);
-    this.persistExperiments();
+    void this.persistExperiments();
   }
 }
 
@@ -450,14 +542,14 @@ export const useExperimentEngine = () => ({
     variantId: string,
     userId: string,
     event: string,
-    metadata?: any,
+    metadata?: unknown,
   ) =>
     experimentEngine.trackExperimentEvent(
       id,
       variantId,
       userId,
       event,
-      metadata,
+      (metadata as Record<string, unknown>) || {},
     ),
 });
 
@@ -496,7 +588,7 @@ export function useExperiment(experimentId: string) {
   }, [experimentId, ssrAdapter]);
 
   const trackEvent = React.useCallback(
-    (event: string, metadata?: Record<string, any>) => {
+    (event: string, metadata?: Record<string, unknown>) => {
       if (variantId && experiment) {
         const userId = getUserId();
         experimentEngine.trackExperimentEvent(
@@ -555,7 +647,7 @@ export function withExperiment<P extends object>(
 export function getVariantContent(
   experimentId: string,
   variantId: string,
-): any {
+): unknown {
   const experiment = experimentEngine.experimentsMap.get(experimentId);
   if (!experiment) return null;
 

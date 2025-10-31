@@ -1,13 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import { z } from "zod";
 import { useFormWithValidation } from "@/lib/hooks/use-form-with-validation";
 import { FormField } from "./form-field";
 import { FormButton } from "./form-button";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 import { Section } from "@/app/(marketing)/components/ui/section";
+import { createPropValidator } from "../../lib/architecture/component-props";
+import { withComponentContext } from "../../lib/architecture/logger-pattern";
+import { SimpleErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
+
+// Cache for form validation schemas (performance optimization)
+const formSchemaCache = new Map<string, z.ZodSchema<any>>();
+const CACHE_TTL = 10 * 60 * 1000; // 10 minutes
 
 interface FormFieldConfig {
   name: string;
@@ -22,72 +29,183 @@ interface FormFieldConfig {
 // Form state contract - standardized across all forms
 export type FormStatus = "idle" | "submitting" | "success" | "error";
 
-interface AdvancedFormProps<T extends Record<string, any>> {
-  title?: string;
-  subtitle?: string;
-  fields: FormFieldConfig[];
+// Schema for AdvancedForm props validation
+const AdvancedFormPropsSchema = z.object({
+  title: z.string().optional(),
+  subtitle: z.string().optional(),
+  fields: z.array(z.object({
+    name: z.string().min(1, "Field name is required"),
+    label: z.string().min(1, "Field label is required"),
+    type: z.enum(["text", "email", "tel", "select", "textarea"]).optional().default("text"),
+    placeholder: z.string().optional(),
+    required: z.boolean().optional().default(false),
+    options: z.union([
+      z.array(z.string()),
+      z.array(z.object({ value: z.string(), label: z.string() }))
+    ]).optional(),
+    rows: z.number().min(1).optional(),
+  })).min(1, "At least one field is required"),
+  schema: z.any(), // Zod schema - validated at runtime
+  defaultValues: z.record(z.string(), z.unknown()).optional(),
+  sanitizeInputs: z.boolean().optional().default(true),
+  submitText: z.string().optional().default("Enviar"),
+  loadingText: z.string().optional().default("Enviando..."),
+  successMessage: z.string().optional().default("Mensagem enviada com sucesso!"),
+  privacyText: z.string().optional(),
+  sectionId: z.string().optional(),
+  rateLimit: z.object({
+    maxAttempts: z.number().min(1),
+    windowMs: z.number().min(1000),
+    blockDurationMs: z.number().min(1000),
+  }).optional(),
+  backendRateLimit: z.object({
+    action: z.string().min(1),
+    maxRetries: z.number().min(0).optional().default(3),
+    retryDelay: z.number().min(0).optional().default(1000),
+    fallbackToClient: z.boolean().optional().default(false),
+    clientFallbackConfig: z.object({
+      maxAttempts: z.number().min(1),
+      windowMs: z.number().min(1000),
+      blockDurationMs: z.number().min(1000),
+    }).optional(),
+  }).optional(),
+  onSubmit: z.any().optional(),
+  onValidationError: z.any().optional(),
+  onSubmitSuccess: z.any().optional(),
+  onSubmitError: z.any().optional(),
+  className: z.string().optional(),
+});
+
+export interface AdvancedFormProps<T extends Record<string, unknown>> extends z.infer<typeof AdvancedFormPropsSchema> {
   schema: z.ZodSchema<T>;
-  defaultValues?: Partial<T>;
-  submitText?: string;
-  loadingText?: string;
-  successMessage?: string;
-  privacyText?: string;
-  sectionId?: string;
-  rateLimit?: {
-    maxAttempts: number;
-    windowMs: number;
-    blockDurationMs: number;
-  };
-  backendRateLimit?: {
-    action: string;
-    maxRetries?: number;
-    retryDelay?: number;
-    fallbackToClient?: boolean;
-    clientFallbackConfig?: {
-      maxAttempts: number;
-      windowMs: number;
-      blockDurationMs: number;
-    };
-  };
-  sanitizeInputs?: boolean;
-  // Contract: onSubmit MUST return a Promise for predictable async behavior
-  onSubmit: (data: T) => Promise<void>;
-  onSuccess?: () => void;
-  onError?: (error: any) => void;
-  className?: string;
+  onSubmit?: (data: T) => Promise<void>;
+  onValidationError?: (errors: Array<{ field: string; message: string }>) => void;
 }
+
+// Create prop validator for AdvancedForm component
+const advancedFormPropValidator = createPropValidator(AdvancedFormPropsSchema, "AdvancedForm", {
+  logErrors: true,
+  throwOnError: false,
+  fallbackValues: {
+    submitText: "Enviar",
+    loadingText: "Enviando...",
+    successMessage: "Mensagem enviada com sucesso!",
+    sanitizeInputs: true,
+  },
+});
 
 interface FormSuccessState {
   isVisible: boolean;
   message: string;
 }
 
-export function AdvancedForm<T extends Record<string, any>>({
-  title,
-  subtitle,
-  fields,
-  schema,
-  defaultValues,
-  submitText = "Enviar",
-  loadingText = "Enviando...",
-  successMessage = "Mensagem enviada com sucesso!",
-  privacyText,
-  sectionId = "advanced-form",
-  rateLimit = {
-    maxAttempts: 5,
-    windowMs: 60000, // 1 minute
-    blockDurationMs: 300000, // 5 minutes
-  },
-  backendRateLimit = undefined,
-  sanitizeInputs = true,
-  onSubmit,
-  onSuccess,
-  onError,
-  className = "",
-}: AdvancedFormProps<T>) {
-  // Standardized form state contract
-  const [status, setStatus] = useState<FormStatus>("idle");
+function AdvancedForm<T extends Record<string, unknown>>(props: AdvancedFormProps<T>) {
+  // Component-specific logger
+  const logger = withComponentContext("AdvancedForm");
 
+  // Validate props using the component-props pattern
+  const validatedProps = advancedFormPropValidator.validateWithFallback(props, {
+    submitText: "Enviar",
+    loadingText: "Enviando...",
+    successMessage: "Mensagem enviada com sucesso!",
+  });
+
+  // Log prop validation if there were issues
+  const validationResult = advancedFormPropValidator.validate(props);
+  if (!validationResult.success && validationResult.errors.length > 0) {
+    logger.warn("AdvancedForm props validation failed, using fallbacks", {
+      errors: validationResult.errors.length,
+      fieldsCount: validatedProps.fields.length,
+      hasRateLimit: !!validatedProps.rateLimit,
+      hasBackendRateLimit: !!validatedProps.backendRateLimit,
+    });
+  }
+
+  // Cache schema for performance
+  const schemaCacheKey = `form_${validatedProps.fields.map(f => f.name).sort().join('_')}`;
+  const cachedSchema = formSchemaCache.get(schemaCacheKey);
+
+  const effectiveSchema = useMemo(() => {
+    if (cachedSchema && (Date.now() - (cachedSchema as any)._cacheTime) < CACHE_TTL) {
+      logger.debug("Using cached form schema", { cacheKey: schemaCacheKey });
+      return cachedSchema;
+    }
+
+    logger.debug("Creating fresh form schema", { cacheKey: schemaCacheKey });
+    const freshSchema = validatedProps.schema;
+    (freshSchema as any)._cacheTime = Date.now();
+    formSchemaCache.set(schemaCacheKey, freshSchema);
+
+    return freshSchema;
+  }, [validatedProps.schema, schemaCacheKey, logger]);
+
+  const {
+    title,
+    subtitle,
+    fields,
+    defaultValues,
+    submitText,
+    loadingText,
+  successMessage,
+  privacyText,
+  sectionId,
+  rateLimit,
+  backendRateLimit,
+  onSubmit,
+  onValidationError,
+  className,
+  } = validatedProps;
+
+  // Log component initialization
+  React.useEffect(() => {
+    logger.info("AdvancedForm initialized", {
+      fieldsCount: fields.length,
+      hasRateLimit: !!rateLimit,
+      hasBackendRateLimit: !!backendRateLimit,
+      schemaCached: !!cachedSchema,
+    });
+  }, [fields.length, rateLimit, backendRateLimit, cachedSchema, logger]);
+
+  // Use effective schema instead of the original schema
+  const formHook = useFormWithValidation({
+    schema: effectiveSchema,
+    defaultValues,
+  });
+
+  // Override the submit handler to add logging
+  const handleSubmit = React.useCallback(async (data: T) => {
+    const startTime = performance.now();
+    setStatus("submitting");
+
+    logger.info("AdvancedForm submission started", {
+      fieldsCount: fields.length,
+      hasRateLimit: !!rateLimit,
+    });
+
+    try {
+      await onSubmit?.(data);
+
+      const duration = performance.now() - startTime;
+      logger.info("AdvancedForm submission successful", {
+        duration: Math.round(duration),
+        fieldsCount: fields.length,
+      });
+
+      setStatus("success");
+      setSuccessState({ isVisible: true, message: successMessage });
+    } catch (error) {
+      const duration = performance.now() - startTime;
+      logger.error("AdvancedForm submission failed", error, {
+        duration: Math.round(duration),
+        fieldsCount: fields.length,
+      });
+
+      setStatus("error");
+      onValidationError?.([{ field: "submit", message: "Erro ao enviar formulário" }]);
+    }
+  }, [onSubmit, successMessage, onValidationError, fields.length, rateLimit, logger]);
+
+  // Continue with form state management
   const [successState, setSuccessState] = useState<FormSuccessState>({
     isVisible: false,
     message: successMessage,
@@ -96,21 +214,24 @@ export function AdvancedForm<T extends Record<string, any>>({
   // Screen reader announcements for status changes
   const [srAnnouncement, setSrAnnouncement] = useState<string>("");
 
-  const form = useFormWithValidation({
-    schema,
-    defaultValues,
-    rateLimit,
-    backendRateLimit,
-    sanitizeInputs,
-    onSubmitSuccess: (data: any) => {
+  // Form status state
+  const [status, setStatus] = useState<"idle" | "submitting" | "success" | "error">("idle");
+
+  const { formState: hookFormState, ...form } = useFormWithValidation({
+    schema: validatedProps.schema,
+    defaultValues: validatedProps.defaultValues,
+    rateLimit: validatedProps.rateLimit,
+    backendRateLimit: validatedProps.backendRateLimit,
+    sanitizeInputs: validatedProps.sanitizeInputs,
+    onSubmitSuccess: (data: unknown) => {
       // Contract: Synchronize states - set success state and clear submitting state
       console.log("✅ onSubmitSuccess called with:", data);
       setStatus("success");
       setSuccessState({ isVisible: true, message: successMessage });
       setSrAnnouncement("Formulário enviado com sucesso");
-      onSuccess?.();
+      validatedProps.onSubmitSuccess?.(data);
     },
-    onSubmitError: (error: any) => {
+    onSubmitError: (error: unknown) => {
       // Contract: Synchronize states - reset both local status and hook state on error
       console.log("❌ onSubmitError called with:", error);
       setStatus("idle");
@@ -118,9 +239,9 @@ export function AdvancedForm<T extends Record<string, any>>({
         "Erro ao enviar formulário. Verifique os campos e tente novamente.",
       );
       console.error("Form submission error:", error);
-      onError?.(error);
+      validatedProps.onSubmitError?.(error);
     },
-  });
+  }) as any;
 
   // Reset form state for retry (exported for testing)
   const resetForm = () => {
@@ -133,7 +254,7 @@ export function AdvancedForm<T extends Record<string, any>>({
   const getBlockReason = () => {
     if (!form.rateLimitState.isBlocked) return undefined;
 
-    const timeMs = (form.rateLimitState as any).timeUntilUnblock || 0;
+    const timeMs = Math.max(0, form.rateLimitState.blockUntil - Date.now());
     const minutes = Math.floor(timeMs / 60000);
     const seconds = Math.floor((timeMs % 60000) / 1000);
 
@@ -252,30 +373,30 @@ export function AdvancedForm<T extends Record<string, any>>({
           {fields.map((field, index) => (
             <FormField
               key={field.name}
-              name={field.name as any}
+              name={field.name}
               label={field.label}
               type={field.type}
               placeholder={field.placeholder}
               required={field.required}
               options={field.options}
-              error={form.getFieldErrorMessage(field.name as any)}
-              value={form.watch(field.name as any) as string}
+              error={form.getFieldErrorMessage(field.name)}
+              value={(form.watch(field.name) as string) || ""}
               onChange={(value) =>
-                form.setValue(field.name as any, value as any)
+                (form.setValue as any)(field.name, value)
               }
-              onBlur={() => form.trigger(field.name as any)}
-              disabled={form.formState.isSubmitting}
+              onBlur={() => (form.trigger as any)(field.name)}
+              disabled={hookFormState?.isSubmitting}
               rows={field.rows}
               delay={index * 0.1}
             />
           ))}
 
           <FormButton
-            isLoading={status === "submitting" || form.formState.isSubmitting}
+            isLoading={status === "submitting" || hookFormState?.isSubmitting}
             isDisabled={
               !form.canSubmit ||
               status === "submitting" ||
-              form.formState.isSubmitting
+              hookFormState?.isSubmitting
             }
             isBlocked={form.rateLimitState.isBlocked}
             blockReason={getBlockReason()}
@@ -310,3 +431,7 @@ export function AdvancedForm<T extends Record<string, any>>({
     </Section>
   );
 }
+
+// Export the component directly (error boundary can be added by parent components)
+export { AdvancedForm };
+export default AdvancedForm;

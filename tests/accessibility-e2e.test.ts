@@ -53,17 +53,21 @@ test.describe("Accessibility E2E Tests", () => {
     const lang = await page.getAttribute("html", "lang");
     expect(lang).toBeTruthy();
 
-    console.log('✅ Basic accessibility requirements met');
+    console.log("✅ Basic accessibility requirements met");
   });
 
   test("keyboard navigation works properly", async ({ page }) => {
     // Check that there are focusable elements on the page first
-    const focusableElements = page.locator('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+    const focusableElements = page.locator(
+      'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+    );
     const focusableCount = await focusableElements.count();
 
     // Se não há elementos focáveis, o teste passa (página ainda carrega)
     if (focusableCount === 0) {
-      console.log('ℹ️  No focusable elements found, but page loads successfully');
+      console.log(
+        "ℹ️  No focusable elements found, but page loads successfully",
+      );
       return;
     }
 
@@ -77,7 +81,9 @@ test.describe("Accessibility E2E Tests", () => {
 
     // Pelo menos verificamos que a navegação por teclado não quebra a página
     // Em desenvolvimento, o foco pode não funcionar perfeitamente
-    console.log(`✅ Keyboard navigation attempted, found ${focusableCount} focusable elements, ${focusCount} currently focused`);
+    console.log(
+      `✅ Keyboard navigation attempted, found ${focusableCount} focusable elements, ${focusCount} currently focused`,
+    );
   });
 
   test("screen reader content is properly structured", async ({ page }) => {
@@ -86,11 +92,11 @@ test.describe("Accessibility E2E Tests", () => {
     expect(bodyText && bodyText.length > 0).toBe(true);
 
     // Check that page has some interactive elements
-    const interactiveElements = page.locator('button, a, input');
+    const interactiveElements = page.locator("button, a, input");
     const interactiveCount = await interactiveElements.count();
     expect(interactiveCount).toBeGreaterThanOrEqual(0); // At least some elements
 
-    console.log('✅ Basic semantic structure present');
+    console.log("✅ Basic semantic structure present");
   });
 
   test("form elements have proper labels and descriptions", async ({
@@ -157,7 +163,7 @@ test.describe("Accessibility E2E Tests", () => {
     const bodyText = await page.locator("body").textContent();
     expect(bodyText && bodyText.length > 0).toBe(true);
 
-    console.log('✅ Page works with reduced motion');
+    console.log("✅ Page works with reduced motion");
   });
 
   test("focus management is proper", async ({ page }) => {
@@ -169,6 +175,6 @@ test.describe("Accessibility E2E Tests", () => {
     const bodyText = await page.locator("body").textContent();
     expect(bodyText && bodyText.length > 0).toBe(true);
 
-    console.log('✅ Keyboard navigation attempted without breaking page');
+    console.log("✅ Keyboard navigation attempted without breaking page");
   });
 });

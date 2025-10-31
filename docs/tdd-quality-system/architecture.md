@@ -86,13 +86,13 @@ O **Classifier** é o componente que **nunca falha**. Ele fornece diagnóstico b
 
 ### Métricas Analisadas
 
-| Métrica | Descrição | Como Mede | Peso Base |
-|---------|-----------|-----------|-----------|
-| **Isolation** | Isolamento de testes | Análise estática de dependências | 25% |
-| **Structure** | Estrutura do código | Cobertura de patterns TDD | 20% |
-| **Dependencies** | Gestão de dependências | Análise de imports/mock | 15% |
-| **Naming** | Qualidade de nomes | Convenções e clareza | 10% |
-| **Coverage Proxy** | Estimativa de cobertura | Linhas instrumentáveis | 15% |
+| Métrica            | Descrição               | Como Mede                        | Peso Base |
+| ------------------ | ----------------------- | -------------------------------- | --------- |
+| **Isolation**      | Isolamento de testes    | Análise estática de dependências | 25%       |
+| **Structure**      | Estrutura do código     | Cobertura de patterns TDD        | 20%       |
+| **Dependencies**   | Gestão de dependências  | Análise de imports/mock          | 15%       |
+| **Naming**         | Qualidade de nomes      | Convenções e clareza             | 10%       |
+| **Coverage Proxy** | Estimativa de cobertura | Linhas instrumentáveis           | 15%       |
 
 ### Como Funciona
 
@@ -100,16 +100,19 @@ O **Classifier** é o componente que **nunca falha**. Ele fornece diagnóstico b
 class TestHealthClassifier {
   async classifyTestHealth() {
     // Análise sempre-disponível (não depende de execução)
-    const isolation = this.analyzeIsolation()
-    const structure = this.analyzeStructure()
-    const dependencies = this.analyzeDependencies()
+    const isolation = this.analyzeIsolation();
+    const structure = this.analyzeStructure();
+    const dependencies = this.analyzeDependencies();
 
     return {
       isolation: { score: isolation.score, details: isolation.details },
       structure: { score: structure.score, details: structure.details },
-      dependencies: { score: dependencies.score, details: dependencies.details },
-      overall: this.calculateOverallScore()
-    }
+      dependencies: {
+        score: dependencies.score,
+        details: dependencies.details,
+      },
+      overall: this.calculateOverallScore(),
+    };
   }
 }
 ```
@@ -126,12 +129,12 @@ Gerencia um **subset pequeno e confiável** de testes que rodam mesmo em ambient
 
 ```javascript
 const safeTestCriteria = {
-  maxDuration: 5000,        // Máximo 5s por teste
-  minSafetyScore: 80,       // Score mínimo de confiança
-  maxDependencies: 3,        // Máximo 3 dependências externas
+  maxDuration: 5000, // Máximo 5s por teste
+  minSafetyScore: 80, // Score mínimo de confiança
+  maxDependencies: 3, // Máximo 3 dependências externas
   prioritizeCriticalPath: true, // Priorizar caminhos críticos
-  maxTestCount: 50          // Máximo 50 testes no subset
-}
+  maxTestCount: 50, // Máximo 50 testes no subset
+};
 ```
 
 ### Processo de Seleção
@@ -152,13 +155,13 @@ Executa **análise completa de qualidade** quando o projeto está maduro o sufic
 
 ### Métricas Reais Analisadas
 
-| Métrica | Ferramenta | Descrição |
-|---------|------------|-----------|
-| **Coverage** | vitest --coverage | Cobertura de código real |
-| **Performance** | vitest --reporter=json | Tempo de execução |
-| **Lint Quality** | eslint | Qualidade do código |
-| **TypeScript** | tsc --noEmit | Saúde dos tipos |
-| **Complexity** | eslint complexity | Complexidade ciclomática |
+| Métrica          | Ferramenta             | Descrição                |
+| ---------------- | ---------------------- | ------------------------ |
+| **Coverage**     | vitest --coverage      | Cobertura de código real |
+| **Performance**  | vitest --reporter=json | Tempo de execução        |
+| **Lint Quality** | eslint                 | Qualidade do código      |
+| **TypeScript**   | tsc --noEmit           | Saúde dos tipos          |
+| **Complexity**   | eslint complexity      | Complexidade ciclomática |
 
 ### Modos de Execução
 
@@ -209,11 +212,11 @@ calculateHybridScores(results) {
 
 ```javascript
 const maturityWeights = {
-  M0: { classifier: 0.80, engine: 0.05, coverage: 0.15 }, // Foco em correção básica
-  M1: { classifier: 0.70, engine: 0.15, coverage: 0.15 }, // Começa métricas reais
-  M2: { classifier: 0.60, engine: 0.25, coverage: 0.15 }, // Engine mais relevante
-  M3: { classifier: 0.50, engine: 0.35, coverage: 0.15 }  // Excelência completa
-}
+  M0: { classifier: 0.8, engine: 0.05, coverage: 0.15 }, // Foco em correção básica
+  M1: { classifier: 0.7, engine: 0.15, coverage: 0.15 }, // Começa métricas reais
+  M2: { classifier: 0.6, engine: 0.25, coverage: 0.15 }, // Engine mais relevante
+  M3: { classifier: 0.5, engine: 0.35, coverage: 0.15 }, // Excelência completa
+};
 ```
 
 ---
@@ -228,11 +231,11 @@ Utiliza **content hash** de arquivos críticos + **LRU com TTL** para otimizar p
 
 ```javascript
 const cacheKeys = {
-  src: hashFiles('src/**/*.{ts,tsx,js,jsx}'),
-  tests: hashFiles('tests/**/*.{ts,tsx,js,jsx}'),
-  config: hashFiles('package.json', 'vite.config.*', 'tsconfig.json'),
-  lockfile: hashFiles('package-lock.json', 'yarn.lock', 'pnpm-lock.yaml')
-}
+  src: hashFiles("src/**/*.{ts,tsx,js,jsx}"),
+  tests: hashFiles("tests/**/*.{ts,tsx,js,jsx}"),
+  config: hashFiles("package.json", "vite.config.*", "tsconfig.json"),
+  lockfile: hashFiles("package-lock.json", "yarn.lock", "pnpm-lock.yaml"),
+};
 ```
 
 ### Políticas de Evicção
@@ -274,12 +277,12 @@ calculateProxyCoverage() {
 
 ### Tipos de Alertas
 
-| Tipo | Gatilho | Severidade | Ação |
-|------|---------|------------|------|
-| **Regression** | Score cai >10pts | Alta | Bloquear merge |
-| **Recurring Issues** | Mesmo problema 3+ vezes | Média | Criar task |
-| **Performance** | Análise >2min | Baixa | Otimizar |
-| **Coverage Drop** | Cobertura cai >5% | Média | Investigar |
+| Tipo                 | Gatilho                 | Severidade | Ação           |
+| -------------------- | ----------------------- | ---------- | -------------- |
+| **Regression**       | Score cai >10pts        | Alta       | Bloquear merge |
+| **Recurring Issues** | Mesmo problema 3+ vezes | Média      | Criar task     |
+| **Performance**      | Análise >2min           | Baixa      | Otimizar       |
+| **Coverage Drop**    | Cobertura cai >5%       | Média      | Investigar     |
 
 ### Canais de Notificação
 
@@ -297,21 +300,23 @@ calculateProxyCoverage() {
 ```javascript
 // scripts/tdd-pr-gate.mjs
 async function runGate() {
-  const analysis = await runAnalysis()
+  const analysis = await runAnalysis();
 
-  const policies = getPoliciesForMaturity(analysis.maturity)
+  const policies = getPoliciesForMaturity(analysis.maturity);
 
   if (analysis.score < policies.minScore) {
-    console.error(`❌ Score muito baixo: ${analysis.score}/${policies.minScore}`)
-    process.exit(1)
+    console.error(
+      `❌ Score muito baixo: ${analysis.score}/${policies.minScore}`,
+    );
+    process.exit(1);
   }
 
   if (analysis.criticalIssues > policies.maxCriticalIssues) {
-    console.error(`❌ Muitos issues críticos: ${analysis.criticalIssues}`)
-    process.exit(1)
+    console.error(`❌ Muitos issues críticos: ${analysis.criticalIssues}`);
+    process.exit(1);
   }
 
-  console.log('✅ Gate aprovado')
+  console.log("✅ Gate aprovado");
 }
 ```
 
@@ -352,15 +357,15 @@ Permite testar variações das próprias métricas do sistema:
 
 ```javascript
 const experiments = {
-  'maturity-weights': {
+  "maturity-weights": {
     variants: [
-      { name: 'conservative', weights: { classifier: 0.8, engine: 0.2 } },
-      { name: 'aggressive', weights: { classifier: 0.6, engine: 0.4 } }
+      { name: "conservative", weights: { classifier: 0.8, engine: 0.2 } },
+      { name: "aggressive", weights: { classifier: 0.6, engine: 0.4 } },
     ],
-    metric: 'score_stability',
-    duration: '2 weeks'
-  }
-}
+    metric: "score_stability",
+    duration: "2 weeks",
+  },
+};
 ```
 
 ### Atribuição Determinística
@@ -375,13 +380,13 @@ const experiments = {
 
 ### Scripts Core
 
-| Script | Comando | Descrição |
-|--------|---------|-----------|
-| `tdd:analyze` | `node scripts/tdd-orchestrator.mjs` | Análise completa inteligente |
-| `tdd:classify` | `node scripts/test-health-classifier.mjs` | Diagnóstico base sempre-disponível |
-| `tdd:safe-tests` | `node scripts/tdd-safe-tests.mjs` | Gerenciamento do subset confiável |
-| `tdd:engine` | `node scripts/tdd-analysis-engine.mjs` | Métricas reais avançadas |
-| `tdd:gate` | `node scripts/tdd-pr-gate.mjs` | Gate de qualidade para CI/CD |
+| Script           | Comando                                   | Descrição                          |
+| ---------------- | ----------------------------------------- | ---------------------------------- |
+| `tdd:analyze`    | `node scripts/tdd-orchestrator.mjs`       | Análise completa inteligente       |
+| `tdd:classify`   | `node scripts/test-health-classifier.mjs` | Diagnóstico base sempre-disponível |
+| `tdd:safe-tests` | `node scripts/tdd-safe-tests.mjs`         | Gerenciamento do subset confiável  |
+| `tdd:engine`     | `node scripts/tdd-analysis-engine.mjs`    | Métricas reais avançadas           |
+| `tdd:gate`       | `node scripts/tdd-pr-gate.mjs`            | Gate de qualidade para CI/CD       |
 
 ### Storage
 
@@ -407,13 +412,13 @@ tmp/
 
 ### Métricas Coletadas
 
-| Métrica | Tipo | Descrição |
-|---------|------|-----------|
-| `tdd_analysis_duration_ms` | Histogram | Tempo total de análise |
-| `tdd_score_final` | Gauge | Score final calculado |
-| `tdd_maturity_level` | Gauge | Nível de maturidade atual |
-| `tdd_cache_hit_rate` | Gauge | Taxa de acertos do cache |
-| `tdd_alerts_active` | Counter | Número de alertas ativos |
+| Métrica                    | Tipo      | Descrição                 |
+| -------------------------- | --------- | ------------------------- |
+| `tdd_analysis_duration_ms` | Histogram | Tempo total de análise    |
+| `tdd_score_final`          | Gauge     | Score final calculado     |
+| `tdd_maturity_level`       | Gauge     | Nível de maturidade atual |
+| `tdd_cache_hit_rate`       | Gauge     | Taxa de acertos do cache  |
+| `tdd_alerts_active`        | Counter   | Número de alertas ativos  |
 
 ### Logs Estruturados
 

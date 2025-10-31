@@ -23,10 +23,10 @@ export * from "./textarea";
 // Custom components
 export * from "./animated-section";
 export * from "./cta-button-unified";
-export * from "./cta-button";
+// export * from "./cta-button"; // Arquivo não existe
 export * from "./experiment-dashboard";
 export * from "./experiment-indicator";
-export * from "./fade-up";
+// export * from "./fade-up"; // Arquivo não existe
 export * from "./lazy-section";
 export * from "./live-chat";
 export * from "./personalized-cta";

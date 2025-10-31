@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { ProofTractionContent } from "@/domains/marketing/types/proof-traction.types";
 import { Section } from "@/app/(marketing)/components/ui/section";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface ProofTractionProps {
   content: ProofTractionContent;

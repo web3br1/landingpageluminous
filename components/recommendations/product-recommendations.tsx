@@ -41,7 +41,7 @@ export function ProductRecommendations({
   const userContext: UserContext = useMemo(
     () => ({
       segments: activeSegments,
-      profile: (userProfile as any) || {},
+      profile: (userProfile as unknown) || {},
       behavior:
         typeof window !== "undefined"
           ? {
@@ -383,7 +383,7 @@ export function useProductRecommendations(context?: Partial<UserContext>) {
   const userContext: UserContext = useMemo(
     () => ({
       segments: activeSegments,
-      profile: (userProfile as any) || {},
+      profile: (userProfile as unknown) || {},
       behavior:
         typeof window !== "undefined"
           ? {

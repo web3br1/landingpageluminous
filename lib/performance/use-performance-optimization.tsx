@@ -1,6 +1,11 @@
 import React, { useEffect, useCallback, useRef } from "react";
 import { cacheManager } from "./cache-manager";
 import { ImageCache } from "./image-optimization";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
 
 // Comprehensive performance optimization hook
 // Combines caching, preloading, and monitoring strategies
@@ -95,7 +100,8 @@ export function usePerformanceOptimization(
           "web-vitals"
         );
 
-        const sendToAnalytics = ({ name, delta, value, id }: any) => {
+        const sendToAnalytics = (params: unknown) => {
+          const { name, delta, value, id } = params as any;
           // Send to analytics service
           if (typeof window !== "undefined" && (window as any).gtag) {
             (window as any).gtag("event", name, {
@@ -185,13 +191,13 @@ export function usePerformanceOptimization(
         longTaskObserverRef.current = new PerformanceObserver((list) => {
           const entries = list.getEntries();
 
-          entries.forEach((entry: any) => {
-            if (entry.duration > 50) {
+          entries.forEach((entry: unknown) => {
+            if ((entry as any).duration > 50) {
               // Long task threshold
               console.log("Long task detected:", {
-                duration: entry.duration,
-                startTime: entry.startTime,
-                attribution: entry.attribution,
+                duration: (entry as any).duration,
+                startTime: (entry as any).startTime,
+                attribution: (entry as any).attribution,
               });
 
               // Send to analytics
@@ -199,7 +205,7 @@ export function usePerformanceOptimization(
                 (window as any).gtag("event", "long_task", {
                   event_category: "Performance",
                   event_label: "long_task",
-                  value: Math.round(entry.duration),
+                  value: Math.round((entry as any).duration),
                 });
               }
             }

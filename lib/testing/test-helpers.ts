@@ -4,6 +4,7 @@
 import { vi, Mock } from "vitest";
 import { Result } from "@shared/core";
 import { AppError } from "@shared/errors";
+import { safeWindowAccess, safeDocumentAccess, safeNavigatorAccess } from '@/lib/utils/browser-api-helpers';
 import {
   IPageCompositionService,
   IContentMapper,
@@ -353,7 +354,7 @@ export class TestUtils {
   static createTestError(message: string, code?: string): AppError {
     return {
       message,
-      code: (code as any) || "VALIDATION_ERROR",
+      code: (code as unknown) || "VALIDATION_ERROR",
       details: { test: true },
     };
   }
@@ -361,7 +362,7 @@ export class TestUtils {
   static createAppError(message: string, code?: string): AppError {
     return {
       message,
-      code: (code as any) || "INTERNAL_ERROR",
+      code: (code as unknown) || "INTERNAL_ERROR",
       details: { source: "test" },
     };
   }
@@ -410,7 +411,7 @@ export class TestUtils {
     return {
       store,
       restore: () => {
-        delete (window as any).localStorage;
+        delete (window as unknown).localStorage;
       },
     };
   }
@@ -422,12 +423,12 @@ export class TestUtils {
       unobserve: vi.fn(),
       disconnect: vi.fn(),
     });
-    (window as any).IntersectionObserver = mockIntersectionObserver;
+    (window as unknown).IntersectionObserver = mockIntersectionObserver;
 
     return {
       mock: mockIntersectionObserver,
       restore: () => {
-        delete (window as any).IntersectionObserver;
+        delete (window as unknown).IntersectionObserver;
       },
     };
   }

@@ -42,7 +42,7 @@ export class BusinessKPIs {
   /**
    * Record business KPI
    */
-  recordKPI(name: string, value: number, metadata?: Record<string, any>) {
+  recordKPI(name: string, value: number, metadata?: Record<string, unknown>) {
     this.kpis.set(name, value);
 
     // Store historical data
@@ -113,7 +113,7 @@ export class BusinessKPIs {
    * Get all KPIs summary
    */
   getKPIsSummary() {
-    const summary: Record<string, any> = {};
+    const summary: Record<string, unknown> = {};
 
     for (const [name] of this.kpis) {
       summary[name] = this.getKPIStats(name);
@@ -127,7 +127,7 @@ export class BusinessKPIs {
  * Technical Metrics Collector
  */
 export class TechnicalMetrics {
-  private metricsData: Map<string, any> = new Map();
+  private metricsData: Map<string, unknown> = new Map();
 
   /**
    * Record Core Web Vitals
@@ -140,7 +140,7 @@ export class TechnicalMetrics {
       fid?: number;
       ttfb?: number;
     },
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const span = tracer.startSpan(
       "record_core_web_vitals",
@@ -218,7 +218,7 @@ export class TechnicalMetrics {
     method: string,
     responseTime: number,
     statusCode: number,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const span = tracer.startSpan("record_api_performance", undefined, {
       "api.endpoint": endpoint,
@@ -277,7 +277,7 @@ export class TechnicalMetrics {
     action: string,
     userId?: string,
     sessionId?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const span = tracer.startSpan("record_user_engagement", undefined, {
       "engagement.action": action,
@@ -331,7 +331,7 @@ export class TechnicalMetrics {
       networkOut?: number;
       activeConnections?: number;
     },
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const span = tracer.startSpan(
       "record_infrastructure_metrics",
@@ -413,7 +413,7 @@ export class TechnicalMetrics {
  * User Experience Metrics Collector
  */
 export class UserExperienceMetrics {
-  private sessionData: Map<string, any> = new Map();
+  private sessionData: Map<string, unknown> = new Map();
   private featureUsage: Map<string, number> = new Map();
 
   /**
@@ -422,7 +422,7 @@ export class UserExperienceMetrics {
   recordSessionStart(
     sessionId: string,
     userId?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const session = {
       sessionId,
@@ -455,7 +455,7 @@ export class UserExperienceMetrics {
   /**
    * Record session end
    */
-  recordSessionEnd(sessionId: string, metadata?: Record<string, any>) {
+  recordSessionEnd(sessionId: string, metadata?: Record<string, unknown>) {
     const session = this.sessionData.get(sessionId);
     if (!session) return;
 
@@ -488,7 +488,7 @@ export class UserExperienceMetrics {
   recordPageView(
     sessionId: string,
     page: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const session = this.sessionData.get(sessionId);
     if (session) {
@@ -517,7 +517,7 @@ export class UserExperienceMetrics {
     sessionId: string,
     interactionType: string,
     element?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const session = this.sessionData.get(sessionId);
     if (session) {
@@ -547,7 +547,7 @@ export class UserExperienceMetrics {
   recordFeatureUsage(
     sessionId: string,
     feature: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     const session = this.sessionData.get(sessionId);
     if (session) {
@@ -621,7 +621,7 @@ export class AdvancedMonitoringSystem {
   recordBusinessKPI(
     name: string,
     value: number,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.businessKPIs.recordKPI(name, value, metadata);
   }
@@ -637,7 +637,7 @@ export class AdvancedMonitoringSystem {
       fid?: number;
       ttfb?: number;
     },
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.technicalMetrics.recordCoreWebVitals(vitals, metadata);
   }
@@ -650,7 +650,7 @@ export class AdvancedMonitoringSystem {
     method: string,
     responseTime: number,
     statusCode: number,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.technicalMetrics.recordAPIPerformance(
       endpoint,
@@ -668,7 +668,7 @@ export class AdvancedMonitoringSystem {
     action: string,
     userId?: string,
     sessionId?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.technicalMetrics.recordUserEngagement(
       action,
@@ -690,7 +690,7 @@ export class AdvancedMonitoringSystem {
       networkOut?: number;
       activeConnections?: number;
     },
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.technicalMetrics.recordInfrastructureMetrics(metricsData, metadata);
   }
@@ -701,7 +701,7 @@ export class AdvancedMonitoringSystem {
   recordSessionStart(
     sessionId: string,
     userId?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.userExperienceMetrics.recordSessionStart(sessionId, userId, metadata);
   }
@@ -709,7 +709,7 @@ export class AdvancedMonitoringSystem {
   /**
    * Record session end
    */
-  recordSessionEnd(sessionId: string, metadata?: Record<string, any>) {
+  recordSessionEnd(sessionId: string, metadata?: Record<string, unknown>) {
     this.userExperienceMetrics.recordSessionEnd(sessionId, metadata);
   }
 
@@ -719,7 +719,7 @@ export class AdvancedMonitoringSystem {
   recordPageView(
     sessionId: string,
     page: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.userExperienceMetrics.recordPageView(sessionId, page, metadata);
   }
@@ -731,7 +731,7 @@ export class AdvancedMonitoringSystem {
     sessionId: string,
     interactionType: string,
     element?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.userExperienceMetrics.recordInteraction(
       sessionId,
@@ -747,7 +747,7 @@ export class AdvancedMonitoringSystem {
   recordFeatureUsage(
     sessionId: string,
     feature: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) {
     this.userExperienceMetrics.recordFeatureUsage(sessionId, feature, metadata);
   }

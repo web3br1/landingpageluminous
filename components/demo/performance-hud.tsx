@@ -31,11 +31,11 @@ export function PerformanceHud() {
         try {
           const observer = new PerformanceObserver((list) => {
             const entries = list.getEntries();
-            const lastEntry = entries[entries.length - 1] as any;
+            const lastEntry = entries[entries.length - 1] as unknown;
             updateMetrics(
               "lcp",
-              lastEntry.renderTime ||
-                lastEntry.loadTime ||
+              (lastEntry as any).renderTime ||
+                (lastEntry as any).loadTime ||
                 (lastEntry as any).startTime ||
                 0,
             );
@@ -80,9 +80,9 @@ export function PerformanceHud() {
         try {
           const observer = new PerformanceObserver((list) => {
             const entries = list.getEntries();
-            const lastEntry = entries[entries.length - 1] as any;
+            const lastEntry = entries[entries.length - 1] as unknown;
             if (lastEntry) {
-              updateMetrics("inp", lastEntry.duration);
+              updateMetrics("inp", (lastEntry as any).duration);
             }
           });
 

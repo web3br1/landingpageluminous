@@ -1,5 +1,72 @@
 import { Result } from "../../shared/core/Result";
 
+// ===== PAGBANK API RESPONSE TYPES =====
+
+export interface PagBankAmount {
+  value: number;
+  currency: string;
+}
+
+export interface PagBankLink {
+  rel: string;
+  href: string;
+  method: string;
+}
+
+export interface PagBankQrCode {
+  amount: PagBankAmount;
+  text: string;
+}
+
+export interface PagBankPaymentMethod {
+  type: "CREDIT_CARD" | "PIX" | "BOLETO";
+  installments?: number;
+  capture?: boolean;
+  card?: {
+    brand: string;
+    first_digits: string;
+    last_digits: string;
+    exp_month: string;
+    exp_year: string;
+  };
+}
+
+export interface PagBankCharge {
+  id: string;
+  reference_id: string;
+  status: "AUTHORIZED" | "PAID" | "DECLINED" | "CANCELLED" | "WAITING";
+  created_at: string;
+  paid_at?: string;
+  description: string;
+  amount: PagBankAmount;
+  payment_response: {
+    code: string;
+    message: string;
+  };
+  payment_method: PagBankPaymentMethod;
+  qr_codes?: PagBankQrCode[];
+  links?: PagBankLink[];
+}
+
+export interface PagBankOrderApiResponse {
+  id: string;
+  reference_id: string;
+  created_at: string;
+  customer: {
+    name: string;
+    email: string;
+    tax_id: string;
+  };
+  items: Array<{
+    reference_id: string;
+    name: string;
+    quantity: number;
+    unit_amount: number;
+  }>;
+  charges: PagBankCharge[];
+  links?: PagBankLink[];
+}
+
 export interface PagBankOrder {
   id: string;
   referenceId: string;
@@ -39,7 +106,7 @@ export class PagBankService {
       phone?: string;
     },
     paymentMethod: "CREDIT_CARD" | "PIX" | "BOLETO",
-    paymentData?: any,
+    paymentData?: unknown,
     referenceId?: string,
   ): Promise<Result<PagBankOrder, PaymentError>> {
     try {
@@ -94,7 +161,7 @@ export class PagBankService {
         throw new Error(`PagBank API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: PagBankOrderApiResponse = await response.json();
 
       return Result.ok({
         id: data.id,
@@ -105,7 +172,7 @@ export class PagBankService {
         paymentMethod: data.charges[0].payment_method.type,
         qrCode: data.charges[0].qr_codes?.[0]?.text,
         boletoUrl: data.charges[0].links?.find(
-          (link: any) => link.rel === "PRINT_BOLETO",
+          (link: unknown) => link.rel === "PRINT_BOLETO",
         )?.href,
         installments: paymentData?.installments,
       });
@@ -128,7 +195,7 @@ export class PagBankService {
       phone?: string;
     },
     planId: string,
-    paymentData: any,
+    paymentData: unknown,
     couponCode?: string,
   ): Promise<Result<PagBankSubscription, PaymentError>> {
     try {
@@ -167,7 +234,7 @@ export class PagBankService {
         throw new Error(`PagBank API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: PagBankOrderApiResponse = await response.json();
 
       return Result.ok({
         id: data.id,
@@ -230,7 +297,7 @@ export class PagBankService {
         throw new Error(`PagBank API error: ${response.status}`);
       }
 
-      const data = await response.json();
+      const data: PagBankOrderApiResponse = await response.json();
 
       return Result.ok({
         id: data.id,
@@ -241,7 +308,7 @@ export class PagBankService {
         paymentMethod: data.charges[0].payment_method.type,
         qrCode: data.charges[0].qr_codes?.[0]?.text,
         boletoUrl: data.charges[0].links?.find(
-          (link: any) => link.rel === "PRINT_BOLETO",
+          (link: unknown) => link.rel === "PRINT_BOLETO",
         )?.href,
       });
     } catch (error) {
@@ -254,7 +321,9 @@ export class PagBankService {
   }
 
   // Validar cupom
-  async validateCoupon(couponCode: string): Promise<Result<any, PaymentError>> {
+  async validateCoupon(
+    couponCode: string,
+  ): Promise<Result<unknown, PaymentError>> {
     try {
       const response = await fetch(`${this.baseUrl}/coupons/${couponCode}`, {
         headers: {
@@ -277,7 +346,7 @@ export class PagBankService {
     }
   }
 
-  private buildPaymentMethod(type: string, paymentData?: any) {
+  private buildPaymentMethod(type: string, paymentData?: unknown) {
     switch (type) {
       case "CREDIT_CARD":
         return {

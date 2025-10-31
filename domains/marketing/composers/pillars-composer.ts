@@ -6,7 +6,7 @@ import type { ComposedPillarsData } from "../types/pillars.types";
 import { createVariantComposer } from "./_base";
 
 // Composer function
-export const composePillarsContent: () => ComposedPillarsData =
+export const composePillarsContent: () => Promise<ComposedPillarsData> =
   createVariantComposer("pillars", {
     defaultVariant: pillarsConfiguration.defaultVariant,
     variants: pillarsConfiguration.variants as any,

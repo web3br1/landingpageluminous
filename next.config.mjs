@@ -6,10 +6,7 @@ const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-// Bundle analyzer configuration
-const withBundleAnalyzer = require('@next/bundle-analyzer')({
-  enabled: process.env.ANALYZE === 'true',
-})
+// Bundle analyzer removed - use external tools for analysis
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -25,14 +22,17 @@ const nextConfig = {
       'lucide-react',
       '@radix-ui/react-icons',
       'framer-motion',
-      '@heroicons/react'
+      '@heroicons/react',
+      'recharts',
+      'date-fns',
+      'clsx',
+      'tailwind-merge'
     ],
     // Enable webpack build worker
     webpackBuildWorker: true,
   },
 
   // Turbopack configuration (empty to disable warnings)
-  turbopack: {},
 
   // 🚨 BUNDLE BUDGETS - Sprint 3: Governância
   // Falha no build se exceder estes limites
@@ -99,8 +99,94 @@ const nextConfig = {
             priority: 10,
             chunks: 'async', // Só carrega quando necessário
           },
+          // Analytics components
+          analytics: {
+            test: /[\\/]lib[\\/]analytics[\\/]/,
+            name: 'analytics',
+            priority: 15,
+            chunks: 'async',
+          },
+          // Performance components
+          performance: {
+            test: /[\\/]lib[\\/]performance[\\/]/,
+            name: 'performance',
+            priority: 15,
+            chunks: 'async',
+          },
+          // Theme components
+          theme: {
+            test: /[\\/]lib[\\/]theme[\\/]/,
+            name: 'theme',
+            priority: 15,
+            chunks: 'async',
+          },
         },
       }
+
+      // BLOCO 3: Advanced bundle optimization for size reduction
+      config.optimization = {
+        ...config.optimization,
+        usedExports: true,
+        sideEffects: true,
+        providedExports: true,
+        concatenateModules: true,
+        minimize: true,
+        // BLOCO 3: Enhanced minification (using Next.js defaults)
+        // Split chunks more aggressively for BLOCO 3
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks.cacheGroups,
+            // BLOCO 3: Separate vendor libraries
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              chunks: 'all',
+              priority: 10,
+              enforce: true,
+            },
+            // BLOCO 3: Separate React and Next.js
+            react: {
+              test: /[\\/]node_modules[\\/](react|react-dom|next)[\\/]/,
+              name: 'react-vendor',
+              chunks: 'all',
+              priority: 20,
+              enforce: true,
+            },
+            // BLOCO 3: Separate UI libraries
+            ui: {
+              test: /[\\/]node_modules[\\/](@radix-ui|lucide-react|@heroicons)[\\/]/,
+              name: 'ui-vendor',
+              chunks: 'all',
+              priority: 15,
+              enforce: true,
+            },
+            // BLOCO 3: Separate animation libraries
+            animation: {
+              test: /[\\/]node_modules[\\/](framer-motion)[\\/]/,
+              name: 'animation-vendor',
+              chunks: 'async', // Load on demand
+              priority: 10,
+              enforce: true,
+            },
+            // BLOCO 3: Separate utility libraries
+            utils: {
+              test: /[\\/]node_modules[\\/](clsx|tailwind-merge|date-fns)[\\/]/,
+              name: 'utils-vendor',
+              chunks: 'all',
+              priority: 5,
+              enforce: true,
+            },
+          },
+        },
+      }
+
+      // Externalize large libraries that are rarely used
+      config.externals = config.externals || []
+      config.externals.push({
+        'recharts': 'recharts',
+        'framer-motion': 'framer-motion',
+      })
     }
 
     return config
@@ -145,6 +231,8 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
+
+  // BLOCO 3: Advanced compression already enabled via compress: true above
 
   // Block font requests that should not exist
   async rewrites() {
@@ -271,12 +359,24 @@ const nextConfig = {
               ? 'public, max-age=31536000, immutable'
               : 'no-cache',
           },
-          // Preload hints for critical images
+          // BLOCO 4: Advanced preload hints for CWV optimization
           {
             key: 'Link',
             value: isProd ? [
-              '</images/logo.svg>; rel=preload; as=image; type=image/svg+xml',
-              '</images/hero-bg.webp>; rel=preload; as=image; type=image/webp'
+              // Critical images
+              '</images/logo.svg>; rel=preload; as=image; type=image/svg+xml; fetchpriority=high',
+              '</images/hero-bg.webp>; rel=preload; as=image; type=image/webp; fetchpriority=high',
+              // Critical fonts
+              '</fonts/main.woff2>; rel=preload; as=font; type=font/woff2; crossorigin=anonymous',
+              // Critical scripts
+              '</_next/static/chunks/main.js>; rel=preload; as=script; crossorigin=anonymous',
+              // DNS prefetch
+              '//fonts.googleapis.com; rel=dns-prefetch',
+              '//fonts.gstatic.com; rel=dns-prefetch',
+              '//cdn.vercel.com; rel=dns-prefetch',
+              // Preconnect
+              '//fonts.googleapis.com; rel=preconnect; crossorigin',
+              '//fonts.gstatic.com; rel=preconnect; crossorigin'
             ].join(', ') : '',
           },
         ],
@@ -324,6 +424,11 @@ const nextConfig = {
             value: JSON.stringify(reportToGroup[0])
           }] : []),
           { key: 'Cache-Control', value: isProd ? 'no-cache' : 'no-store' },
+          // BLOCO 4: CWV optimization headers
+          {
+            key: 'Priority',
+            value: 'u=1, i' // High priority hint
+          },
           // DNS prefetch for critical external domains
           {
             key: 'Link',
@@ -340,4 +445,4 @@ const nextConfig = {
   },
 }
 
-export default withBundleAnalyzer(nextConfig)
+export default nextConfig

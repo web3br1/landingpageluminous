@@ -1,41 +1,57 @@
 import { NextRequest, NextResponse } from "next/server";
+import { z } from "zod";
 import { revalidateTag } from "next/cache";
-import crypto from "node:crypto";
+import { createHmac } from "node:crypto";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  parseRequestBody,
+  HTTP_STATUS,
+} from "../../../lib/architecture/api-handler";
+
+// Schema for revalidate payload validation
+const revalidatePayloadSchema = z.object({
+  tag: z.string().min(1, "Tag is required"),
+  ts: z.number().optional(),
+  sig: z.string().min(1, "Signature is required"),
+});
 
 export async function POST(request: NextRequest) {
   const secret = process.env.REVALIDATE_SECRET || "";
-  if (!secret)
-    return NextResponse.json(
-      { ok: false, error: "No secret configured" },
-      { status: 500 },
+  if (!secret) {
+    return createErrorResponse(
+      "REVALIDATE_SECRET_MISSING",
+      "No secret configured",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
+  }
 
   try {
-    const body = (await request.json()) as {
-      tag: string;
-      ts?: number;
-      sig?: string;
-    };
-    const { tag, sig } = body || ({} as any);
-    if (!tag || !sig)
-      return NextResponse.json(
-        { ok: false, error: "Missing tag or sig" },
-        { status: 400 },
-      );
+    // Parse and validate request body
+    const parseResult = await parseRequestBody(request, revalidatePayloadSchema);
+    if (!parseResult.success) {
+      return (parseResult as { success: false; error: NextResponse }).error;
+    }
 
-    const hmac = crypto.createHmac("sha256", secret).update(tag).digest("hex");
-    if (hmac !== sig)
-      return NextResponse.json(
-        { ok: false, error: "Invalid signature" },
-        { status: 401 },
+    const { tag, sig } = parseResult.data;
+
+    // Verify HMAC signature
+    const hmac = createHmac("sha256", secret).update(tag).digest("hex");
+    if (hmac !== sig) {
+      return createErrorResponse(
+        "INVALID_SIGNATURE",
+        "Invalid signature",
+        { status: HTTP_STATUS.UNAUTHORIZED }
       );
+    }
 
     await revalidateTag(tag);
-    return NextResponse.json({ ok: true, tag });
-  } catch (e) {
-    return NextResponse.json(
-      { ok: false, error: "Bad request" },
-      { status: 400 },
+    return createSuccessResponse({ ok: true, tag });
+  } catch (error) {
+    return createErrorResponse(
+      "REVALIDATE_ERROR",
+      "Bad request",
+      { status: HTTP_STATUS.BAD_REQUEST }
     );
   }
 }

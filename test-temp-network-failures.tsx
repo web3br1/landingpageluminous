@@ -1,10 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import React, { useState, useEffect } from "react";
 
@@ -43,7 +38,7 @@ const ApiCallComponent = ({
 }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [retryCount, setRetryCount] = useState(0);
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<unknown>(null);
   const [error, setError] = useState<Error | null>(null);
 
   const makeApiCall = async (attempt = 0) => {
@@ -168,7 +163,9 @@ describe("Network Failures - New Tests Only", () => {
 
       // Wait for component to start
       await waitFor(() => {
-        expect(screen.getByTestId("api-loading")).toHaveTextContent("Loading...");
+        expect(screen.getByTestId("api-loading")).toHaveTextContent(
+          "Loading...",
+        );
       });
 
       // Advance through first retry delay (1s)
@@ -204,7 +201,9 @@ describe("Network Failures - New Tests Only", () => {
 
       // Wait for component to start
       await waitFor(() => {
-        expect(screen.getByTestId("api-loading")).toHaveTextContent("Loading...");
+        expect(screen.getByTestId("api-loading")).toHaveTextContent(
+          "Loading...",
+        );
       });
 
       // Advance through first retry (1s)

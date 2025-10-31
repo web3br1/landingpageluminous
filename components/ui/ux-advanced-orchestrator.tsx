@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { z } from "zod";
 import { OptimizedAnimatePresence } from "@/lib/animation/optimized-motion";
 import { LiveChat } from "./live-chat";
 import { OnboardingFlow } from "../onboarding/onboarding-flow";
@@ -11,6 +12,13 @@ import {
   readLocalStorage,
   writeLocalStorage,
 } from "@/lib/utils/browser-storage";
+import { createPropValidator } from "../../lib/architecture/component-props";
+import { withComponentContext } from "../../lib/architecture/logger-pattern";
+import { SimpleErrorBoundary, withErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
+
+// Cache for UX state calculations (performance optimization)
+const uxStateCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 30 * 1000; // 30 seconds for UX state
 
 interface UXOrchestratorConfig {
   enableChat: boolean;
@@ -22,15 +30,60 @@ interface UXOrchestratorConfig {
   autoShowRecommendations: boolean;
 }
 
-interface UXOrchestratorProps {
-  config?: Partial<UXOrchestratorConfig>;
-  debugMode?: boolean;
-}
+// Schema for UXOrchestrator props validation
+const UXOrchestratorPropsSchema = z.object({
+  config: z.object({
+    enableChat: z.boolean().default(true),
+    enableOnboarding: z.boolean().default(true),
+    enableRecommendations: z.boolean().default(true),
+    chatDelay: z.number().min(0).default(3000),
+    onboardingDelay: z.number().min(0).default(5000),
+    recommendationsDelay: z.number().min(0).default(10000),
+    autoShowRecommendations: z.boolean().default(false),
+  }).optional().default({
+    enableChat: true,
+    enableOnboarding: true,
+    enableRecommendations: true,
+    chatDelay: 3000,
+    onboardingDelay: 5000,
+    recommendationsDelay: 10000,
+    autoShowRecommendations: false,
+  }),
+  debugMode: z.boolean().default(false),
+});
 
-export function UXAdvancedOrchestrator({
-  config: userConfig,
-  debugMode = false,
-}: UXOrchestratorProps) {
+export interface UXOrchestratorProps extends z.infer<typeof UXOrchestratorPropsSchema> {}
+
+// Create prop validator for UXOrchestrator component
+const uxOrchestratorPropValidator = createPropValidator(UXOrchestratorPropsSchema, "UXAdvancedOrchestrator", {
+  logErrors: true,
+  throwOnError: false,
+  fallbackValues: {
+    debugMode: false,
+  },
+});
+
+export function UXAdvancedOrchestrator(props: UXOrchestratorProps) {
+  // Component-specific logger
+  const logger = withComponentContext("UXAdvancedOrchestrator");
+
+  // Validate props using the component-props pattern
+  const validatedProps = uxOrchestratorPropValidator.validateWithFallback(props, {
+    debugMode: false,
+  });
+
+  // Log prop validation if there were issues
+  const validationResult = uxOrchestratorPropValidator.validate(props);
+  if (!validationResult.success && validationResult.errors.length > 0) {
+    logger.warn("UXOrchestrator props validation failed, using fallbacks", {
+      errors: validationResult.errors.length,
+      debugMode: validatedProps.debugMode,
+      hasCustomConfig: !!props.config,
+    });
+  }
+
+  const { config: userConfig, debugMode } = validatedProps;
+
   const [uxState, setUXState] = useState({
     chatVisible: false,
     onboardingVisible: false,
@@ -41,6 +94,23 @@ export function UXAdvancedOrchestrator({
 
   const [isHydrated, setIsHydrated] = useState(false);
   const { activeSegments, userProfile, trackUserAction } = usePersonalization();
+
+  // Generate cache key for UX state calculations
+  const cacheKey = React.useMemo(() => {
+    const segmentsKey = activeSegments.map(s => s.id).sort().join(",");
+    const configKey = JSON.stringify(userConfig);
+    return `ux_${segmentsKey}_${configKey}`;
+  }, [activeSegments, userConfig]);
+
+  // Log component initialization
+  React.useEffect(() => {
+    logger.info("UXAdvancedOrchestrator initialized", {
+      segmentsCount: activeSegments.length,
+      debugMode,
+      hasUserProfile: !!userProfile,
+      config: userConfig,
+    });
+  }, [activeSegments.length, debugMode, userProfile, userConfig, logger]);
 
   // Only run browser-dependent logic after hydration
   useEffect(() => {
@@ -128,19 +198,18 @@ export function UXAdvancedOrchestrator({
   useEffect(() => {
     if (!isHydrated) return; // Wait for hydration
 
-    if (debugMode) {
-      console.log("UX Orchestrator: Starting orchestration", {
-        config,
-        userProfile,
-        activeSegments,
-      });
-    }
+    logger.info("UX orchestration started", {
+      config,
+      hasUserProfile: !!userProfile,
+      segmentsCount: activeSegments.length,
+      debugMode,
+    });
 
     const timers: NodeJS.Timeout[] = [];
 
     // Onboarding flow (highest priority)
     if (shouldShowOnboarding() && !uxState.onboardingVisible) {
-      if (debugMode) console.log("UX Orchestrator: Scheduling onboarding");
+      logger.debug("Onboarding scheduled", { delay: config.onboardingDelay });
       const onboardingTimer = setTimeout(() => {
         setUXState((prev) => ({ ...prev, onboardingVisible: true }));
         analytics.track("ux_onboarding_triggered", {
@@ -155,7 +224,9 @@ export function UXAdvancedOrchestrator({
     // Chat flow (medium priority)
     if ((config.enableChat || debugMode) && !uxState.chatVisible) {
       if (debugMode) {
-        console.log("UX Orchestrator: Showing chat immediately (debug mode)");
+        logger.info("Chat triggered immediately (debug mode)", {
+          segments: activeSegments.map(s => s.name),
+        });
         setUXState((prev) => ({ ...prev, chatVisible: true }));
         analytics.track("ux_chat_triggered", {
           trigger: "debug_mode",
@@ -177,9 +248,10 @@ export function UXAdvancedOrchestrator({
     // Recommendations flow (lowest priority, after other UX elements)
     if (shouldShowRecommendations() && !uxState.recommendationsVisible) {
       if (debugMode) {
-        console.log(
-          "UX Orchestrator: Showing recommendations immediately (debug mode)",
-        );
+        logger.info("Recommendations triggered immediately (debug mode)", {
+          segments: activeSegments.map(s => s.name),
+          profileFields: Object.keys(userProfile || {}),
+        });
         setUXState((prev) => ({ ...prev, recommendationsVisible: true }));
         analytics.track("ux_recommendations_triggered", {
           trigger: "debug_mode",
@@ -249,10 +321,10 @@ export function UXAdvancedOrchestrator({
 
   // Handle chat interactions
   const handleChatInteraction = useCallback(
-    (eventType: string, data?: any) => {
+    (eventType: string, data?: unknown) => {
       trackUserAction("chat_interaction", {
         event_type: eventType,
-        ...data,
+        ...(data && typeof data === 'object' ? data as Record<string, unknown> : {}),
       });
 
       // If user starts chatting, delay recommendations
@@ -265,10 +337,10 @@ export function UXAdvancedOrchestrator({
 
   // Handle recommendation interactions
   const handleRecommendationInteraction = useCallback(
-    (eventType: string, data?: any) => {
+    (eventType: string, data?: unknown) => {
       trackUserAction("recommendation_interaction", {
         event_type: eventType,
-        ...data,
+        ...(data && typeof data === 'object' ? data : {}),
       });
 
       // If user engages with recommendations, show chat sooner (memory leak safe)
@@ -375,7 +447,7 @@ export function UXAdvancedOrchestrator({
         )}
 
         {/* Chat (medium priority) */}
-        {config.enableChat && uxState.chatVisible && <LiveChat key="chat" />}
+        {config.enableChat && uxState.chatVisible && <LiveChat />}
 
         {/* Recommendations (lowest priority) */}
         {config.enableRecommendations && uxState.recommendationsVisible && (
@@ -435,3 +507,44 @@ export function useUXOrchestrator(config?: Partial<UXOrchestratorConfig>) {
     },
   };
 }
+
+// Export the component with error boundary protection
+const UXAdvancedOrchestratorWithErrorBoundary = withErrorBoundary(UXAdvancedOrchestrator, {
+  componentName: "UXAdvancedOrchestrator",
+  fallback: (error, retry) => (
+    <div className="fixed bottom-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded shadow-lg max-w-sm">
+      <div className="flex">
+        <div className="py-1">
+          <svg className="fill-current h-6 w-6 text-red-500 mr-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+            <path d="M2.93 17.07A10 10 0 1 1 17.07 2.93 10 10 0 0 1 2.93 17.07zm12.73-1.41A8 8 0 1 0 4.34 4.34a8 8 0 0 0 11.32 11.32zM9 11V9h2v6H9v-4zm0-6h2v2H9V5z"/>
+          </svg>
+        </div>
+        <div>
+          <p className="font-bold">UX System Error</p>
+          <p className="text-sm">
+            Something went wrong with the user experience orchestration.{" "}
+            <button
+              onClick={retry}
+              className="underline hover:no-underline"
+            >
+              Try again
+            </button>
+          </p>
+        </div>
+      </div>
+    </div>
+  ),
+  maxRetries: 3,
+  onError: (error) => {
+    // Log error with component context
+    const logger = withComponentContext("UXAdvancedOrchestrator");
+    logger.error("UXAdvancedOrchestrator crashed", error, {
+      component: "UXAdvancedOrchestrator",
+      hasErrorBoundary: true,
+      severity: "critical",
+    });
+  },
+});
+
+export { UXAdvancedOrchestratorWithErrorBoundary };
+export default UXAdvancedOrchestratorWithErrorBoundary;

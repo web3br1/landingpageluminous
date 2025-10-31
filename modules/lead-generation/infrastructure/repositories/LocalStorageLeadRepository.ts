@@ -82,7 +82,7 @@ export class LocalStorageLeadRepository implements LeadRepository {
     }
   }
 
-  private getAllLeads(): any[] {
+  private getAllLeads(): unknown[] {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];

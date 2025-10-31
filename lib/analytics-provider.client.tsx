@@ -2,6 +2,11 @@
 
 import React, { useEffect } from "react";
 import { consent } from "./analytics-core";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
 
 // Componente Plausible Provider (client-only) - Compatible with Next.js 16
 export const PlausibleProvider = ({

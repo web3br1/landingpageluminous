@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 import { vi } from "vitest";
 
 // Mock framer-motion

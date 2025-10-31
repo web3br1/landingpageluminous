@@ -30,7 +30,7 @@ export interface Span {
     timestamp: number;
     level: string;
     message: string;
-    fields?: Record<string, any>;
+    fields?: Record<string, unknown>;
   }>;
   references: SpanReference[];
   status: "started" | "completed" | "error";
@@ -161,7 +161,7 @@ export class Tracer {
       span.error = {
         message: error.message,
         stack: error.stack,
-        code: (error as any).code,
+        code: (error as unknown).code,
       };
 
       // Log error
@@ -217,7 +217,7 @@ export class Tracer {
     span: Span,
     level: "debug" | "info" | "warn" | "error",
     message: string,
-    fields?: Record<string, any>,
+    fields?: Record<string, unknown>,
   ): void {
     span.logs.push({
       timestamp: Date.now(),
@@ -469,14 +469,14 @@ export const tracer = TracerFactory.getTracer();
 
 export function traced(operation?: string) {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
     const methodName = operation || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       return tracer.trace(methodName, (span) => {
         // Add method arguments as tags (be careful with sensitive data)
         span.tags.argsCount = args.length;
@@ -491,14 +491,14 @@ export function traced(operation?: string) {
 
 export function tracedAsync(operation?: string) {
   return function (
-    target: any,
+    target: unknown,
     propertyKey: string,
     descriptor: PropertyDescriptor,
   ) {
     const originalMethod = descriptor.value;
     const methodName = operation || `${target.constructor.name}.${propertyKey}`;
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (...args: unknown[]) {
       return tracer.traceAsync(methodName, async (span) => {
         // Add method arguments as tags (be careful with sensitive data)
         span.tags.argsCount = args.length;
@@ -513,7 +513,7 @@ export function tracedAsync(operation?: string) {
 
 // ===== UTILITY FUNCTIONS =====
 
-export function withTracing<T extends any[], R>(
+export function withTracing<T extends unknown[], R>(
   operation: string,
   fn: (...args: T) => R,
   tags: Record<string, string | number | boolean> = {},
@@ -526,7 +526,7 @@ export function withTracing<T extends any[], R>(
   };
 }
 
-export function withTracingAsync<T extends any[], R>(
+export function withTracingAsync<T extends unknown[], R>(
   operation: string,
   fn: (...args: T) => Promise<R>,
   tags: Record<string, string | number | boolean> = {},

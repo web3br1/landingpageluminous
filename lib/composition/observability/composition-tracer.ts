@@ -2,25 +2,28 @@
 export class CompositionTracer {
   static getInstance() {
     return {
-      startPageComposition: (...args: any[]) => 'trace-id',
-      tracePageCompositionComplete: (...args: any[]) => {},
-      tracePageCompositionError: (...args: any[]) => {},
-      startSectionProcessing: (...args: any[]) => 'span-id',
-      traceSectionProcessingComplete: (...args: any[]) => {},
-      traceSectionProcessingError: (...args: any[]) => {},
-      traceContentNormalization: (...args: any[]) => {},
-      traceContentNormalizationError: (...args: any[]) => {},
+      startPageComposition: (...args: unknown[]) => "trace-id",
+      tracePageCompositionComplete: (...args: unknown[]) => {},
+      tracePageCompositionError: (...args: unknown[]) => {},
+      startSectionProcessing: (...args: unknown[]) => "span-id",
+      traceSectionProcessingComplete: (...args: unknown[]) => {},
+      traceSectionProcessingError: (...args: unknown[]) => {},
+      traceContentNormalization: (...args: unknown[]) => {},
+      traceContentNormalizationError: (...args: unknown[]) => {},
     };
   }
 }
 
 export const compositionTracer = CompositionTracer.getInstance();
 
-export function createCompositionTraceContext(pageType?: any, context?: any) {
+export function createCompositionTraceContext(
+  pageType?: unknown,
+  context?: unknown,
+) {
   return {
-    traceId: 'temp-trace-id',
-    spanId: 'temp-span-id',
-    pageType: pageType || 'marketing',
+    traceId: "temp-trace-id",
+    spanId: "temp-span-id",
+    pageType: pageType || "marketing",
     timestamp: Date.now(),
   };
 }

@@ -8,17 +8,17 @@
  */
 export function safeBrowserAccess<T>(
   callback: () => T,
-  fallback: T = null as T
+  fallback: T = null as T,
 ): T {
   try {
-    if (typeof window === 'undefined') {
+    if (typeof window === "undefined") {
       return fallback;
     }
     return callback();
   } catch (error) {
     // Log para debug em desenvolvimento
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[SSR Safety] Browser API access failed:', error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[SSR Safety] Browser API access failed:", error);
     }
     return fallback;
   }
@@ -28,10 +28,7 @@ export function safeBrowserAccess<T>(
  * Acesso seguro a propriedades do window
  * Com verificação de existência da propriedade
  */
-export function safeWindowAccess<T>(
-  property: keyof Window,
-  fallback: T
-): T {
+export function safeWindowAccess<T>(property: keyof Window, fallback: T): T {
   return safeBrowserAccess(() => {
     const value = (window as any)[property];
     return value !== undefined ? value : fallback;
@@ -43,7 +40,7 @@ export function safeWindowAccess<T>(
  */
 export function safeLocalStorageAccess<T>(
   callback: (storage: Storage) => T,
-  fallback: T
+  fallback: T,
 ): T {
   return safeBrowserAccess(() => {
     if (!window.localStorage) {
@@ -58,7 +55,7 @@ export function safeLocalStorageAccess<T>(
  */
 export function safeSessionStorageAccess<T>(
   callback: (storage: Storage) => T,
-  fallback: T
+  fallback: T,
 ): T {
   return safeBrowserAccess(() => {
     if (!window.sessionStorage) {
@@ -72,24 +69,21 @@ export function safeSessionStorageAccess<T>(
  * Verificação de ambiente client-side
  */
 export function isClientSide(): boolean {
-  return typeof window !== 'undefined' && typeof document !== 'undefined';
+  return typeof window !== "undefined" && typeof document !== "undefined";
 }
 
 /**
  * Verificação de ambiente server-side
  */
 export function isServerSide(): boolean {
-  return typeof window === 'undefined' || typeof document === 'undefined';
+  return typeof window === "undefined" || typeof document === "undefined";
 }
 
 /**
  * Wrapper para operações que podem falhar no SSR
  * Útil para componentes que fazem operações condicionais
  */
-export function withBrowserGuard<T>(
-  operation: () => T,
-  fallback: T
-): T {
+export function withBrowserGuard<T>(operation: () => T, fallback: T): T {
   if (isServerSide()) {
     return fallback;
   }
@@ -97,8 +91,8 @@ export function withBrowserGuard<T>(
   try {
     return operation();
   } catch (error) {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn('[Browser Guard] Operation failed:', error);
+    if (process.env.NODE_ENV === "development") {
+      console.warn("[Browser Guard] Operation failed:", error);
     }
     return fallback;
   }
@@ -109,7 +103,7 @@ export function withBrowserGuard<T>(
  */
 export function createBrowserEffect(
   effect: () => (() => void) | void,
-  deps: any[] = []
+  deps: any[] = [],
 ): { run: () => void; cleanup: () => void } {
   let cleanupFn: (() => void) | undefined;
 

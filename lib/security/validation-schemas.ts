@@ -1,14 +1,22 @@
 import { z } from "zod";
+import {
+  CPF_REGEX,
+  CNPJ_REGEX,
+  PHONE_BR_REGEX,
+  CEP_REGEX,
+  validateCpfChecksum,
+  validateCnpjChecksum,
+} from "@/lib/core/regex-patterns";
 
 // ===== BASE SCHEMAS =====
 
 /**
  * Brazilian document validation
  */
-const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-const cnpjRegex = /^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/;
-const phoneRegex = /^\(\d{2}\)\s\d{4,5}-\d{4}$/;
-const cepRegex = /^\d{5}-\d{3}$/;
+const cpfRegex = CPF_REGEX;
+const cnpjRegex = CNPJ_REGEX;
+const phoneRegex = PHONE_BR_REGEX;
+const cepRegex = CEP_REGEX;
 
 /**
  * Custom CPF validation
@@ -16,32 +24,7 @@ const cepRegex = /^\d{5}-\d{3}$/;
 const cpfValidation = z
   .string()
   .regex(cpfRegex, "CPF deve estar no formato XXX.XXX.XXX-XX")
-  .refine((cpf) => {
-    const cleaned = cpf.replace(/\D/g, "");
-
-    // Check for repeated digits
-    if (/^(\d)\1+$/.test(cleaned)) return false;
-
-    // CPF validation algorithm
-    let sum = 0;
-    for (let i = 0; i < 9; i++) {
-      sum += parseInt(cleaned[i]) * (10 - i);
-    }
-
-    let remainder = (sum * 10) % 11;
-    if (remainder === 10) remainder = 0;
-    if (remainder !== parseInt(cleaned[9])) return false;
-
-    sum = 0;
-    for (let i = 0; i < 10; i++) {
-      sum += parseInt(cleaned[i]) * (11 - i);
-    }
-
-    remainder = (sum * 10) % 11;
-    if (remainder === 10) remainder = 0;
-
-    return remainder === parseInt(cleaned[10]);
-  }, "CPF inválido");
+  .refine((cpf) => validateCpfChecksum(cpf), "CPF inválido");
 
 /**
  * Custom CNPJ validation
@@ -49,37 +32,7 @@ const cpfValidation = z
 const cnpjValidation = z
   .string()
   .regex(cnpjRegex, "CNPJ deve estar no formato XX.XXX.XXX/XXXX-XX")
-  .refine((cnpj) => {
-    const cleaned = cnpj.replace(/\D/g, "");
-
-    // Check for repeated digits
-    if (/^(\d)\1+$/.test(cleaned)) return false;
-
-    const weights1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-    const weights2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-
-    let sum = 0;
-    for (let i = 0; i < 12; i++) {
-      sum += parseInt(cleaned[i]) * weights1[i];
-    }
-
-    let remainder = sum % 11;
-    if (remainder < 2) remainder = 0;
-    else remainder = 11 - remainder;
-
-    if (remainder !== parseInt(cleaned[12])) return false;
-
-    sum = 0;
-    for (let i = 0; i < 13; i++) {
-      sum += parseInt(cleaned[i]) * weights2[i];
-    }
-
-    remainder = sum % 11;
-    if (remainder < 2) remainder = 0;
-    else remainder = 11 - remainder;
-
-    return remainder === parseInt(cleaned[13]);
-  }, "CNPJ inválido");
+  .refine((cnpj) => validateCnpjChecksum(cnpj), "CNPJ inválido");
 
 // ===== USER INPUT SCHEMAS =====
 

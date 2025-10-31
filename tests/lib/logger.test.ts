@@ -30,13 +30,13 @@ describe("Logger", () => {
     logger.info("Test message", { userId: "123" });
 
     expect(mockConsole.log).toHaveBeenCalledWith(
-      expect.stringContaining('"level":"info"')
+      expect.stringContaining('"level":"info"'),
     );
     expect(mockConsole.log).toHaveBeenCalledWith(
-      expect.stringContaining('"msg":"Test message"')
+      expect.stringContaining('"msg":"Test message"'),
     );
     expect(mockConsole.log).toHaveBeenCalledWith(
-      expect.stringContaining('"userId":"123"')
+      expect.stringContaining('"userId":"123"'),
     );
   });
 

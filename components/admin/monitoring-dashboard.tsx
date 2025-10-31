@@ -50,7 +50,7 @@ export function MonitoringDashboard() {
     enabled: true,
     refetchInterval: 30000, // Refresh every 30 seconds
     onSuccess: (data) => {
-      setErrorPatterns(data.data?.errorPatterns || []);
+      setErrorPatterns((data as any).data?.errorPatterns || []);
       setLastUpdate(new Date());
     },
   });
@@ -64,7 +64,7 @@ export function MonitoringDashboard() {
     enabled: true,
     refetchInterval: 30000, // Refresh every 30 seconds
     onSuccess: (data) => {
-      setPerformanceMetrics(data.data?.metrics || null);
+      setPerformanceMetrics((data as any).data?.metrics || null);
       setLastUpdate(new Date());
     },
   });

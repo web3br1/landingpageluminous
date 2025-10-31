@@ -206,11 +206,11 @@ export function ExperimentCanvas({
                   onBlur={(e) => {
                     const newText = e.currentTarget.textContent || "";
                     onElementUpdate(element.id, {
-                      content: { ...element.content, text: newText },
+                      content: { ...(element.content as any), text: newText },
                     });
                   }}
                 >
-                  {element.content.text}
+                  {(element.content as any).text}
                 </div>
               </div>
             </div>
@@ -248,18 +248,18 @@ export function ExperimentCanvas({
                   suppressContentEditableWarning
                   className={cn(
                     "outline-none",
-                    element.content.level === 1 && "text-3xl font-bold",
-                    element.content.level === 2 && "text-2xl font-bold",
-                    element.content.level === 3 && "text-xl font-semibold",
+                    (element.content as any).level === 1 && "text-3xl font-bold",
+                    (element.content as any).level === 2 && "text-2xl font-bold",
+                    (element.content as any).level === 3 && "text-xl font-semibold",
                   )}
                   onBlur={(e) => {
                     const newText = e.currentTarget.textContent || "";
                     onElementUpdate(element.id, {
-                      content: { ...element.content, text: newText },
+                      content: { ...(element.content as any), text: newText },
                     });
                   }}
                 >
-                  {element.content.text}
+                  {(element.content as any).text}
                 </div>
               </div>
             </div>
@@ -300,7 +300,7 @@ export function ExperimentCanvas({
                     }
                   }}
                 >
-                  {element.content.text}
+                  {(element.content as any).text}
                 </Button>
               </div>
             </div>

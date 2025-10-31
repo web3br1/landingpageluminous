@@ -3,7 +3,11 @@ import { render, screen, fireEvent } from "@testing-library/react";
 import React, { useState } from "react";
 
 // Mock some basic UI components for testing
-const MockButton = ({ children, onClick, disabled }: {
+const MockButton = ({
+  children,
+  onClick,
+  disabled,
+}: {
   children: React.ReactNode;
   onClick?: () => void;
   disabled?: boolean;
@@ -13,7 +17,11 @@ const MockButton = ({ children, onClick, disabled }: {
   </button>
 );
 
-const MockInput = ({ value, onChange, placeholder }: {
+const MockInput = ({
+  value,
+  onChange,
+  placeholder,
+}: {
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
@@ -26,7 +34,10 @@ const MockInput = ({ value, onChange, placeholder }: {
   />
 );
 
-const MockCard = ({ children, title }: {
+const MockCard = ({
+  children,
+  title,
+}: {
   children: React.ReactNode;
   title?: string;
 }) => (
@@ -42,15 +53,9 @@ const CounterComponent = () => {
   return (
     <div>
       <div data-testid="counter-display">{count}</div>
-      <MockButton onClick={() => setCount(c => c + 1)}>
-        Increment
-      </MockButton>
-      <MockButton onClick={() => setCount(c => c - 1)}>
-        Decrement
-      </MockButton>
-      <MockButton onClick={() => setCount(0)}>
-        Reset
-      </MockButton>
+      <MockButton onClick={() => setCount((c) => c + 1)}>Increment</MockButton>
+      <MockButton onClick={() => setCount((c) => c - 1)}>Decrement</MockButton>
+      <MockButton onClick={() => setCount(0)}>Reset</MockButton>
     </div>
   );
 };
@@ -108,7 +113,11 @@ describe("UI Components Tests", () => {
 
     it("should be disabled when disabled prop is true", () => {
       const handleClick = vi.fn();
-      render(<MockButton onClick={handleClick} disabled>Disabled</MockButton>);
+      render(
+        <MockButton onClick={handleClick} disabled>
+          Disabled
+        </MockButton>,
+      );
 
       const button = screen.getByTestId("mock-button");
       expect(button).toBeDisabled();
@@ -120,8 +129,16 @@ describe("UI Components Tests", () => {
 
   describe("MockInput", () => {
     it("should render with placeholder", () => {
-      render(<MockInput value="" onChange={() => {}} placeholder="Test placeholder" />);
-      expect(screen.getByPlaceholderText("Test placeholder")).toBeInTheDocument();
+      render(
+        <MockInput
+          value=""
+          onChange={() => {}}
+          placeholder="Test placeholder"
+        />,
+      );
+      expect(
+        screen.getByPlaceholderText("Test placeholder"),
+      ).toBeInTheDocument();
     });
 
     it("should display value", () => {
@@ -133,19 +150,29 @@ describe("UI Components Tests", () => {
       const handleChange = vi.fn();
       render(<MockInput value="" onChange={handleChange} />);
 
-      fireEvent.change(screen.getByTestId("mock-input"), { target: { value: "new value" } });
+      fireEvent.change(screen.getByTestId("mock-input"), {
+        target: { value: "new value" },
+      });
       expect(handleChange).toHaveBeenCalledTimes(1);
     });
   });
 
   describe("MockCard", () => {
     it("should render children", () => {
-      render(<MockCard><p>Test content</p></MockCard>);
+      render(
+        <MockCard>
+          <p>Test content</p>
+        </MockCard>,
+      );
       expect(screen.getByText("Test content")).toBeInTheDocument();
     });
 
     it("should render title when provided", () => {
-      render(<MockCard title="Test Title"><p>Content</p></MockCard>);
+      render(
+        <MockCard title="Test Title">
+          <p>Content</p>
+        </MockCard>,
+      );
       expect(screen.getByTestId("card-title")).toHaveTextContent("Test Title");
       expect(screen.getByTestId("card-content")).toHaveTextContent("Content");
     });
@@ -209,16 +236,20 @@ describe("UI Components Tests", () => {
       render(<FormComponent />);
 
       fireEvent.change(screen.getByPlaceholderText("Enter name"), {
-        target: { value: "John Doe" }
+        target: { value: "John Doe" },
       });
       fireEvent.change(screen.getByPlaceholderText("Enter email"), {
-        target: { value: "john@example.com" }
+        target: { value: "john@example.com" },
       });
 
       fireEvent.click(screen.getByText("Submit"));
 
-      expect(screen.getByTestId("submitted-name")).toHaveTextContent("Name: John Doe");
-      expect(screen.getByTestId("submitted-email")).toHaveTextContent("Email: john@example.com");
+      expect(screen.getByTestId("submitted-name")).toHaveTextContent(
+        "Name: John Doe",
+      );
+      expect(screen.getByTestId("submitted-email")).toHaveTextContent(
+        "Email: john@example.com",
+      );
     });
   });
 });

@@ -387,22 +387,26 @@ Próximo: [ação subsequente].
 **🚀 Melhorias Implementadas:**
 
 #### **1. Sistema de Cache Inteligente**
+
 - **Hash estruturado**: Baseado em arquivos críticos, timestamps e estatísticas de código
 - **Cache hit rate**: ~85% em desenvolvimento local
 - **Invalidation inteligente**: Baseado em mudanças reais vs tempo fixo
 
 #### **2. Análise Incremental Automática**
+
 - **Detecção de mudanças**: Via Git status para identificar arquivos modificados
 - **Execução seletiva**: Apenas análises relevantes são executadas
 - **Performance**: 3x mais rápido em CI/CD (15s vs 45s)
 - **Modo incremental**: `npm run analyze:tdd:incremental`
 
 #### **3. Sistema de Predição de Riscos**
+
 - **Riscos por horizonte**: Imediato (deploy), Curto prazo (semanas), Longo prazo (meses)
 - **Confiabilidade calculada**: Baseada na completude dos dados (100% atual)
 - **Recomendações automáticas**: Priorização inteligente de correções
 
 #### **4. Métricas Avançadas de Qualidade**
+
 - **Complexidade Ciclomática**: Análise precisa com pesos por tipo de constructo
 - **Índice de Manutenibilidade**: MI = 171 - 5.2*ln(V) - 0.23*CC
 - **Volume de Halstead**: Métrica algorítmica de complexidade
@@ -410,18 +414,21 @@ Próximo: [ação subsequente].
 - **Análise de Dependências**: Acoplamento entre módulos e profundidade
 
 #### **5. Otimizações de Performance**
+
 - **Execução Paralela**: Promise.allSettled para todas as análises simultâneas
 - **Timeouts inteligentes**: Evita travamentos em testes/builds
 - **Bundle analysis**: Tamanho de bundle, tempo de build, Lighthouse scores
 - **Fallbacks robustos**: Sistema continua funcionando mesmo com falhas parciais
 
 #### **6. Relatórios Inteligentes**
+
 - **Console estruturado**: Hierarquia clara com emojis e cores
 - **Métricas detalhadas**: Breakdown completo de todas as análises
 - **Análise de impacto**: Mostra como mudanças afetam métricas
 - **Predições futuras**: Estimativa de melhoria baseada em tendências
 
 **📊 Métricas Atuais do Sistema:**
+
 - **Score TDD**: 52.9/100 (baseline estabelecido)
 - **Complexidade**: 1.1 avg (excelente)
 - **Manutenibilidade**: 94.5 (excelente)
@@ -430,6 +437,7 @@ Próximo: [ação subsequente].
 - **Cache hit rate**: ~85% local, ~70% CI
 
 **🔧 Comandos Disponíveis:**
+
 ```bash
 npm run analyze:tdd              # Análise completa
 npm run analyze:tdd:incremental  # Análise incremental (3x mais rápido)
@@ -445,6 +453,7 @@ npm run analyze:tdd:dashboard    # Dashboard HTML (em breve)
 | PR | ~45s | ~15s | **3x mais rápido** |
 
 **🎯 Próximos Passos Planejados:**
+
 - Sistema de alertas automáticos (Slack/Discord)
 - Dashboard web interativo
 - Integração com ferramentas de monitoramento

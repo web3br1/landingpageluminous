@@ -114,9 +114,9 @@ class RevenueOptimizer {
       if (nearbyPrices.length === 0) return;
 
       const comparePrice = nearbyPrices[0];
-      const compareData = (priceGroups as any)[
+      const compareData = (priceGroups as unknown)[
         comparePrice.toString()
-      ] as any[];
+      ] as unknown[];
       if (!compareData) return;
 
       const compareConversionRate =
@@ -365,7 +365,7 @@ class RevenueOptimizer {
     avgConversionRate: number;
     topSegments: Array<{ segment: string; revenue: number; share: number }>;
     priceElasticity: Record<string, number>;
-    revenueTrends: any[];
+    revenueTrends: unknown[];
   } {
     if (this.pricingData.length === 0) {
       return {

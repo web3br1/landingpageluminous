@@ -234,7 +234,7 @@ try {
 ### Test Helpers
 
 ```typescript
-import { TestDataFactory, MockServices } from "@/lib/composition/test-helpers";
+import { TestDataFactory, MockServices } from "@/tests/__shared__/lib/test-helpers";
 
 // Create test data
 const composition = TestDataFactory.createValidPageComposition({

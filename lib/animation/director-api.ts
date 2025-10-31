@@ -204,8 +204,9 @@ export class AnimationDirector {
   }
 
   /** Execute cue action */
-  private executeCue(cue: any, timelineId: string): void {
-    switch (cue.action) {
+  private executeCue(cue: unknown, timelineId: string): void {
+    const cueData = cue as { action?: string; params?: { time?: number } };
+    switch (cueData.action) {
       case "start":
         // Animation control not implemented yet
         break;
@@ -219,8 +220,8 @@ export class AnimationDirector {
         // Animation control not implemented yet
         break;
       case "seek":
-        if (cue.params?.time !== undefined) {
-          this.seek(timelineId, cue.params.time);
+        if (cueData.params?.time !== undefined) {
+          this.seek(timelineId, cueData.params.time);
         }
         break;
     }

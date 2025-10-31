@@ -2,18 +2,73 @@ import React, { useState, useRef, useEffect } from "react";
 import Image, { ImageProps } from "next/image";
 import { cn } from "@/lib/utils";
 
-// Image optimization component with advanced loading strategies
-interface OptimizedImageProps
+// ===== IMAGE OPTIMIZATION TYPES =====
+
+export interface ImagePriority {
+  critical: "critical";
+  high: "high";
+  medium: "medium";
+  low: "low";
+}
+
+export type ImagePriorityType = keyof ImagePriority;
+
+export interface ImageLoadingStrategy {
+  eager: "eager";        // Load immediately
+  lazy: "lazy";          // Browser native lazy loading
+  viewport: "viewport";  // Load when entering viewport
+  intersection: "intersection"; // Advanced intersection observer
+}
+
+export type ImageLoadingStrategyType = keyof ImageLoadingStrategy;
+
+export interface ImageFormat {
+  webp: "webp";
+  avif: "avif";
+  jpg: "jpg";
+  jpeg: "jpeg";
+  png: "png";
+  svg: "svg";
+}
+
+export type ImageFormatType = keyof ImageFormat;
+
+export interface OptimizedImageProps
   extends Omit<ImageProps, "src" | "placeholder" | "priority"> {
   src: string;
-  priority?: "critical" | "high" | "medium" | "low";
-  loadingStrategy?: "eager" | "lazy" | "viewport" | "intersection";
+  priority?: ImagePriorityType;
+  loadingStrategy?: ImageLoadingStrategyType;
   quality?: number;
   placeholder?: "blur" | "empty";
   blurDataURL?: string;
   onLoad?: () => void;
   onError?: () => void;
   className?: string;
+  // Performance monitoring
+  enablePerformanceTracking?: boolean;
+  // Bundle optimization
+  chunkName?: string;
+  // Responsive optimization
+  responsiveSizes?: string;
+}
+
+export interface ImagePerformanceMetrics {
+  loadTime: number;
+  size: number;
+  format: ImageFormatType;
+  priority: ImagePriorityType;
+  strategy: ImageLoadingStrategyType;
+  cached: boolean;
+  timestamp: number;
+}
+
+export interface ImageCacheEntry {
+  src: string;
+  loaded: boolean;
+  size?: number;
+  format?: ImageFormatType;
+  lastAccessed: number;
+  expiresAt?: number;
 }
 
 export function OptimizedImage({

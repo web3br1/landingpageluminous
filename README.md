@@ -5,6 +5,7 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 ## ✨ Características Principais
 
 ### 🎯 **Landing Page Completa**
+
 - **Hero Section** - Headline impactante com CTA primário
 - **Social Proof** - Logos de clientes + depoimentos
 - **Benefícios** - Cards orientados a resultado
@@ -15,12 +16,14 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 - **CTA Final** - Repetição do convite de ação
 
 ### 🏗️ **Arquitetura Composition-First**
+
 - Separação clara entre conteúdo e apresentação
 - Compositores para orquestração de seções
 - Componentes isolados e reutilizáveis
 - Sistema de configuração declarativo
 
 ### 🧪 **TDD Quality System**
+
 - Gates automáticos em PRs
 - Análise de maturidade (M0-M3)
 - Métricas: cobertura, isolamento, performance, qualidade
@@ -28,6 +31,7 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 - Relatórios detalhados e dashboards
 
 ### ⚡ **Performance Otimizada**
+
 - Core Web Vitals: LCP < 2.5s, CLS < 0.1, INP < 200ms
 - Lazy loading inteligente por rota
 - Image optimization com next/image
@@ -35,6 +39,7 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 - PWA com service worker
 
 ### 🎨 **Design System Completo**
+
 - Design tokens centralizados
 - Modo escuro/light
 - Responsivo (320px - 1440px+)
@@ -42,6 +47,7 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 - Animações micro-interativas
 
 ### 🔒 **Segurança & Qualidade**
+
 - CSP configurado
 - Input sanitization
 - Rate limiting
@@ -75,22 +81,46 @@ npm run tdd:validate-config
 
 ## 🏃‍♂️ **Como Executar**
 
+### Scripts de Desenvolvimento (Recomendado)
+
+```powershell
+# Setup completo (instala dependências + verificações)
+.\dev.ps1 -Command setup
+
+# Servidor de desenvolvimento
+.\dev.ps1 -Command dev
+
+# Verificações de qualidade
+.\dev.ps1 -Command check
+
+# Limpar caches
+.\dev.ps1 -Command clean
+```
+
+### Comandos Diretos (PowerShell/CMD)
+
 ```bash
 # Instalar dependências
-npm install
+pnpm install
 
 # Executar em desenvolvimento
-npm run dev
+pnpm run dev
 
 # Build de produção
-npm run build
+pnpm run build
 
 # Executar testes
-npm run test
+pnpm test
 
 # Análise de qualidade
-npm run tdd:analyze
+pnpm run tdd:analyze
 ```
+
+### Compatibilidade Windows/Cursor
+
+- **PowerShell**: Use `.\dev.ps1` para fluxos completos
+- **CMD**: Use `dev.cmd` para sintaxe CMD simples
+- **Cursor**: Scripts evitam problemas de renderização do PowerShell
 
 ## 📁 **Estrutura do Projeto**
 
@@ -107,8 +137,32 @@ npm run tdd:analyze
 ├── lib/                  # Business logic & utilities
 ├── tools/tdd/           # TDD Quality System
 ├── docs/                # Documentation
+│   └── development/     # Development workflows & guides
+├── .cursorrules         # AI Agent development rules
+├── dev.ps1              # Development script (PowerShell)
+├── dev.cmd              # Development script (CMD)
 └── tests/               # Test suites
 ```
+
+## 📚 **Guias de Desenvolvimento**
+
+### Documentação Técnica
+- **[📋 Visão Geral](docs/00-index.md)** - Sumário executivo do projeto
+- **[🏗️ Arquitetura](docs/architecture.md)** - Estrutura técnica e padrões CLEAN + DDD
+- **[🧪 BDD e Testes](docs/bdd.md)** - Cenários Gherkin e pirâmide de testes
+- **[✅ Qualidade & CI](docs/quality.md)** - Gates obrigatórios e métricas
+- **[🧩 Vocabulário DDD](docs/vocabulario.md)** - Termos ubíquos do domínio
+- **[🧰 Troubleshooting](docs/troubleshooting.md)** - Problemas comuns e soluções
+
+### Desenvolvimento com IA
+- **[🚀 Workflow Rails + IA](docs/development/rails-ai-workflow.md)** - Desenvolvimento com Cursor
+- **[🎯 Playbook Operacional](docs/development/rails-workflow-playbook.md)** - Setup e execução com IA
+- **[🧭 Mapa de Contexto](docs/.cursor_context_map.md)** - Navegação rápida para Cursor
+
+### Referência
+- **[🧮 Comandos CLI](docs/COMMANDS.md)** - Central de comandos do projeto
+- **[📜 ADR](docs/ADR/)** - Registro de decisões arquiteturais
+- **[⚙️ Regras do Cursor](.cursorrules)** - Regras obrigatórias para agentes IA
 
 ## 🎯 **Próximos Passos**
 

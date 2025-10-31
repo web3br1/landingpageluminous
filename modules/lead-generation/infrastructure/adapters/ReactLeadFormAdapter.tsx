@@ -78,7 +78,7 @@ export function ReactLeadFormAdapter({
         // Sucesso - lógica de apresentação
         reset();
         const data = result.value as {
-          lead: any;
+          lead: unknown;
           requiresImmediateFollowUp: boolean;
           isHighValue: boolean;
         };

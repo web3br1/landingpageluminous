@@ -30,7 +30,7 @@ async function testComposer(composerName: string) {
         `compose${composerName.replace("-", "").charAt(0).toUpperCase() + composerName.replace("-", "").slice(1)}Content`,
       ];
 
-      let composeFunction: any = null;
+      let composeFunction: unknown = null;
       let functionName = "";
 
       for (const pattern of patterns) {
@@ -52,7 +52,7 @@ async function testComposer(composerName: string) {
       console.log(`✅ Module imported successfully, function: ${functionName}`);
 
       const startTime = Date.now();
-      const result = composeFunction();
+      const result = typeof composeFunction === 'function' ? composeFunction() : null;
       const duration = Date.now() - startTime;
 
       if (result) {
@@ -70,13 +70,13 @@ async function testComposer(composerName: string) {
         console.log(`⚠️ ${composerName} composer returned null/undefined`);
         return false;
       }
-    } catch (importError: any) {
-      console.error(`❌ Import/execution failed: ${importError.message}`);
+    } catch (importError: unknown) {
+      console.error(`❌ Import/execution failed: ${(importError as Error).message}`);
       console.error(`   Stack:`, importError.stack);
       return false;
     }
-  } catch (error: any) {
-    console.error(`❌ Test setup failed: ${error.message}`);
+  } catch (error: unknown) {
+    console.error(`❌ Test setup failed: ${(error as Error).message}`);
     return false;
   }
 }

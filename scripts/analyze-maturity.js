@@ -13,20 +13,25 @@
  * - M3: Quality Assurance (80%+ coverage, comprehensive testing)
  */
 
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
 class MaturityAnalyzer {
   constructor(options = {}) {
-    this.coveragePath = path.join(process.cwd(), 'tmp', 'coverage', 'coverage-summary.json');
-    this.testResultsPath = path.join(process.cwd(), 'test-results.json');
+    this.coveragePath = path.join(
+      process.cwd(),
+      "tmp",
+      "coverage",
+      "coverage-summary.json",
+    );
+    this.testResultsPath = path.join(process.cwd(), "test-results.json");
     this.options = {
       minPassrate: 90,
       minStatements: 65,
       requireE2e: 1,
       minMutation: 0,
-      target: 'M1',
-      ...options
+      target: "M1",
+      ...options,
     };
   }
 
@@ -34,7 +39,7 @@ class MaturityAnalyzer {
    * Analyze project maturity based on coverage and test results
    */
   async analyze() {
-    console.log('🔍 Analyzing project maturity...\n');
+    console.log("🔍 Analyzing project maturity...\n");
 
     try {
       // Load coverage data
@@ -51,13 +56,12 @@ class MaturityAnalyzer {
       this.displayResults(metrics, maturity);
 
       // Exit with appropriate code
-      const exitCode = maturity.level === 'M0' ? 1 : 0;
+      const exitCode = maturity.level === "M0" ? 1 : 0;
       process.exit(exitCode);
-
     } catch (error) {
-      console.error('❌ Maturity analysis failed:', error.message);
-      console.log('\n📊 Defaulting to M0 (Infrastructure Unstable)');
-      console.log('Reason: Analysis failed due to missing data or errors\n');
+      console.error("❌ Maturity analysis failed:", error.message);
+      console.log("\n📊 Defaulting to M0 (Infrastructure Unstable)");
+      console.log("Reason: Analysis failed due to missing data or errors\n");
       process.exit(1);
     }
   }
@@ -67,11 +71,11 @@ class MaturityAnalyzer {
    */
   loadCoverageData() {
     if (!fs.existsSync(this.coveragePath)) {
-      console.warn('⚠️  Coverage data not found, using defaults');
+      console.warn("⚠️  Coverage data not found, using defaults");
       return this.getDefaultCoverageData();
     }
 
-    const data = JSON.parse(fs.readFileSync(this.coveragePath, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(this.coveragePath, "utf8"));
     return data;
   }
 
@@ -80,11 +84,11 @@ class MaturityAnalyzer {
    */
   loadTestResults() {
     if (!fs.existsSync(this.testResultsPath)) {
-      console.warn('⚠️  Test results not found, using defaults');
+      console.warn("⚠️  Test results not found, using defaults");
       return this.getDefaultTestResults();
     }
 
-    const data = JSON.parse(fs.readFileSync(this.testResultsPath, 'utf8'));
+    const data = JSON.parse(fs.readFileSync(this.testResultsPath, "utf8"));
     return data;
   }
 
@@ -103,7 +107,9 @@ class MaturityAnalyzer {
 
     // Test metrics (simplified)
     const testCount = testResults.numTotalTests || 0;
-    const testPassRate = testResults.numPassedTests ? (testResults.numPassedTests / testResults.numTotalTests) * 100 : 0;
+    const testPassRate = testResults.numPassedTests
+      ? (testResults.numPassedTests / testResults.numTotalTests) * 100
+      : 0;
 
     return {
       coverage: {
@@ -111,15 +117,15 @@ class MaturityAnalyzer {
         functions,
         branches,
         statements,
-        average: avgCoverage
+        average: avgCoverage,
       },
       tests: {
         total: testCount,
-        passRate: testPassRate
+        passRate: testPassRate,
       },
       overall: {
-        score: (avgCoverage + testPassRate) / 2
-      }
+        score: (avgCoverage + testPassRate) / 2,
+      },
     };
   }
 
@@ -131,60 +137,66 @@ class MaturityAnalyzer {
     const opts = this.options;
 
     // M0: Infrastructure Unstable
-    if (coverage.average < opts.minStatements || tests.total < opts.requireE2e) {
+    if (
+      coverage.average < opts.minStatements ||
+      tests.total < opts.requireE2e
+    ) {
       return {
-        level: 'M0',
-        name: 'Infrastructure Unstable',
-        description: 'Build issues, low coverage, basic testing',
+        level: "M0",
+        name: "Infrastructure Unstable",
+        description: "Build issues, low coverage, basic testing",
         thresholds: {
           minCoverage: opts.minStatements,
           minTests: opts.requireE2e,
-          minScore: opts.minPassrate
+          minScore: opts.minPassrate,
         },
-        status: 'critical'
+        status: "critical",
       };
     }
 
     // M1: Basic Testing
-    if (coverage.average < opts.minStatements || overall.score < opts.minPassrate) {
+    if (
+      coverage.average < opts.minStatements ||
+      overall.score < opts.minPassrate
+    ) {
       return {
-        level: 'M1',
-        name: 'Basic Testing',
-        description: 'Basic test coverage and structure',
+        level: "M1",
+        name: "Basic Testing",
+        description: "Basic test coverage and structure",
         thresholds: {
           minCoverage: opts.minStatements,
-          minScore: opts.minPassrate
+          minScore: opts.minPassrate,
         },
-        status: 'warning'
+        status: "warning",
       };
     }
 
     // M2: Integration Complete
     if (coverage.average < 70 || overall.score < 75) {
       return {
-        level: 'M2',
-        name: 'Integration Complete',
-        description: 'Integration testing, 70%+ coverage, quality gates',
+        level: "M2",
+        name: "Integration Complete",
+        description: "Integration testing, 70%+ coverage, quality gates",
         thresholds: {
           minCoverage: 70,
           minScore: 75,
-          minMutation: opts.minMutation
+          minMutation: opts.minMutation,
         },
-        status: 'good'
+        status: "good",
       };
     }
 
     // M3: Quality Assurance
     return {
-      level: 'M3',
-      name: 'Quality Assurance',
-      description: '80%+ coverage, mutation testing, comprehensive QA',
+      level: "M3",
+      name: "Quality Assurance",
+      description: "80%+ coverage, mutation testing, comprehensive QA",
       thresholds: {
         minCoverage: 80,
         minScore: 85,
-        minMutation: 40
+        minMutation: 40,
       },
-      status: 'excellent'
+      status: "excellent",
     };
   }
 
@@ -195,13 +207,15 @@ class MaturityAnalyzer {
     console.log(`🏆 MATURITY LEVEL: ${maturity.level} - ${maturity.name}`);
     console.log(`📝 ${maturity.description}\n`);
 
-    console.log('📊 METRICS:');
+    console.log("📊 METRICS:");
     console.log(`   Coverage: ${metrics.coverage.average.toFixed(1)}%`);
     console.log(`   Lines: ${metrics.coverage.lines.toFixed(1)}%`);
     console.log(`   Functions: ${metrics.coverage.functions.toFixed(1)}%`);
     console.log(`   Branches: ${metrics.coverage.branches.toFixed(1)}%`);
     console.log(`   Statements: ${metrics.coverage.statements.toFixed(1)}%`);
-    console.log(`   Tests: ${metrics.tests.total} (${metrics.tests.passRate.toFixed(1)}% pass rate)`);
+    console.log(
+      `   Tests: ${metrics.tests.total} (${metrics.tests.passRate.toFixed(1)}% pass rate)`,
+    );
     console.log(`   Overall Score: ${metrics.overall.score.toFixed(1)}%\n`);
 
     // Recommendations
@@ -209,47 +223,49 @@ class MaturityAnalyzer {
 
     // Status indicator
     const statusIcon = {
-      critical: '❌',
-      warning: '⚠️',
-      good: '✅',
-      excellent: '🏆'
+      critical: "❌",
+      warning: "⚠️",
+      good: "✅",
+      excellent: "🏆",
     };
 
-    console.log(`${statusIcon[maturity.status]} STATUS: ${maturity.status.toUpperCase()}`);
+    console.log(
+      `${statusIcon[maturity.status]} STATUS: ${maturity.status.toUpperCase()}`,
+    );
   }
 
   /**
    * Display improvement recommendations
    */
   displayRecommendations(maturity) {
-    console.log('💡 RECOMMENDATIONS:');
+    console.log("💡 RECOMMENDATIONS:");
 
     switch (maturity.level) {
-      case 'M0':
-        console.log('   • Fix build issues and TypeScript errors');
-        console.log('   • Implement basic unit tests for core functionality');
-        console.log('   • Set up CI/CD pipeline with quality gates');
+      case "M0":
+        console.log("   • Fix build issues and TypeScript errors");
+        console.log("   • Implement basic unit tests for core functionality");
+        console.log("   • Set up CI/CD pipeline with quality gates");
         break;
 
-      case 'M1':
-        console.log('   • Increase test coverage to 70%+');
-        console.log('   • Add integration and component tests');
-        console.log('   • Implement test automation and CI quality gates');
+      case "M1":
+        console.log("   • Increase test coverage to 70%+");
+        console.log("   • Add integration and component tests");
+        console.log("   • Implement test automation and CI quality gates");
         break;
 
-      case 'M2':
-        console.log('   • Reach 80%+ code coverage');
-        console.log('   • Add comprehensive E2E testing');
-        console.log('   • Implement performance and accessibility testing');
+      case "M2":
+        console.log("   • Reach 80%+ code coverage");
+        console.log("   • Add comprehensive E2E testing");
+        console.log("   • Implement performance and accessibility testing");
         break;
 
-      case 'M3':
-        console.log('   • Maintain high coverage and test quality');
-        console.log('   • Add mutation testing and property-based testing');
-        console.log('   • Implement advanced quality metrics and monitoring');
+      case "M3":
+        console.log("   • Maintain high coverage and test quality");
+        console.log("   • Add mutation testing and property-based testing");
+        console.log("   • Implement advanced quality metrics and monitoring");
         break;
     }
-    console.log('');
+    console.log("");
   }
 
   /**
@@ -261,8 +277,8 @@ class MaturityAnalyzer {
         lines: { pct: 0 },
         functions: { pct: 0 },
         branches: { pct: 0 },
-        statements: { pct: 0 }
-      }
+        statements: { pct: 0 },
+      },
     };
   }
 
@@ -273,7 +289,7 @@ class MaturityAnalyzer {
     return {
       numTotalTests: 0,
       numPassedTests: 0,
-      numFailedTests: 0
+      numFailedTests: 0,
     };
   }
 }
@@ -284,23 +300,23 @@ function parseArgs() {
   const options = {};
 
   for (let i = 0; i < args.length; i += 2) {
-    const key = args[i].replace('--', '');
+    const key = args[i].replace("--", "");
     const value = args[i + 1];
 
     switch (key) {
-      case 'min-passrate':
+      case "min-passrate":
         options.minPassrate = parseFloat(value);
         break;
-      case 'min-statements':
+      case "min-statements":
         options.minStatements = parseFloat(value);
         break;
-      case 'require-e2e':
+      case "require-e2e":
         options.requireE2e = parseInt(value);
         break;
-      case 'min-mutation':
+      case "min-mutation":
         options.minMutation = parseFloat(value);
         break;
-      case 'target':
+      case "target":
         options.target = value;
         break;
     }
@@ -313,8 +329,8 @@ function parseArgs() {
 if (require.main === module) {
   const options = parseArgs();
   const analyzer = new MaturityAnalyzer(options);
-  analyzer.analyze().catch(error => {
-    console.error('Fatal error:', error);
+  analyzer.analyze().catch((error) => {
+    console.error("Fatal error:", error);
     process.exit(1);
   });
 }

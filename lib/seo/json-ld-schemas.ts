@@ -177,7 +177,7 @@ export const ProductSchema = ThingSchema.extend({
 
 // Validation functions
 export function validateJsonLdSchema(
-  schema: any,
+  schema: unknown,
   schemaType: string,
 ): { success: true } | { success: false; errors: z.ZodError } {
   try {

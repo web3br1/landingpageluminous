@@ -19,10 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       "landing",
       {
         experiments: serverFlags.experiments,
-        featureFlags: serverFlags.flags,
-      },
-      {
-        flags: serverFlags.flags,
+        featureFlags: serverFlags.flags as Record<string, boolean>,
       },
     );
 
@@ -77,10 +74,7 @@ export default async function LandingPage() {
       "landing",
       {
         experiments: serverFlags.experiments,
-        featureFlags: serverFlags.flags,
-      },
-      {
-        flags: serverFlags.flags,
+        featureFlags: serverFlags.flags as Record<string, boolean>,
       },
     );
 
@@ -91,7 +85,7 @@ export default async function LandingPage() {
 
     return (
       <FrozenFlagsProvider
-        serverFlags={serverFlags.flags}
+        serverFlags={serverFlags.flags as Record<string, string>}
         serverExperiments={serverFlags.experiments}
       >
         <PageRenderer composition={composition} pageType="landing" />

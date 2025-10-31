@@ -6,7 +6,7 @@ import {
   beforeEach,
   afterEach,
   setupBrowserAPIs,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 
 // Mock Performance API
 const mockPerformance = {

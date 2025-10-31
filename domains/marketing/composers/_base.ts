@@ -33,8 +33,8 @@ export function createVariantComposer<TContent>(
     experimentId?: string;
   },
 ) {
-  return () =>
-    withCompositionValidation(() => {
+  return async () =>
+    await withCompositionValidation(async () => {
       const experimentId = config.experimentId ?? `${composerId}_variant`;
       const selected = flags.getExperimentVariant(experimentId);
       const effectiveVariantId =
@@ -51,7 +51,7 @@ export function createVariantComposer<TContent>(
         ...variant.content,
         envelope: {
           id: sectionName,
-          type: sectionName as any,
+          type: sectionName,
           version: "1.0.0",
           timestamp: Date.now(),
         },
@@ -67,7 +67,7 @@ export function createVariantComposer<TContent>(
         },
         envelope: {
           id: sectionName,
-          type: sectionName as any,
+          type: sectionName,
           version: "1.0.0",
           timestamp: Date.now(),
         },

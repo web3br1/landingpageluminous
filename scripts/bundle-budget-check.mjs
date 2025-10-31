@@ -8,6 +8,7 @@
  */
 
 import { readFileSync, existsSync } from 'fs'
+import { formatBytes } from '../lib/utils/formatters.mjs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 
@@ -44,13 +45,6 @@ const BUDGETS = {
 }
 
 // Formatar bytes para leitura humana
-function formatBytes(bytes) {
-  if (bytes === 0) return '0 Bytes'
-  const k = 1024
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-}
 
 // Verificar se arquivo existe
 function checkBundleAnalyzerOutput() {
@@ -175,4 +169,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main()
 }
 
-export { BUDGETS, formatBytes, validateBudgets }
+export { BUDGETS, validateBudgets }

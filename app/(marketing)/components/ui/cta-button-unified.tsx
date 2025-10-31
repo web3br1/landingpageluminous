@@ -4,6 +4,7 @@ import * as React from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
+import { z } from "zod";
 
 import { cn } from "@/lib/utils";
 import {
@@ -14,6 +15,44 @@ import {
 import { useAnimations } from "@/lib/hooks/use-animations";
 import { useExperimentTracking } from "@/lib/experiments/hooks";
 import { useAnalytics } from "@/lib/analytics/use-analytics";
+import { createPropValidator } from "../../../../lib/architecture/component-props";
+import { logger, withComponentContext } from "../../../../lib/architecture/logger-pattern";
+
+// Schema for CTA props validation
+const CTAPropsSchema = z.object({
+  asChild: z.boolean().default(false),
+  href: z.string().url().optional(),
+  loading: z.boolean().default(false),
+  success: z.boolean().default(false),
+  error: z.boolean().default(false),
+  variant: z.enum(["primary", "secondary", "outline", "ghost", "success", "danger", "promo"]).default("primary"),
+  size: z.enum(["sm", "md", "default", "lg", "xl"]).default("default"),
+  state: z.enum(["default", "loading", "success", "error"]).optional(),
+  children: z.custom<React.ReactNode>((val) => val !== null && val !== undefined),
+  experimentId: z.string().optional(),
+  experimentVariant: z.string().optional(),
+  trackClick: z.boolean().default(true),
+  className: z.string().optional(),
+  disabled: z.boolean().default(false),
+  onClick: z.custom<(event: React.MouseEvent<HTMLElement>) => void>().optional(),
+  type: z.enum(["button", "submit", "reset"]).optional(),
+});
+
+// Create prop validator for CTA component
+const ctaPropValidator = createPropValidator(CTAPropsSchema, "CTA", {
+  logErrors: true,
+  throwOnError: false,
+  fallbackValues: {
+    asChild: false,
+    loading: false,
+    success: false,
+    error: false,
+    variant: "primary",
+    size: "default",
+    trackClick: true,
+    disabled: false,
+  },
+});
 
 // Função utilitária para combinar classes CTA
 const getCTAVariantClasses = (
@@ -78,27 +117,52 @@ export interface CTAProps
 
 // CTA Unificado - substitui Button + CtaButton
 const CTA = React.forwardRef<HTMLElement, CTAProps>(
-  (
-    {
+  (props, ref) => {
+    // Create component-specific logger
+    const componentLogger = withComponentContext("CTA");
+
+    // Validate props using the component-props pattern
+    const validatedProps = ctaPropValidator.validateWithFallback(props, {
+      asChild: false,
+      loading: false,
+      success: false,
+      error: false,
+      variant: "primary",
+      size: "default",
+      trackClick: true,
+      disabled: false,
+      children: null,
+      onClick: undefined,
+    });
+
+    // Log prop validation if there were issues
+    const validationResult = ctaPropValidator.validate(props);
+    if (!validationResult.success && validationResult.errors.length > 0) {
+      componentLogger.warn("CTA props validation failed, using fallbacks", {
+        errors: validationResult.errors.length,
+        variant: validatedProps.variant,
+        size: validatedProps.size,
+      });
+    }
+
+    const {
       className,
       variant,
       size,
       state,
-      asChild = false,
+      asChild,
       href,
-      loading = false,
-      success = false,
-      error = false,
+      loading,
+      success,
+      error,
       disabled,
       experimentId,
       experimentVariant,
-      trackClick = true,
+      trackClick,
       onClick,
       children,
-      ...props
-    },
-    ref,
-  ) => {
+      ...otherProps
+    } = validatedProps;
     // Experiment tracking
     const experimentTracking =
       experimentId && experimentVariant
@@ -125,6 +189,17 @@ const CTA = React.forwardRef<HTMLElement, CTAProps>(
     // Handle click with tracking
     const handleClick = (event: React.MouseEvent<HTMLElement>) => {
       if (trackClick && !loading && !disabled) {
+        // Log CTA interaction
+        componentLogger.info("CTA clicked", {
+          variant,
+          size,
+          href: href || undefined,
+          experimentId: experimentId || undefined,
+          experimentVariant: experimentVariant || undefined,
+          hasChildren: !!children,
+          isAnchor,
+        });
+
         // Track experiment click if experiment is active
         if (experimentTracking) {
           experimentTracking.trackClick("cta_button", {
@@ -183,21 +258,21 @@ const CTA = React.forwardRef<HTMLElement, CTAProps>(
           )}
           href={disabled ? undefined : href}
           onClick={handleClick}
-          {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+          {...(otherProps as any)}
         >
           <Loader2 className="animate-spin" />
           {children}
         </a>
       ) : (
         <button
-          type={props.type || "button"}
+          type={otherProps.type || "button"}
           className={cn(
             getCTAVariantClasses(variant, size, loading, disabled),
             className,
           )}
           disabled
           onClick={handleClick}
-          {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+          {...(otherProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
         >
           <Loader2 className="animate-spin" />
           {children}
@@ -208,7 +283,7 @@ const CTA = React.forwardRef<HTMLElement, CTAProps>(
     }
 
     // Normal state - renderização separada para evitar conflitos de tipos
-    const buttonElement = isAnchor ? (
+    const normalButtonElement = isAnchor ? (
       <a
         className={cn(
           getCTAVariantClasses(variant, size, loading, disabled),
@@ -216,27 +291,29 @@ const CTA = React.forwardRef<HTMLElement, CTAProps>(
         )}
         href={disabled ? undefined : href}
         onClick={handleClick}
-        {...(props as React.AnchorHTMLAttributes<HTMLAnchorElement>)}
+        {...(otherProps as any)}
       >
         {children}
       </a>
     ) : (
       <button
         ref={ref as React.Ref<HTMLButtonElement>}
-        type={props.type || "button"}
+        type={otherProps.type || "button"}
         className={cn(
           getCTAVariantClasses(variant, size, loading, disabled),
           className,
         )}
         disabled={disabled}
         onClick={handleClick}
-        {...(props as React.ButtonHTMLAttributes<HTMLButtonElement>)}
+        {...(otherProps as React.ButtonHTMLAttributes<HTMLButtonElement>)}
       >
         {children}
       </button>
     );
 
-    return <MotionWrapper isDisabled={disabled}>{buttonElement}</MotionWrapper>;
+    return (
+      <MotionWrapper isDisabled={disabled}>{normalButtonElement}</MotionWrapper>
+    );
   },
 );
 

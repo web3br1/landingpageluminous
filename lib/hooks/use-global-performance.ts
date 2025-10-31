@@ -36,7 +36,7 @@ export function useGlobalPerformance() {
 
       // Import web-vitals dynamically
       import("web-vitals")
-        .then((webVitals: any) => {
+        .then((webVitals: unknown) => {
           // Note: These methods may not be available in all browsers or versions
           const safeGetLCP = webVitals.getLCP || (() => Promise.resolve());
           const safeGetFID = webVitals.getFID || (() => Promise.resolve());
@@ -45,18 +45,40 @@ export function useGlobalPerformance() {
           const safeGetTTFB = webVitals.getTTFB || (() => Promise.resolve());
 
           // Track metrics (simplified - just log for now)
-          const trackMetric = (name: string, value: any) => {
-            console.log(`Performance metric ${name}:`, value);
+          const trackMetric = (name: string, value: unknown) => {
+            // Type guard for metric value
+            const safeValue = typeof value === 'number' ? value : 0;
+            console.log(`Performance metric ${name}:`, safeValue);
             // Could send to analytics service here
           };
 
-          safeGetLCP((metric: any) => trackMetric("lcp", metric.value));
-          safeGetFID((metric: any) => trackMetric("fid", metric.value));
-          safeGetCLS((metric: any) => trackMetric("cls", metric.value));
-          safeGetFCP((metric: any) => trackMetric("fcp", metric.value));
-          safeGetTTFB((metric: any) => trackMetric("ttfb", metric.value));
+          safeGetLCP((metric: unknown) => {
+            if (metric && typeof metric === 'object' && 'value' in metric) {
+              trackMetric("lcp", metric.value);
+            }
+          });
+          safeGetFID((metric: unknown) => {
+            if (metric && typeof metric === 'object' && 'value' in metric) {
+              trackMetric("fid", metric.value);
+            }
+          });
+          safeGetCLS((metric: unknown) => {
+            if (metric && typeof metric === 'object' && 'value' in metric) {
+              trackMetric("cls", metric.value);
+            }
+          });
+          safeGetFCP((metric: unknown) => {
+            if (metric && typeof metric === 'object' && 'value' in metric) {
+              trackMetric("fcp", metric.value);
+            }
+          });
+          safeGetTTFB((metric: unknown) => {
+            if (metric && typeof metric === 'object' && 'value' in metric) {
+              trackMetric("ttfb", metric.value);
+            }
+          });
         })
-        .catch((err: any) => {
+        .catch((err: unknown) => {
           console.warn("Web vitals tracking not available:", err);
         });
     }
@@ -185,7 +207,7 @@ export function usePerformanceOptimizedRender() {
       return;
 
     // Check connection type for rendering optimization
-    const connection = (navigator as any).connection;
+    const connection = (navigator as unknown).connection;
     if (connection) {
       if (
         connection.effectiveType === "slow-2g" ||

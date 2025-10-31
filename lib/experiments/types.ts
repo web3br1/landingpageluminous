@@ -4,7 +4,7 @@ export interface ExperimentVariant {
   id: string;
   name: string;
   weight: number; // Percentage 0-100
-  config?: Record<string, any>;
+  config?: Record<string, unknown>;
 }
 
 export interface Experiment {
@@ -75,7 +75,7 @@ export interface ExperimentEvent {
   userId?: string;
   sessionId: string;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface FeatureFlag {

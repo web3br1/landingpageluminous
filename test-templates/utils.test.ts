@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from "vitest";
 // import { functionName } from '../../../lib/utils/module-name';
 
 /**
@@ -11,20 +11,18 @@ import { describe, it, expect } from 'vitest';
  * - Sem dependências externas
  */
 
-describe('Utils Module', () => {
-  describe('functionName', () => {
-    it('should handle basic case', () => {
+describe("Utils Module", () => {
+  describe("functionName", () => {
+    it("should handle basic case", () => {
       // Arrange
       // const input = ...
-
       // Act
       // const result = functionName(input)
-
       // Assert
       // expect(result).toBe(expected)
     });
 
-    it('should handle edge case', () => {
+    it("should handle edge case", () => {
       // Test null, undefined, empty strings, etc.
     });
   });

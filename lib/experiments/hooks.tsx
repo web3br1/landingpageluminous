@@ -7,6 +7,13 @@ import {
   trackExperimentEvent,
 } from "./feature-flags";
 
+// ===== TYPES =====
+
+export interface ExperimentVariantsMap {
+  // Experiment ID -> Variant ID mapping
+  [experimentId: string]: string;
+}
+
 /**
  * Hook for A/B testing - returns assigned variant for experiment
  */
@@ -52,7 +59,7 @@ export function useExperimentTracking(experimentId: string, variantId: string) {
   const trackEvent = (
     eventType: "view" | "click" | "convert" | "custom",
     eventName?: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) => {
     trackExperimentEvent(
       experimentId,
@@ -63,13 +70,16 @@ export function useExperimentTracking(experimentId: string, variantId: string) {
     );
   };
 
-  const trackClick = (elementName: string, metadata?: Record<string, any>) => {
+  const trackClick = (
+    elementName: string,
+    metadata?: Record<string, unknown>,
+  ) => {
     trackEvent("click", elementName, metadata);
   };
 
   const trackConvert = (
     conversionType: string,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) => {
     trackEvent("convert", conversionType, metadata);
   };
@@ -108,7 +118,7 @@ export function useABTest(
  * Hook for multiple experiments
  */
 export function useExperiments(experimentIds: string[]) {
-  const [variants, setVariants] = useState<Record<string, string>>({});
+  const [variants, setVariants] = useState<ExperimentVariantsMap>({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

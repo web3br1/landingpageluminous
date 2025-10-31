@@ -42,7 +42,7 @@ export interface FeatureFlagContext {
   environment?: Environment;
   userAgent?: string;
   ipAddress?: string;
-  customAttributes?: Record<string, any>;
+  customAttributes?: Record<string, unknown>;
 }
 
 /**
@@ -498,7 +498,7 @@ export class AdvancedFeatureFlags {
       userRestricted: boolean;
     }
   > {
-    const status: Record<string, any> = {};
+    const status: Record<string, unknown> = {};
 
     for (const [flag, rule] of this.rules) {
       status[flag] = {

@@ -32,7 +32,7 @@ test.describe("Complete User Journey E2E", () => {
       { selector: 'button:has-text("Demo")', name: "Demo" },
       { selector: 'a:has-text("Começar")', name: "Link Começar" },
       { selector: 'button[class*="cta"]', name: "CTA Button" },
-      { selector: 'button[class*="primary"]', name: "Primary Button" }
+      { selector: 'button[class*="primary"]', name: "Primary Button" },
     ];
 
     let clickedCTA = false;
@@ -51,7 +51,7 @@ test.describe("Complete User Journey E2E", () => {
     }
 
     if (!clickedCTA) {
-      console.log('ℹ️  No CTA buttons found, but page loaded successfully');
+      console.log("ℹ️  No CTA buttons found, but page loaded successfully");
     }
 
     // Step 3: Check navigation result
@@ -63,20 +63,23 @@ test.describe("Complete User Journey E2E", () => {
 
     if (isStillOnHome && !clickedCTA) {
       // Still on home page and no CTA clicked - this is expected in current state
-      console.log('ℹ️  Remained on home page (no CTA available)');
-    } else if (currentUrl.includes("/trial") || currentUrl.includes("/signup")) {
+      console.log("ℹ️  Remained on home page (no CTA available)");
+    } else if (
+      currentUrl.includes("/trial") ||
+      currentUrl.includes("/signup")
+    ) {
       // Successfully navigated to signup/trial page
-      console.log('✅ Navigated to signup/trial page');
+      console.log("✅ Navigated to signup/trial page");
 
       // Check for form elements (may not exist in current state)
-      const inputs = page.locator('input');
+      const inputs = page.locator("input");
       const inputCount = await inputs.count();
 
       if (inputCount > 0) {
         console.log(`✅ Found ${inputCount} form inputs`);
         // Could test form filling here if inputs exist
       } else {
-        console.log('ℹ️  No form inputs found on signup page');
+        console.log("ℹ️  No form inputs found on signup page");
       }
     } else {
       // Some other navigation occurred
@@ -90,10 +93,12 @@ test.describe("Complete User Journey E2E", () => {
       '[data-section="pricing"], [data-section="pricing-presale"]',
     );
 
-    const hasPricingSection = await pricingSection.isVisible().catch(() => false);
+    const hasPricingSection = await pricingSection
+      .isVisible()
+      .catch(() => false);
 
     if (!hasPricingSection) {
-      console.log('ℹ️  Pricing section not found (using fallback content)');
+      console.log("ℹ️  Pricing section not found (using fallback content)");
       return;
     }
 
@@ -133,10 +138,12 @@ test.describe("Complete User Journey E2E", () => {
   test("features section interaction works", async ({ page }) => {
     // Check if features section exists (may not exist in current fallback state)
     const featuresSection = page.locator('[data-section="features"]');
-    const hasFeaturesSection = await featuresSection.isVisible().catch(() => false);
+    const hasFeaturesSection = await featuresSection
+      .isVisible()
+      .catch(() => false);
 
     if (!hasFeaturesSection) {
-      console.log('ℹ️  Features section not found (using fallback content)');
+      console.log("ℹ️  Features section not found (using fallback content)");
       return;
     }
 

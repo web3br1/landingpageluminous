@@ -5,38 +5,38 @@
  * para acompanhar a evolução da qualidade TDD.
  */
 
-import fs from 'fs'
-import path from 'path'
-import type { TDDResults, SafeTestResult } from '../types'
+import fs from "fs";
+import path from "path";
+import type { TDDResults, SafeTestResult } from "../types";
 
 export interface DashboardData {
-  results: TDDResults
-  safeTests?: SafeTestResult
-  alerts: any
-  trends: any[] // Histórico de execuções
-  generatedAt: string
+  results: TDDResults;
+  safeTests?: SafeTestResult;
+  alerts: unknown;
+  trends: unknown[]; // Histórico de execuções
+  generatedAt: string;
 }
 
 export class DashboardGenerator {
-  private templatesDir: string
-  private outputDir: string
+  private templatesDir: string;
+  private outputDir: string;
 
-  constructor(outputDir = path.join(process.cwd(), 'tmp', 'tdd-reports')) {
-    this.outputDir = outputDir
-    this.templatesDir = path.join(__dirname, 'templates')
+  constructor(outputDir = path.join(process.cwd(), "tmp", "tdd-reports")) {
+    this.outputDir = outputDir;
+    this.templatesDir = path.join(__dirname, "templates");
   }
 
   /**
    * Gera dashboard completo
    */
   generateDashboard(data: DashboardData): string {
-    const html = this.buildHTML(data)
-    const dashboardPath = path.join(this.outputDir, 'tdd-dashboard.html')
+    const html = this.buildHTML(data);
+    const dashboardPath = path.join(this.outputDir, "tdd-dashboard.html");
 
-    fs.writeFileSync(dashboardPath, html)
-    console.log(`📊 Dashboard gerado: ${dashboardPath}`)
+    fs.writeFileSync(dashboardPath, html);
+    console.log(`📊 Dashboard gerado: ${dashboardPath}`);
 
-    return dashboardPath
+    return dashboardPath;
   }
 
   /**
@@ -57,7 +57,7 @@ export class DashboardGenerator {
         <header class="header">
             <h1>🎯 TDD Quality Dashboard</h1>
             <div class="header-info">
-                <span>Gerado em: ${new Date(data.generatedAt).toLocaleString('pt-BR')}</span>
+                <span>Gerado em: ${new Date(data.generatedAt).toLocaleString("pt-BR")}</span>
                 <span>Maturidade: ${this.getMaturityBadge(data.results.maturity.level)}</span>
             </div>
         </header>
@@ -78,16 +78,16 @@ export class DashboardGenerator {
 
     <script>${this.getJavaScript()}</script>
 </body>
-</html>`
+</html>`;
   }
 
   /**
    * Constrói card principal de score
    */
   private buildScoreCard(data: DashboardData): string {
-    const score = data.results.scores.finalScore
-    const maturity = data.results.maturity
-    const criticalCount = data.results.classifier.redTests?.length || 0
+    const score = data.results.scores.finalScore;
+    const maturity = data.results.maturity;
+    const criticalCount = data.results.classifier.redTests?.length || 0;
 
     return `
     <div class="card score-card">
@@ -103,40 +103,44 @@ export class DashboardGenerator {
             </div>
             <div class="detail-item">
                 <span class="label">Problemas Críticos:</span>
-                <span class="value ${criticalCount > 0 ? 'danger' : 'success'}">${criticalCount}</span>
+                <span class="value ${criticalCount > 0 ? "danger" : "success"}">${criticalCount}</span>
             </div>
             <div class="detail-item">
                 <span class="label">Tempo de Análise:</span>
                 <span class="value">N/A s</span>
             </div>
         </div>
-    </div>`
+    </div>`;
   }
 
   /**
    * Constrói painel de métricas de qualidade
    */
   private buildQualityMetrics(data: DashboardData): string {
-    const scores = data.results.scores
+    const scores = data.results.scores;
 
     return `
     <div class="card quality-metrics">
         <h3>🎯 Métricas de Qualidade</h3>
         <div class="metrics-grid">
-            ${this.buildMetricBar('Score Final', scores.finalScore || 0, 'Pontuação geral')}
-            ${this.buildMetricBar('Maturity', scores.maturity === 'M3' ? 100 : scores.maturity === 'M2' ? 75 : scores.maturity === 'M1' ? 50 : 25, 'Nível de maturidade')}
-            ${this.buildMetricBar('Weights', Object.keys(scores.weights || {}).length * 10, 'Métricas ponderadas')}
-            ${this.buildMetricBar('Breakdown', scores.breakdown?.length || 0, 'Análise detalhada')}
+            ${this.buildMetricBar("Score Final", scores.finalScore || 0, "Pontuação geral")}
+            ${this.buildMetricBar("Maturity", scores.maturity === "M3" ? 100 : scores.maturity === "M2" ? 75 : scores.maturity === "M1" ? 50 : 25, "Nível de maturidade")}
+            ${this.buildMetricBar("Weights", Object.keys(scores.weights || {}).length * 10, "Métricas ponderadas")}
+            ${this.buildMetricBar("Breakdown", scores.breakdown?.length || 0, "Análise detalhada")}
         </div>
-    </div>`
+    </div>`;
   }
 
   /**
    * Constrói barra de métrica individual
    */
-  private buildMetricBar(label: string, value: number, description: string): string {
-    const percentage = Math.min(100, Math.max(0, value))
-    const className = this.getScoreClass(value)
+  private buildMetricBar(
+    label: string,
+    value: number,
+    description: string,
+  ): string {
+    const percentage = Math.min(100, Math.max(0, value));
+    const className = this.getScoreClass(value);
 
     return `
     <div class="metric-item">
@@ -148,34 +152,37 @@ export class DashboardGenerator {
             <div class="metric-fill ${className}" style="width: ${percentage}%"></div>
         </div>
         <div class="metric-description">${description}</div>
-    </div>`
+    </div>`;
   }
 
   /**
    * Constrói painel de alertas
    */
   private buildAlertsPanel(data: DashboardData): string {
-    const alerts = data.alerts
+    const alerts = data.alerts;
 
     return `
     <div class="card alerts-panel">
         <h3>🚨 Alertas Ativos</h3>
-        ${alerts.total === 0 ?
-            '<div class="no-alerts">✅ Nenhum alerta ativo</div>' :
-            this.buildAlertsList(alerts)
+        ${
+          alerts.total === 0
+            ? '<div class="no-alerts">✅ Nenhum alerta ativo</div>'
+            : this.buildAlertsList(alerts)
         }
-    </div>`
+    </div>`;
   }
 
   /**
    * Constrói lista de alertas
    */
-  private buildAlertsList(alerts: any): string {
-    const allAlerts = [...alerts.critical, ...alerts.warnings.slice(0, 5)]
+  private buildAlertsList(alerts: unknown): string {
+    const allAlerts = [...alerts.critical, ...alerts.warnings.slice(0, 5)];
 
     return `
     <div class="alerts-list">
-        ${allAlerts.map(alert => `
+        ${allAlerts
+          .map(
+            (alert) => `
             <div class="alert-item ${alert.level}">
                 <div class="alert-header">
                     <span class="alert-level">${this.getAlertLevelIcon(alert.level)}</span>
@@ -184,16 +191,18 @@ export class DashboardGenerator {
                 <div class="alert-description">${alert.description}</div>
                 <div class="alert-recommendation">${alert.recommendation}</div>
             </div>
-        `).join('')}
-    </div>`
+        `,
+          )
+          .join("")}
+    </div>`;
   }
 
   /**
    * Constrói gráfico de cobertura
    */
   private buildCoverageChart(data: DashboardData): string {
-    const coverage = data.results.engine?.scores?.coverage || 0
-    const hasRealCoverage = data.results.engine?.scores?.coverage !== undefined
+    const coverage = data.results.engine?.scores?.coverage || 0;
+    const hasRealCoverage = data.results.engine?.scores?.coverage !== undefined;
 
     return `
     <div class="card coverage-chart">
@@ -212,16 +221,17 @@ export class DashboardGenerator {
                 </svg>
             </div>
             <div class="coverage-info">
-                <div class="coverage-type">${hasRealCoverage ? 'Cobertura Real' : 'Cobertura Estimada'}</div>
+                <div class="coverage-type">${hasRealCoverage ? "Cobertura Real" : "Cobertura Estimada"}</div>
                 <div class="coverage-description">
-                    ${hasRealCoverage ?
-                        'Métricas calculadas a partir de testes executados' :
-                        'Estimativa baseada em análise estática de código'
+                    ${
+                      hasRealCoverage
+                        ? "Métricas calculadas a partir de testes executados"
+                        : "Estimativa baseada em análise estática de código"
                     }
                 </div>
             </div>
         </div>
-    </div>`
+    </div>`;
   }
 
   /**
@@ -239,32 +249,35 @@ export class DashboardGenerator {
             </div>
             <div class="trend-item">
                 <span class="trend-label">Média de score:</span>
-                <span class="trend-value">${this.calculateTrendAverage(data.trends, 'score')} pts</span>
+                <span class="trend-value">${this.calculateTrendAverage(data.trends, "score")} pts</span>
             </div>
             <div class="trend-item">
                 <span class="trend-label">Problemas recorrentes:</span>
                 <span class="trend-value">${this.countRecurringIssues(data.trends)}</span>
             </div>
         </div>
-    </div>`
+    </div>`;
   }
 
   /**
    * Constrói painel de safe tests
    */
   private buildSafeTestsPanel(data: DashboardData): string {
-    const safeTests = data.safeTests
+    const safeTests = data.safeTests;
 
     if (!safeTests) {
       return `
       <div class="card safe-tests-panel">
           <h3>🛡️ Safe Tests</h3>
           <div class="no-safe-tests">Não executado nesta análise</div>
-      </div>`
+      </div>`;
     }
 
-    const successRate = safeTests.results.filter(r => r.passed).length / safeTests.results.length * 100
-    const flakyCount = safeTests.results.filter(r => r.flaky).length
+    const successRate =
+      (safeTests.results.filter((r) => r.passed).length /
+        safeTests.results.length) *
+      100;
+    const flakyCount = safeTests.results.filter((r) => r.flaky).length;
 
     return `
     <div class="card safe-tests-panel">
@@ -276,59 +289,59 @@ export class DashboardGenerator {
             </div>
             <div class="safe-tests-metric">
                 <span class="metric-label">Taxa de Sucesso:</span>
-                <span class="metric-value ${successRate >= 80 ? 'success' : 'danger'}">${successRate.toFixed(1)}%</span>
+                <span class="metric-value ${successRate >= 80 ? "success" : "danger"}">${successRate.toFixed(1)}%</span>
             </div>
             <div class="safe-tests-metric">
                 <span class="metric-label">Testes Flaky:</span>
-                <span class="metric-value ${flakyCount > 0 ? 'warning' : 'success'}">${flakyCount}</span>
+                <span class="metric-value ${flakyCount > 0 ? "warning" : "success"}">${flakyCount}</span>
             </div>
             <div class="safe-tests-metric">
                 <span class="metric-label">Tempo Estimado:</span>
                 <span class="metric-value">${Math.round(safeTests.subset.totalEstimatedDuration / 1000)}s</span>
             </div>
         </div>
-    </div>`
+    </div>`;
   }
 
   /**
    * Calcula média de tendência
    */
-  private calculateTrendAverage(trends: any[], field: string): string {
-    if (trends.length === 0) return 'N/A'
+  private calculateTrendAverage(trends: unknown[], field: string): string {
+    if (trends.length === 0) return "N/A";
 
-    const values = trends.map(t => t[field]).filter(v => v !== undefined)
-    if (values.length === 0) return 'N/A'
+    const values = trends.map((t) => t[field]).filter((v) => v !== undefined);
+    if (values.length === 0) return "N/A";
 
-    const avg = values.reduce((a, b) => a + b, 0) / values.length
-    return avg.toFixed(1)
+    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+    return avg.toFixed(1);
   }
 
   /**
    * Conta problemas recorrentes
    */
-  private countRecurringIssues(trends: any[]): string {
+  private countRecurringIssues(trends: unknown[]): string {
     // Placeholder - implementação simplificada
-    return '0 identificados'
+    return "0 identificados";
   }
 
   /**
    * Retorna classe CSS baseada no score
    */
   private getScoreClass(score: number): string {
-    if (score >= 80) return 'excellent'
-    if (score >= 60) return 'good'
-    if (score >= 40) return 'warning'
-    return 'danger'
+    if (score >= 80) return "excellent";
+    if (score >= 60) return "good";
+    if (score >= 40) return "warning";
+    return "danger";
   }
 
   /**
    * Retorna cor baseada no score
    */
   private getScoreColor(score: number): string {
-    if (score >= 80) return '#10b981'
-    if (score >= 60) return '#3b82f6'
-    if (score >= 40) return '#f59e0b'
-    return '#ef4444'
+    if (score >= 80) return "#10b981";
+    if (score >= 60) return "#3b82f6";
+    if (score >= 40) return "#f59e0b";
+    return "#ef4444";
   }
 
   /**
@@ -339,9 +352,9 @@ export class DashboardGenerator {
       M0: '<span class="badge danger">M0 - Crítico</span>',
       M1: '<span class="badge warning">M1 - Instável</span>',
       M2: '<span class="badge good">M2 - Estável</span>',
-      M3: '<span class="badge excellent">M3 - Sólido</span>'
-    }
-    return badges[level as keyof typeof badges] || level
+      M3: '<span class="badge excellent">M3 - Sólido</span>',
+    };
+    return badges[level as keyof typeof badges] || level;
   }
 
   /**
@@ -349,10 +362,14 @@ export class DashboardGenerator {
    */
   private getAlertLevelIcon(level: string): string {
     switch (level) {
-      case 'critical': return '🚨'
-      case 'warning': return '⚠️'
-      case 'info': return 'ℹ️'
-      default: return '❓'
+      case "critical":
+        return "🚨";
+      case "warning":
+        return "⚠️";
+      case "info":
+        return "ℹ️";
+      default:
+        return "❓";
     }
   }
 
@@ -449,7 +466,7 @@ export class DashboardGenerator {
       .score-details { grid-template-columns: 1fr; }
       .safe-tests-summary { grid-template-columns: 1fr; }
     }
-    `
+    `;
   }
 
   /**
@@ -477,6 +494,6 @@ export class DashboardGenerator {
         }
       });
     });
-    `
+    `;
   }
 }

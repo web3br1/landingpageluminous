@@ -6,7 +6,7 @@ import { PageCompositionService } from "../services/page-composition-service";
 import { ContentMapper } from "../services/content-mapper";
 import { FallbackProvider } from "../services/fallback-provider";
 import { SSRAdapter } from "../services/ssr-adapter";
-import { Factory, TestUtils } from "../test-helpers";
+import { Factory, TestUtils } from "../../../tests/__shared__/lib/test-helpers";
 import { Result, isOk } from "@shared/core";
 
 // Helper function to safely extract values from Result

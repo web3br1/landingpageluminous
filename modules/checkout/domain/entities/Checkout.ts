@@ -60,6 +60,7 @@ export class Checkout {
   }
 
   // Getters
+
   getId(): string {
     return this.id;
   }

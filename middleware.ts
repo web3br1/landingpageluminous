@@ -114,7 +114,6 @@ function auditScriptRequest(request: NextRequest, pathname: string) {
   }
 }
 
-
 // Clean old script audit entries (older than 24 hours)
 function cleanScriptAuditEntries() {
   const cutoff = Date.now() - 24 * 60 * 60 * 1000; // 24 hours ago
@@ -200,10 +199,16 @@ function handleRateLimited(clientIP: string, pathname: string): NextResponse {
   );
 }
 
-function addRateLimitHeaders(response: NextResponse, clientIP: string): NextResponse {
+function addRateLimitHeaders(
+  response: NextResponse,
+  clientIP: string,
+): NextResponse {
   const clientData = rateLimitStore.get(clientIP);
   if (clientData) {
-    response.headers.set("X-RateLimit-Limit", RATE_LIMIT_MAX_REQUESTS.toString());
+    response.headers.set(
+      "X-RateLimit-Limit",
+      RATE_LIMIT_MAX_REQUESTS.toString(),
+    );
     response.headers.set(
       "X-RateLimit-Remaining",
       Math.max(0, RATE_LIMIT_MAX_REQUESTS - clientData.count).toString(),
@@ -213,7 +218,11 @@ function addRateLimitHeaders(response: NextResponse, clientIP: string): NextResp
   return response;
 }
 
-function handleCSRFValidation(request: NextRequest, pathname: string, method: string): Promise<NextResponse> {
+function handleCSRFValidation(
+  request: NextRequest,
+  pathname: string,
+  method: string,
+): Promise<NextResponse> {
   // Skip CSRF for CSP reports (they're automated)
   if (pathname === "/api/csp-report") {
     return Promise.resolve(NextResponse.next());
@@ -236,19 +245,22 @@ function handleCSRFValidation(request: NextRequest, pathname: string, method: st
       timestamp: new Date().toISOString(),
     });
 
-    return Promise.resolve(new NextResponse(
-      JSON.stringify({
-        error: "CSRF token missing or invalid",
-        message: "Security validation failed. Please refresh the page and try again.",
-        code: "CSRF_INVALID",
-      }),
-      {
-        status: 403,
-        headers: {
-          "Content-Type": "application/json",
+    return Promise.resolve(
+      new NextResponse(
+        JSON.stringify({
+          error: "CSRF token missing or invalid",
+          message:
+            "Security validation failed. Please refresh the page and try again.",
+          code: "CSRF_INVALID",
+        }),
+        {
+          status: 403,
+          headers: {
+            "Content-Type": "application/json",
+          },
         },
-      },
-    ));
+      ),
+    );
   }
 
   // Add CSRF token to response for future requests

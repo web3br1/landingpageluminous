@@ -124,7 +124,7 @@ export function analyzeExperiment(experimentId: string): AnalysisResult | null {
 /**
  * Analyze a single variant against control
  */
-function analyzeVariant(control: any, variant: any) {
+function analyzeVariant(control: unknown, variant: unknown) {
   const totalViews = control.views + variant.views;
   const totalClicks = control.clicks + variant.clicks;
 
@@ -158,8 +158,8 @@ function analyzeVariant(control: any, variant: any) {
  * Calculate statistical significance using simplified z-test
  */
 function calculateStatisticalSignificance(
-  control: any,
-  variant: any,
+  control: unknown,
+  variant: unknown,
 ): StatisticalSignificance {
   const n1 = control.views;
   const n2 = variant.views;
@@ -221,7 +221,10 @@ function calculateStatisticalSignificance(
 /**
  * Calculate statistical power and required sample size
  */
-function calculatePowerAnalysis(control: any, variant: any): PowerAnalysis {
+function calculatePowerAnalysis(
+  control: unknown,
+  variant: unknown,
+): PowerAnalysis {
   const n1 = control.views;
   const n2 = variant.views;
   const sampleSize = Math.min(n1, n2);
@@ -258,7 +261,10 @@ function calculatePowerAnalysis(control: any, variant: any): PowerAnalysis {
 /**
  * Generate recommendations based on analysis
  */
-function generateRecommendations(analysis: any, metrics: any): string[] {
+function generateRecommendations(
+  analysis: unknown,
+  metrics: unknown,
+): string[] {
   const recommendations: string[] = [];
 
   if (analysis.isSignificant && analysis.improvement > 0) {
@@ -298,7 +304,7 @@ function generateRecommendations(analysis: any, metrics: any): string[] {
 /**
  * Determine if experiment should stop
  */
-function determineShouldStop(analysis: any, metrics: any): boolean {
+function determineShouldStop(analysis: unknown, metrics: unknown): boolean {
   // Stop if we have a clear winner with high confidence
   if (
     analysis.isSignificant &&
@@ -320,7 +326,7 @@ function determineShouldStop(analysis: any, metrics: any): boolean {
 /**
  * Generate reason for current analysis state
  */
-function generateReason(analysis: any, metrics: any): string {
+function generateReason(analysis: unknown, metrics: unknown): string {
   if (analysis.isSignificant && analysis.improvement > 0) {
     return `Variant ${analysis.variantId} shows statistically significant improvement`;
   } else if (analysis.isSignificant && analysis.improvement < 0) {
@@ -335,7 +341,7 @@ function generateReason(analysis: any, metrics: any): string {
 /**
  * Generate next steps based on analysis
  */
-function generateNextSteps(analysis: any, metrics: any): string[] {
+function generateNextSteps(analysis: unknown, metrics: unknown): string[] {
   const steps: string[] = [];
 
   if (analysis.isSignificant && analysis.improvement > 0) {

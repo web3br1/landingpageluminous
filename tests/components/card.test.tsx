@@ -88,7 +88,13 @@ describe("Card Components", () => {
       const card = screen.getByTestId("card");
 
       expect(card).toHaveTextContent("Card content");
-      expect(card).toHaveClass("rounded-lg", "border", "bg-card", "text-card-foreground", "shadow-sm");
+      expect(card).toHaveClass(
+        "rounded-lg",
+        "border",
+        "bg-card",
+        "text-card-foreground",
+        "shadow-sm",
+      );
     });
 
     it("should apply custom className", () => {
@@ -104,13 +110,20 @@ describe("Card Components", () => {
 
     it("should forward other props", () => {
       render(<Card data-custom="value">Content</Card>);
-      expect(screen.getByTestId("card")).toHaveAttribute("data-custom", "value");
+      expect(screen.getByTestId("card")).toHaveAttribute(
+        "data-custom",
+        "value",
+      );
     });
   });
 
   describe("CardHeader", () => {
     it("should render with default props", () => {
-      render(<Card><CardHeader>Header content</CardHeader></Card>);
+      render(
+        <Card>
+          <CardHeader>Header content</CardHeader>
+        </Card>,
+      );
       const header = screen.getByTestId("card-header");
 
       expect(header).toHaveTextContent("Header content");
@@ -118,7 +131,11 @@ describe("Card Components", () => {
     });
 
     it("should apply custom className", () => {
-      render(<Card><CardHeader className="custom-header">Content</CardHeader></Card>);
+      render(
+        <Card>
+          <CardHeader className="custom-header">Content</CardHeader>
+        </Card>,
+      );
       expect(screen.getByTestId("card-header")).toHaveClass("custom-header");
     });
   });
@@ -130,12 +147,17 @@ describe("Card Components", () => {
           <CardHeader>
             <CardTitle>Card Title</CardTitle>
           </CardHeader>
-        </Card>
+        </Card>,
       );
 
       const title = screen.getByTestId("card-title");
       expect(title).toHaveTextContent("Card Title");
-      expect(title).toHaveClass("text-2xl", "font-semibold", "leading-none", "tracking-tight");
+      expect(title).toHaveClass(
+        "text-2xl",
+        "font-semibold",
+        "leading-none",
+        "tracking-tight",
+      );
       expect(title.tagName).toBe("H3");
     });
 
@@ -145,7 +167,7 @@ describe("Card Components", () => {
           <CardHeader>
             <CardTitle className="custom-title">Title</CardTitle>
           </CardHeader>
-        </Card>
+        </Card>,
       );
       expect(screen.getByTestId("card-title")).toHaveClass("custom-title");
     });
@@ -158,7 +180,7 @@ describe("Card Components", () => {
           <CardHeader>
             <CardDescription>Description text</CardDescription>
           </CardHeader>
-        </Card>
+        </Card>,
       );
 
       const description = screen.getByTestId("card-description");
@@ -171,9 +193,11 @@ describe("Card Components", () => {
       render(
         <Card>
           <CardHeader>
-            <CardDescription className="custom-desc">Description</CardDescription>
+            <CardDescription className="custom-desc">
+              Description
+            </CardDescription>
           </CardHeader>
-        </Card>
+        </Card>,
       );
       expect(screen.getByTestId("card-description")).toHaveClass("custom-desc");
     });
@@ -181,7 +205,11 @@ describe("Card Components", () => {
 
   describe("CardContent", () => {
     it("should render with default props", () => {
-      render(<Card><CardContent>Main content</CardContent></Card>);
+      render(
+        <Card>
+          <CardContent>Main content</CardContent>
+        </Card>,
+      );
       const content = screen.getByTestId("card-content");
 
       expect(content).toHaveTextContent("Main content");
@@ -189,14 +217,22 @@ describe("Card Components", () => {
     });
 
     it("should apply custom className", () => {
-      render(<Card><CardContent className="custom-content">Content</CardContent></Card>);
+      render(
+        <Card>
+          <CardContent className="custom-content">Content</CardContent>
+        </Card>,
+      );
       expect(screen.getByTestId("card-content")).toHaveClass("custom-content");
     });
   });
 
   describe("CardFooter", () => {
     it("should render with default props", () => {
-      render(<Card><CardFooter>Footer content</CardFooter></Card>);
+      render(
+        <Card>
+          <CardFooter>Footer content</CardFooter>
+        </Card>,
+      );
       const footer = screen.getByTestId("card-footer");
 
       expect(footer).toHaveTextContent("Footer content");
@@ -204,7 +240,11 @@ describe("Card Components", () => {
     });
 
     it("should apply custom className", () => {
-      render(<Card><CardFooter className="custom-footer">Footer</CardFooter></Card>);
+      render(
+        <Card>
+          <CardFooter className="custom-footer">Footer</CardFooter>
+        </Card>,
+      );
       expect(screen.getByTestId("card-footer")).toHaveClass("custom-footer");
     });
   });
@@ -215,7 +255,9 @@ describe("Card Components", () => {
         <Card className="w-80">
           <CardHeader>
             <CardTitle>Project Title</CardTitle>
-            <CardDescription>A brief description of the project.</CardDescription>
+            <CardDescription>
+              A brief description of the project.
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <p>This is the main content of the card.</p>
@@ -229,15 +271,21 @@ describe("Card Components", () => {
             <button className="mr-2">Cancel</button>
             <button>Save</button>
           </CardFooter>
-        </Card>
+        </Card>,
       );
 
       // Verify all components are present
       expect(screen.getByTestId("card")).toBeInTheDocument();
       expect(screen.getByTestId("card-header")).toBeInTheDocument();
-      expect(screen.getByTestId("card-title")).toHaveTextContent("Project Title");
-      expect(screen.getByTestId("card-description")).toHaveTextContent("A brief description of the project.");
-      expect(screen.getByTestId("card-content")).toHaveTextContent("This is the main content of the card.");
+      expect(screen.getByTestId("card-title")).toHaveTextContent(
+        "Project Title",
+      );
+      expect(screen.getByTestId("card-description")).toHaveTextContent(
+        "A brief description of the project.",
+      );
+      expect(screen.getByTestId("card-content")).toHaveTextContent(
+        "This is the main content of the card.",
+      );
       expect(screen.getByTestId("card-footer")).toBeInTheDocument();
 
       // Verify content structure

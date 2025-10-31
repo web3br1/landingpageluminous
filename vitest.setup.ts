@@ -401,7 +401,9 @@ if (typeof window !== "undefined") {
   const __sessionStorageStore = new Map();
   var sessionStorageMock = {
     getItem: vi.fn((key) => {
-      return __sessionStorageStore.has(key) ? __sessionStorageStore.get(key) : null;
+      return __sessionStorageStore.has(key)
+        ? __sessionStorageStore.get(key)
+        : null;
     }),
     setItem: vi.fn((key, value) => {
       __sessionStorageStore.set(key, String(value));

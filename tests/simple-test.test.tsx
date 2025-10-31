@@ -8,7 +8,7 @@ const SimpleCounter = () => {
   return (
     <div>
       <div data-testid="counter">{count}</div>
-      <button onClick={() => setCount(c => c + 1)} data-testid="increment">
+      <button onClick={() => setCount((c) => c + 1)} data-testid="increment">
         +
       </button>
     </div>

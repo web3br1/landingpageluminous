@@ -4,7 +4,7 @@ import React from "react";
 
 interface PlaceholderSectionProps {
   id?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 export const PlaceholderSection: React.FC<PlaceholderSectionProps> = ({

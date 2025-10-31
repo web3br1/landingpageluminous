@@ -33,7 +33,7 @@ export function PWAProvider({ children }: PWAProviderProps) {
   const [isInstalled, setIsInstalled] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [updateAvailable, setUpdateAvailable] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<unknown>(null);
   const [registration, setRegistration] =
     useState<ServiceWorkerRegistration | null>(null);
 
@@ -169,9 +169,9 @@ export function PWAProvider({ children }: PWAProviderProps) {
       registration &&
       "sync" in registration
     ) {
-      (registration as any).sync
+      (registration as unknown).sync
         .register("content-sync")
-        .catch((error: any) => {
+        .catch((error: unknown) => {
           console.log("[PWA] Background sync not supported or failed:", error);
         });
     }

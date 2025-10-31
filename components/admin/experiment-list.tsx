@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Activity, TrendingUp, Users, Target } from "lucide-react";
 
 interface ExperimentListProps {
-  content?: any;
+  content?: unknown;
   variant?: "default";
   id?: string;
 }

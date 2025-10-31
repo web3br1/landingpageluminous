@@ -1,208 +1,179 @@
 /**
- * SSR-Safe Hook Utilities
- *
- * Provides safe access to browser APIs with SSR fallbacks.
- * Prevents hydration mismatches and runtime errors.
- *
- * @see docs/ssr-patterns.md for usage examples
+ * SSR-Safe React Hooks
+ * Provides hooks that work safely in both SSR and client environments
  */
 
-import { useState, useEffect } from "react";
-import { safeBrowserAPI } from "../utils/browser-storage";
+import { useEffect, useState, useCallback } from "react";
+import { isClient } from "../utils/browser-storage";
 
 /**
- * Hook for SSR-safe browser API access
- *
- * @param factory Function that accesses browser APIs
- * @param fallback Value to use during SSR
- * @param deps Dependencies for the effect
- * @returns Safe value that works in both SSR and client
- *
- * @example
- * ```typescript
- * const viewportWidth = useSSRSafe(() => window.innerWidth, 1024);
- * const isOnline = useSSRSafe(() => navigator.onLine, true);
- * const userAgent = useSSRSafe(() => navigator.userAgent, '');
- * ```
+ * Hook that provides SSR-safe access to browser APIs
+ * Delays execution until client-side hydration is complete
  */
 export function useSSRSafe<T>(
-  factory: () => T,
-  fallback: T,
-  deps: React.DependencyList = []
+  initializer: () => T,
+  fallback: T
 ): T {
   const [value, setValue] = useState<T>(fallback);
 
   useEffect(() => {
-    const result = safeBrowserAPI(factory, fallback);
-    setValue(result);
-  }, deps);
+    if (isClient()) {
+      try {
+        const result = initializer();
+        setValue(result);
+      } catch (error) {
+        console.warn("useSSRSafe: Error initializing value:", error);
+      }
+    }
+  }, []);
 
   return value;
 }
 
 /**
- * Hook for SSR-safe async browser API access
- *
- * @param factory Async function that accesses browser APIs
- * @param fallback Value to use during SSR or errors
- * @param deps Dependencies for the effect
- * @returns Promise that resolves to safe value
- *
- * @example
- * ```typescript
- * const geolocation = useSSRSafeAsync(
- *   () => navigator.geolocation.getCurrentPosition(),
- *   null
- * );
- * ```
- */
-export async function useSSRSafeAsync<T>(
-  factory: () => Promise<T>,
-  fallback: T,
-  deps: React.DependencyList = []
-): Promise<T> {
-  try {
-    return await safeBrowserAPI(factory, Promise.resolve(fallback));
-  } catch {
-    return fallback;
-  }
-}
-
-/**
  * Hook for SSR-safe event listeners
- *
- * @param target Target element (window, document, or element ref)
- * @param event Event name
- * @param handler Event handler function
- * @param options Event listener options
- *
- * @example
- * ```typescript
- * useSSRSafeEventListener(window, 'resize', handleResize);
- * useSSRSafeEventListener(document, 'visibilitychange', handleVisibility);
- * ```
+ * Only adds listeners on the client side
  */
 export function useSSRSafeEventListener<K extends keyof WindowEventMap>(
-  target: Window | Document | Element | null | undefined,
   event: K,
   handler: (event: WindowEventMap[K]) => void,
   options?: boolean | AddEventListenerOptions
 ): void {
   useEffect(() => {
-    if (!target) return;
+    if (!isClient()) return;
 
-    safeBrowserAPI(() => {
-      target.addEventListener(event, handler as EventListener, options);
-      return () => target.removeEventListener(event, handler as EventListener, options);
-    }, () => {});
-  }, [target, event, handler, options]);
+    const eventHandler = (e: WindowEventMap[K]) => {
+      try {
+        handler(e);
+      } catch (error) {
+        console.warn(`useSSRSafeEventListener: Error in ${event} handler:`, error);
+      }
+    };
+
+    window.addEventListener(event, eventHandler, options);
+
+    return () => {
+      window.removeEventListener(event, eventHandler, options);
+    };
+  }, [event, handler, options]);
+}
+
+/**
+ * Hook for SSR-safe IntersectionObserver
+ */
+export function useSSRSafeIntersectionObserver(
+  callback: IntersectionObserverCallback,
+  options?: IntersectionObserverInit
+): IntersectionObserver | null {
+  const [observer, setObserver] = useState<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    if (!isClient() || !window.IntersectionObserver) {
+      setObserver(null);
+      return;
+    }
+
+    try {
+      const obs = new IntersectionObserver(callback, options);
+      setObserver(obs);
+
+      return () => {
+        obs.disconnect();
+      };
+    } catch (error) {
+      console.warn("useSSRSafeIntersectionObserver: Failed to create observer:", error);
+      setObserver(null);
+    }
+  }, [callback, options]);
+
+  return observer;
+}
+
+/**
+ * Hook for SSR-safe localStorage access
+ */
+export function useSSRSafeLocalStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (!isClient()) return initialValue;
+
+    try {
+      const item = window.localStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.warn(`useSSRSafeLocalStorage: Error reading ${key}:`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = useCallback((value: T) => {
+    try {
+      setStoredValue(value);
+      if (isClient()) {
+        window.localStorage.setItem(key, JSON.stringify(value));
+      }
+    } catch (error) {
+      console.warn(`useSSRSafeLocalStorage: Error writing ${key}:`, error);
+    }
+  }, [key]);
+
+  return [storedValue, setValue];
+}
+
+/**
+ * Hook for SSR-safe sessionStorage access
+ */
+export function useSSRSafeSessionStorage<T>(
+  key: string,
+  initialValue: T
+): [T, (value: T) => void] {
+  const [storedValue, setStoredValue] = useState<T>(() => {
+    if (!isClient()) return initialValue;
+
+    try {
+      const item = window.sessionStorage.getItem(key);
+      return item ? JSON.parse(item) : initialValue;
+    } catch (error) {
+      console.warn(`useSSRSafeSessionStorage: Error reading ${key}:`, error);
+      return initialValue;
+    }
+  });
+
+  const setValue = useCallback((value: T) => {
+    try {
+      setStoredValue(value);
+      if (isClient()) {
+        window.sessionStorage.setItem(key, JSON.stringify(value));
+      }
+    } catch (error) {
+      console.warn(`useSSRSafeSessionStorage: Error writing ${key}:`, error);
+    }
+  }, [key]);
+
+  return [storedValue, setValue];
 }
 
 /**
  * Hook for SSR-safe media queries
- *
- * @param query Media query string
- * @returns Boolean indicating if query matches
- *
- * @example
- * ```typescript
- * const isMobile = useSSRSafeMediaQuery('(max-width: 768px)');
- * const prefersDark = useSSRSafeMediaQuery('(prefers-color-scheme: dark)');
- * ```
  */
 export function useSSRSafeMediaQuery(query: string): boolean {
-  return useSSRSafe(() => window.matchMedia(query).matches, false, [query]);
-}
+  const [matches, setMatches] = useState<boolean>(false);
 
-/**
- * Hook for SSR-safe local storage
- *
- * @param key Storage key
- * @param fallback Fallback value for SSR or errors
- * @returns Current stored value
- *
- * @example
- * ```typescript
- * const theme = useSSRSafeStorage('theme', 'light');
- * const userPrefs = useSSRSafeStorage('user-prefs', {});
- * ```
- */
-export function useSSRSafeStorage<T>(key: string, fallback: T): T {
-  return useSSRSafe(() => {
-    const { readLocalStorage } = require("../utils/browser-storage");
-    const stored = readLocalStorage(key);
-    return stored ? JSON.parse(stored) : fallback;
-  }, fallback, [key]);
-}
-
-/**
- * Hook for SSR-safe session storage
- *
- * @param key Storage key
- * @param fallback Fallback value for SSR or errors
- * @returns Current stored value
- */
-export function useSSRSafeSessionStorage<T>(key: string, fallback: T): T {
-  return useSSRSafe(() => {
-    const { readLocalStorage } = require("../utils/browser-storage");
-    // Note: Using localStorage wrapper for session storage consistency
-    const stored = readLocalStorage(key);
-    return stored ? JSON.parse(stored) : fallback;
-  }, fallback, [key]);
-}
-
-/**
- * Hook for SSR-safe performance APIs
- *
- * @returns Performance API or null
- *
- * @example
- * ```typescript
- * const perf = useSSRSafePerformance();
- * const startTime = perf?.now() || Date.now();
- * ```
- */
-export function useSSRSafePerformance(): Performance | null {
-  return useSSRSafe(() => window.performance, null);
-}
-
-/**
- * Hook for SSR-safe geolocation API
- *
- * @returns Geolocation API or null
- *
- * @example
- * ```typescript
- * const geo = useSSRSafeGeolocation();
- * if (geo) {
- *   geo.getCurrentPosition(success, error);
- * }
- * ```
- */
-export function useSSRSafeGeolocation(): Geolocation | null {
-  return useSSRSafe(() => navigator.geolocation, null);
-}
-
-/**
- * Hook for client-side only effects
- * Alternative to useEffect that only runs on the client
- *
- * @param effect Effect function
- * @param deps Dependencies
- *
- * @example
- * ```typescript
- * useClientEffect(() => {
- *   console.log('Only runs on client');
- *   return () => console.log('Cleanup only on client');
- * }, []);
- * ```
- */
-export function useClientEffect(
-  effect: () => void | (() => void),
-  deps: React.DependencyList = []
-): void {
   useEffect(() => {
-    return safeBrowserAPI(() => effect(), () => {});
-  }, deps);
+    if (!isClient()) return;
+
+    const media = window.matchMedia(query);
+    setMatches(media.matches);
+
+    const listener = (event: MediaQueryListEvent) => {
+      setMatches(event.matches);
+    };
+
+    media.addEventListener("change", listener);
+    return () => media.removeEventListener("change", listener);
+  }, [query]);
+
+  return matches;
 }

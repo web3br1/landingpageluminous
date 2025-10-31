@@ -87,11 +87,12 @@ async function runSecurityChecks() {
 
       const auditData = JSON.parse(auditOutput.toString());
       results.vulnerabilities = extractVulnerabilityCounts(auditData);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // npm audit returns non-zero exit code when vulnerabilities found
-      if (error.stdout) {
+      const output = getCommandOutput(error);
+      if (output) {
         try {
-          const auditData = JSON.parse(error.stdout.toString());
+          const auditData = JSON.parse(output);
           results.vulnerabilities = extractVulnerabilityCounts(auditData);
         } catch {
           results.codeIssues.push("Failed to parse npm audit output");
@@ -158,21 +159,22 @@ async function runSecurityChecks() {
   }
 }
 
-function extractVulnerabilityCounts(auditData: any) {
+function extractVulnerabilityCounts(auditData: unknown) {
   const vulnerabilities = auditData.vulnerabilities || {};
 
   return {
     critical: Object.values(vulnerabilities).filter(
-      (v: any) => v.severity === "critical",
+      (v: unknown) => v.severity === "critical",
     ).length,
     high: Object.values(vulnerabilities).filter(
-      (v: any) => v.severity === "high",
+      (v: unknown) => v.severity === "high",
     ).length,
     moderate: Object.values(vulnerabilities).filter(
-      (v: any) => v.severity === "moderate",
+      (v: unknown) => v.severity === "moderate",
     ).length,
-    low: Object.values(vulnerabilities).filter((v: any) => v.severity === "low")
-      .length,
+    low: Object.values(vulnerabilities).filter(
+      (v: unknown) => v.severity === "low",
+    ).length,
     total: Object.keys(vulnerabilities).length,
   };
 }
@@ -345,4 +347,12 @@ function generateSecurityRecommendations(
   }
 
   return recommendations;
+}
+
+function getCommandOutput(error: unknown): string {
+  if (error && typeof error === 'object' && 'stdout' in error) {
+    const err = error as { stdout?: unknown; stderr?: unknown };
+    return (err.stdout as string)?.toString() || (err.stderr as string)?.toString() || "";
+  }
+  return "";
 }

@@ -9,8 +9,8 @@ export function useNonce(): string | undefined {
   // Only available in production where CSP is enforced
   if (process.env.NODE_ENV === "production") {
     // Access nonce from global variable set by server-side script
-    if (typeof window !== "undefined" && (window as any).__csp_nonce) {
-      return (window as any).__csp_nonce;
+    if (typeof window !== "undefined" && (window as unknown).__csp_nonce) {
+      return (window as unknown).__csp_nonce;
     }
   }
 

@@ -19,7 +19,7 @@ interface CacheConfig {
 }
 
 export class ContentCache {
-  private cache = new Map<string, CacheEntry<any>>();
+  private cache = new Map<string, CacheEntry<unknown>>();
   private config: CacheConfig;
   protected ssrAdapter = getSSRAdapter();
 
@@ -194,7 +194,7 @@ export class ContentCache {
    */
   async warmup(
     keys: string[],
-    factory: (key: string) => Promise<any>,
+    factory: (key: string) => Promise<unknown>,
   ): Promise<void> {
     const promises = keys.map((key) => this.getOrSet(key, () => factory(key)));
     await Promise.all(promises);
@@ -225,7 +225,7 @@ export class ContentCache {
     return totalSize;
   }
 
-  private estimateSize(obj: any): number {
+  private estimateSize(obj: unknown): number {
     // Simple size estimation
     const str = JSON.stringify(obj);
     return str ? str.length * 2 : 0; // Rough estimation: 2 bytes per character
@@ -242,7 +242,7 @@ export class ContentCache {
     return totalAccesses > 0 ? hits / totalAccesses : 0;
   }
 
-  private compress(data: any): any {
+  private compress(data: unknown): unknown {
     // Simple compression for strings
     if (typeof data === "string" && data.length > 1000) {
       // In a real implementation, you'd use a proper compression algorithm
@@ -273,7 +273,7 @@ export class PersistentContentCache extends ContentCache {
       );
       if (stored && typeof stored === "object") {
         // Restore valid entries
-        Object.entries(stored as Record<string, CacheEntry<any>>).forEach(
+        Object.entries(stored as Record<string, CacheEntry<unknown>>).forEach(
           ([key, entry]) => {
             if (this.isValidEntry(entry)) {
               super.set(key, entry.data, entry.ttl);
@@ -287,7 +287,7 @@ export class PersistentContentCache extends ContentCache {
   }
 
   private saveToStorage(): void {
-    const cacheData: Record<string, CacheEntry<any>> = {};
+    const cacheData: Record<string, CacheEntry<unknown>> = {};
 
     // Get all current cache entries
     for (const [key, entry] of (this as any).cache) {
@@ -319,7 +319,7 @@ export class PersistentContentCache extends ContentCache {
     this.saveToStorage();
   }
 
-  private isValidEntry(entry: CacheEntry<any>): boolean {
+  private isValidEntry(entry: CacheEntry<unknown>): boolean {
     return (
       entry &&
       typeof entry.timestamp === "number" &&
@@ -360,7 +360,7 @@ class CacheManager {
   }
 
   getStats() {
-    const stats: Record<string, any> = {};
+    const stats: Record<string, unknown> = {};
     for (const [name, cache] of this.caches) {
       stats[name] = cache.getStats();
     }

@@ -19,9 +19,7 @@ export interface ProcessCheckoutOutput {
 }
 
 export class ProcessCheckoutUseCase {
-  constructor(
-    private checkoutRepository: CheckoutRepository,
-  ) {}
+  constructor(private checkoutRepository: CheckoutRepository) {}
 
   async execute(
     input: ProcessCheckoutInput,
@@ -57,9 +55,13 @@ export class ProcessCheckoutUseCase {
     }
 
     // 2. Check for existing checkout
-    const existingCheckout = await this.checkoutRepository.findByLeadId(input.leadId);
+    const existingCheckout = await this.checkoutRepository.findByLeadId(
+      input.leadId,
+    );
     if (isOk(existingCheckout) && existingCheckout.value.length > 0) {
-      const activeCheckout = existingCheckout.value.find((c) => c.canBeProcessed());
+      const activeCheckout = existingCheckout.value.find((c) =>
+        c.canBeProcessed(),
+      );
       if (activeCheckout) {
         return Result.err({
           type: "DUPLICATE_CHECKOUT",
@@ -100,7 +102,10 @@ export class ProcessCheckoutUseCase {
     const paymentResult = await this.processPayment(savedCheckout);
     if (isErr(paymentResult)) {
       // Update checkout status to failed
-      await this.checkoutRepository.updateStatus(savedCheckout.getId(), "failed");
+      await this.checkoutRepository.updateStatus(
+        savedCheckout.getId(),
+        "failed",
+      );
       return paymentResult;
     }
 
@@ -130,7 +135,9 @@ export class ProcessCheckoutUseCase {
     });
   }
 
-  private handleExecutionError(error: unknown): Result<never, ProcessCheckoutError> {
+  private handleExecutionError(
+    error: unknown,
+  ): Result<never, ProcessCheckoutError> {
     if (error instanceof Error) {
       return Result.err({
         type: "VALIDATION_ERROR",
@@ -185,7 +192,9 @@ export class ProcessCheckoutUseCase {
   ): Promise<Result<{ paymentUrl: string }, ProcessCheckoutError>> {
     // TODO: Implement payment service integration
     // const result = await this.paymentService.processPayment(checkout);
-    return Result.ok({ paymentUrl: `https://checkout.example.com/mock-checkout-id` });
+    return Result.ok({
+      paymentUrl: `https://checkout.example.com/mock-checkout-id`,
+    });
   }
 }
 

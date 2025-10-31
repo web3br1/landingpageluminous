@@ -50,11 +50,11 @@ export function timedDecorator(operation: string) {
 }
 
 // Function wrapper version for easier usage
-export function timed<T extends (...args: unknown[]) => Promise<any>>(
+export function timed<T extends (...args: unknown[]) => Promise<unknown>>(
   operation: string,
   fn: T,
-): T {
-  const wrapped = async (...args: Parameters<T>): Promise<ReturnType<T>> => {
+): (...args: Parameters<T>) => Promise<Awaited<ReturnType<T>>> {
+  const wrapped = async (...args: Parameters<T>): Promise<Awaited<ReturnType<T>>> => {
     const startTime = performance.now();
     try {
       logger.debug(`Starting operation: ${operation}`);
@@ -114,7 +114,7 @@ export class Tracer {
       spanId,
       name,
       startTime,
-      end: (result?: any) => {
+      end: (result?: unknown) => {
         const duration = performance.now() - startTime;
         logger.debug(`Ending span: ${name}`, { spanId, duration, result });
         return duration;

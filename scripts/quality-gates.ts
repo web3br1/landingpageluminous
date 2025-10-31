@@ -41,7 +41,7 @@ class QualityGates {
     this.results = {
       overall: false,
       gates: [],
-      summary: { passed: 0, failed: 0, total: 0 }
+      summary: { passed: 0, failed: 0, total: 0 },
     };
   }
 
@@ -80,13 +80,15 @@ class QualityGates {
       console.log("📊 Checking test pass rate...");
 
       // Run unit/integration tests
-      const testCommand = "npx vitest run --config vitest.config.ts tests/unit/ tests/integration/ --reporter=json";
+      const testCommand =
+        "npx vitest run --config vitest.config.ts tests/unit/ tests/integration/ --reporter=json";
       const output = execSync(testCommand, { encoding: "utf8" });
 
       const testResults = JSON.parse(output);
       const { numPassedTests = 0, numTotalTests = 0 } = testResults;
 
-      const passRate = numTotalTests > 0 ? (numPassedTests / numTotalTests) * 100 : 0;
+      const passRate =
+        numTotalTests > 0 ? (numPassedTests / numTotalTests) * 100 : 0;
       const threshold = 97;
 
       const passed = passRate >= threshold;
@@ -96,16 +98,15 @@ class QualityGates {
         passed,
         value: passRate,
         threshold,
-        details: `${numPassedTests}/${numTotalTests} tests passed (${passRate.toFixed(1)}%)`
+        details: `${numPassedTests}/${numTotalTests} tests passed (${passRate.toFixed(1)}%)`,
       });
-
     } catch (error) {
       this.results.gates.push({
         name: "Test Pass Rate",
         passed: false,
         value: 0,
         threshold: 97,
-        details: `Failed to run tests: ${(error as Error).message}`
+        details: `Failed to run tests: ${(error as Error).message}`,
       });
     }
   }
@@ -117,11 +118,18 @@ class QualityGates {
     try {
       console.log("📈 Checking coverage statements...");
 
-      const coveragePath = path.join(process.cwd(), "tmp", "coverage", "coverage-summary.json");
+      const coveragePath = path.join(
+        process.cwd(),
+        "tmp",
+        "coverage",
+        "coverage-summary.json",
+      );
 
       if (!fs.existsSync(coveragePath)) {
         // Generate coverage if not exists
-        execSync("npx vitest run --config vitest.config.ts --coverage", { stdio: "inherit" });
+        execSync("npx vitest run --config vitest.config.ts --coverage", {
+          stdio: "inherit",
+        });
       }
 
       if (fs.existsSync(coveragePath)) {
@@ -136,7 +144,7 @@ class QualityGates {
           passed,
           value: statements,
           threshold,
-          details: `${statements.toFixed(1)}% statement coverage`
+          details: `${statements.toFixed(1)}% statement coverage`,
         });
       } else {
         this.results.gates.push({
@@ -144,17 +152,16 @@ class QualityGates {
           passed: false,
           value: 0,
           threshold: 70,
-          details: "Coverage report not found"
+          details: "Coverage report not found",
         });
       }
-
     } catch (error) {
       this.results.gates.push({
         name: "Coverage Statements",
         passed: false,
         value: 0,
         threshold: 70,
-        details: `Failed to check coverage: ${(error as Error).message}`
+        details: `Failed to check coverage: ${(error as Error).message}`,
       });
     }
   }
@@ -188,16 +195,15 @@ class QualityGates {
         passed,
         value: successRuns,
         threshold: `${totalRuns} runs`,
-        details: `${successRuns}/${totalRuns} E2E runs passed`
+        details: `${successRuns}/${totalRuns} E2E runs passed`,
       });
-
     } catch (error) {
       this.results.gates.push({
         name: "E2E Journeys",
         passed: false,
         value: 0,
         threshold: "3 runs",
-        details: `Failed to run E2E tests: ${(error as Error).message}`
+        details: `Failed to run E2E tests: ${(error as Error).message}`,
       });
     }
   }
@@ -214,7 +220,9 @@ class QualityGates {
 
       // Parse output to find maturity level
       const lines = output.split("\n");
-      const maturityLine = lines.find(line => line.includes("MATURITY LEVEL"));
+      const maturityLine = lines.find((line) =>
+        line.includes("MATURITY LEVEL"),
+      );
 
       if (maturityLine) {
         const match = maturityLine.match(/M(\d+)/);
@@ -227,30 +235,30 @@ class QualityGates {
             passed,
             value: `M${level}`,
             threshold: "M2",
-            details: maturityLine.trim()
+            details: maturityLine.trim(),
           });
           return;
         }
       }
 
       // Fallback: check exit code
-      const passed = output.includes("STATUS: EXCELLENT") || output.includes("STATUS: GOOD");
+      const passed =
+        output.includes("STATUS: EXCELLENT") || output.includes("STATUS: GOOD");
 
       this.results.gates.push({
         name: "Maturity Level",
         passed,
         value: "Unknown",
         threshold: "M2",
-        details: "Could not parse maturity level from output"
+        details: "Could not parse maturity level from output",
       });
-
     } catch (error) {
       this.results.gates.push({
         name: "Maturity Level",
         passed: false,
         value: "M0",
         threshold: "M2",
-        details: `Failed to check maturity: ${(error as Error).message}`
+        details: `Failed to check maturity: ${(error as Error).message}`,
       });
     }
   }
@@ -259,8 +267,8 @@ class QualityGates {
    * Calculate summary
    */
   private calculateSummary(): void {
-    const passed = this.results.gates.filter(gate => gate.passed).length;
-    const failed = this.results.gates.filter(gate => !gate.passed).length;
+    const passed = this.results.gates.filter((gate) => gate.passed).length;
+    const failed = this.results.gates.filter((gate) => !gate.passed).length;
     const total = this.results.gates.length;
 
     this.results.summary = { passed, failed, total };
@@ -274,7 +282,7 @@ class QualityGates {
     console.log("\n📋 QUALITY GATES RESULTS");
     console.log("=".repeat(50));
 
-    this.results.gates.forEach(gate => {
+    this.results.gates.forEach((gate) => {
       const status = gate.passed ? "✅" : "❌";
       console.log(`${status} ${gate.name}: ${gate.value} / ${gate.threshold}`);
       if (gate.details) {
@@ -293,8 +301,8 @@ class QualityGates {
     if (!this.results.overall) {
       console.log("\n🔧 FAILED GATES:");
       this.results.gates
-        .filter(gate => !gate.passed)
-        .forEach(gate => {
+        .filter((gate) => !gate.passed)
+        .forEach((gate) => {
           console.log(`   - ${gate.name}: ${gate.details}`);
         });
     }
@@ -312,11 +320,12 @@ class QualityGates {
 if (require.main === module) {
   const gates = new QualityGates();
 
-  gates.run()
-    .then(results => {
+  gates
+    .run()
+    .then((results) => {
       process.exit(results.overall ? 0 : 1);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error("Fatal error running quality gates:", error);
       process.exit(1);
     });

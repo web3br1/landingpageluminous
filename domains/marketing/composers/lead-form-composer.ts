@@ -5,7 +5,7 @@ import { leadFormConfiguration } from "../content/lead-form-content";
 import type { ComposedLeadFormData } from "../types/lead-form.types";
 import { createVariantComposer } from "./_base";
 
-export const composeLeadFormContent: () => ComposedLeadFormData =
+export const composeLeadFormContent: () => Promise<ComposedLeadFormData> =
   createVariantComposer("lead-form", {
     defaultVariant: leadFormConfiguration.defaultVariant,
     variants: leadFormConfiguration.variants as any,

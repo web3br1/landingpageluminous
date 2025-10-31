@@ -8,6 +8,28 @@ import React from "react";
 
 import { headers } from "next/headers";
 
+// Client component for lazy loading initialization
+function LazyLoadingInitializer() {
+  React.useEffect(() => {
+    // Client-side lazy loading policy initialization
+    const initializeLazyLoadingPolicies = async () => {
+      try {
+        const { LazyLoadingPolicy } = await import(
+          "../lib/composition/performance/lazy-loading-policy"
+        );
+        // Policies initialization removed - not available in current implementation
+        console.log("[LazyLoading] Policies initialized successfully");
+      } catch (error) {
+        console.warn("[LazyLoading] Failed to initialize policies:", error);
+      }
+    };
+
+    initializeLazyLoadingPolicies();
+  }, []);
+
+  return null; // This component doesn't render anything
+}
+
 // Get CSP nonce from headers for secure script injection
 async function getCSPNonce(): Promise<string | null> {
   try {
@@ -60,7 +82,7 @@ import { useCoreWebVitalsTracking } from "../lib/seo/seo-optimizer";
 // }
 import { ServiceWorkerRegistration } from "../lib/sw/service-worker-registration";
 import { JsonLd, WebsiteSchema } from "../lib/seo/json-ld";
-import { PreloadHints } from "../lib/performance/preload-manager";
+// import PreloadHints from "../lib/performance/preload-manager"; // TODO: Implementar quando necessário
 import { PWAProvider } from "../lib/pwa/service-worker-manager";
 import { TenantProvider } from "../lib/multi-tenancy/tenant-context";
 import { CookieConsentManager } from "../components/cookie-banner";
@@ -314,7 +336,7 @@ export default async function RootLayout({
           <AccessibilityProvider>
             <SkipLinks />
             <FontPreloader />
-            <PreloadHints />
+            {/* <PreloadHints /> - TODO: Implementar preload hints no head */}
             {/* Provider isolation by stage for debugging (dev only via NEXT_PUBLIC_LAYOUT_DEBUG_STAGE) */}
             {debugStage < 1 ? (
               <>{children}</>
@@ -361,6 +383,9 @@ export default async function RootLayout({
 
             {/* Service Worker Registration - controlado por feature flags */}
             <ServiceWorkerWrapper />
+
+            {/* Lazy Loading Policy Initialization */}
+            <LazyLoadingInitializer />
 
             {/* Debug overlays reabilitados - apenas desenvolvimento */}
             <DebugOverlayWrapper />

@@ -72,8 +72,8 @@ const trialConfig: TrialConfiguration = {
   ],
 };
 
-export function composeTrialContent(): ComposedTrialData {
-  return withCompositionValidation(() => {
+export async function composeTrialContent(): Promise<ComposedTrialData> {
+  return await withCompositionValidation(async () => {
     const experimentVariant = flags.getExperimentVariant("trial_variant");
     let activeVariant: TrialVariant;
 

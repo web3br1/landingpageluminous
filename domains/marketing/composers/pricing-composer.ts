@@ -58,7 +58,7 @@ const PricingComposerSchema = z.object({
     .optional(),
 });
 
-ComposerGuard.registerValidator("pricing", PricingComposerSchema);
+// ComposerGuard.registerValidator("pricing", PricingComposerSchema); // TODO: Implementar quando ComposerGuard estiver disponível
 
 // Temporary: Mock implementations until lib modules are created
 const useExperiment = (id: string) => ({
@@ -73,14 +73,14 @@ const useAnalytics = () => ({
 });
 
 // Use standardized composer with envelope contract
-export const composePricingContent: () => ComposedPricingData =
+export const composePricingContent: () => Promise<ComposedPricingData> =
   createVariantComposer("pricing-composer", {
     defaultVariant: pricingConfiguration.defaultVariant,
     variants: pricingVariants as any,
     experimentId: "pricing_variant",
   });
 
-// export const composePricingContent: () => ComposedPricingData = createVariantComposer(
+// export const composePricingContent: () => Promise<ComposedPricingData> = createVariantComposer(
 //   'pricing-composer',
 //   { defaultVariant: pricingConfiguration.defaultVariant, variants: pricingVariants as any, experimentId: 'pricing_variant' }
 // )

@@ -6,30 +6,34 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   AccessibleButton,
-  AccessibleLink,
-  SkipLink,
   useReducedMotion,
 } from "@/lib/a11y/touch-target-optimization";
-import Image from "next/image";
 import type { HeroComponentProps, HeroContent } from "./hero.types";
+import { SimpleErrorBoundary } from "@/lib/architecture/error-boundary-pattern";
+import { withComponentContext } from "@/lib/architecture/logger-pattern";
 
 // Helper functions to reduce complexity
 function validateAndRenderText(value: unknown, fieldName: string): string {
-  console.log(`[Hero] ${fieldName} result:`, value, typeof value);
+  const logger = withComponentContext("hero", "validateAndRenderText");
+  logger.debug(`${fieldName} validation`, { value, type: typeof value });
 
   if (
     typeof value !== "string" &&
     typeof value !== "number" &&
     value !== undefined
   ) {
-    console.error(
-      `[Hero] INVALID ${fieldName.toUpperCase()} TYPE:`,
-      typeof value,
-      value,
+    logger.error(
+      `Invalid ${fieldName} type`,
+      undefined,
+      {
+        expectedType: "string | number | undefined",
+        actualType: typeof value,
+        value,
+        fieldName
+      }
     );
     return `Erro: ${fieldName} inválido`;
   }
@@ -37,17 +41,12 @@ function validateAndRenderText(value: unknown, fieldName: string): string {
   return value as string;
 }
 
-function extractHeroContent(content: any): HeroContent {
-  // Handle nested content structure from production data
-  if (content?.content?.content) {
-    return content.content.content;
-  } else if (content?.content) {
-    return content.content;
-  }
-
+function extractHeroContent(content: unknown): HeroContent {
   // Safety check - if content is undefined, provide minimal fallback
   if (!content) {
-    console.warn("Hero component received undefined content, using fallback");
+    withComponentContext("hero", "extractHeroContent").warn(
+      "Hero component received undefined content, using fallback"
+    );
     return {
       headline: "Sistema temporariamente indisponível",
       subheadline: "Estamos trabalhando para melhorar sua experiência.",
@@ -56,7 +55,17 @@ function extractHeroContent(content: any): HeroContent {
     };
   }
 
-  return content;
+  // Handle nested content structure from production data
+  const contentObj = content as Record<string, unknown>; // Type assertion for legacy compatibility
+  if (contentObj?.content && typeof contentObj.content === 'object' && contentObj.content !== null) {
+    const nestedContent = contentObj.content as Record<string, unknown>;
+    if (nestedContent?.content) {
+      return nestedContent.content as HeroContent;
+    }
+    return contentObj.content as HeroContent;
+  }
+
+  return contentObj as unknown as HeroContent;
 }
 
 function renderHeroMetrics(metrics?: HeroContent["metrics"]) {
@@ -121,7 +130,8 @@ function renderHeroCtas(
 }
 
 // Main Hero component - now much simpler
-export function Hero({
+// Internal hero component implementation
+function HeroInternal({
   content,
   variant = "default",
   tracking,
@@ -129,14 +139,15 @@ export function Hero({
   onSecondaryCta,
   headingId,
   id,
-}: HeroComponentProps & { id?: string }) {
+  className,
+}: HeroComponentProps & { id?: string; className?: string }) {
   const heroContent = extractHeroContent(content);
   const reducedMotion = useReducedMotion();
+  const logger = withComponentContext("hero", "render");
 
-  console.log("[Hero] About to create JSX elements");
-  console.log("[Hero] Checking dynamic expressions:", {
-    badge: heroContent?.badge,
-    headline: heroContent?.headline,
+  logger.debug("Rendering hero component", {
+    hasBadge: !!heroContent?.badge,
+    hasHeadline: !!heroContent?.headline,
     subheadline: heroContent?.subheadline,
     metrics: heroContent?.metrics,
     primaryCta: heroContent?.primaryCta,
@@ -227,7 +238,11 @@ export function Hero({
       </div>
     );
   } catch (error) {
-    console.error("[Hero] Error in render:", error);
+    withComponentContext("hero", "render").error(
+      "Error in hero render",
+      error instanceof Error ? error : undefined,
+      { componentProps: { content, className, headingId } }
+    );
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -240,4 +255,49 @@ export function Hero({
       </div>
     );
   }
+}
+
+// Main Hero component with error boundary
+export function Hero(props: HeroComponentProps & { id?: string }) {
+  return (
+    <SimpleErrorBoundary
+      maxRetries={2}
+      onError={(error) => {
+        withComponentContext("hero", "errorBoundary").error(
+          "Hero component error boundary triggered",
+          error,
+          { componentProps: props }
+        );
+      }}
+      fallback={(error, retry) => (
+        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+          <div className="text-center p-8 bg-white rounded-lg shadow-lg max-w-md">
+            <div className="text-6xl mb-4">🚀</div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Ops! Algo deu errado
+            </h2>
+            <p className="text-gray-600 mb-6">
+              Não conseguimos carregar a seção principal. Isso pode ser temporário.
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={retry}
+                className="w-full bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
+              >
+                Tentar novamente
+              </button>
+              <button
+                onClick={() => window.location.reload()}
+                className="w-full bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors"
+              >
+                Recarregar página
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    >
+      <HeroInternal {...props} />
+    </SimpleErrorBoundary>
+  );
 }

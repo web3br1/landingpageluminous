@@ -1,5 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getLogger } from "@/lib/composition/container";
+import { z } from "zod";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  parseRequestBody,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
+
+// Import logger from shared if available, fallback to console
+const getLogger = () => ({
+  info: (message: string, context?: any) => console.info(message, context),
+  error: (message: string, context?: any) => console.error(message, context),
+});
 
 // Tipos para métricas (mantém consistência com o hook)
 interface CompositionMetrics {
@@ -147,39 +159,43 @@ export async function GET(request: NextRequest) {
       cacheHitRate: metrics.cacheHitRate,
     });
 
-    return NextResponse.json(metrics, {
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        "Content-Type": "application/json",
-      },
-    });
+    return createSuccessResponse(metrics);
   } catch (error) {
     const errorObj = error instanceof Error ? error : new Error(String(error));
     logger.error("Failed to generate composition metrics", {
       error: errorObj,
     });
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return createErrorResponse(
+      "COMPOSITION_METRICS_GENERATION_FAILED",
+      "Internal server error",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }
+
+// Schema for composition metrics payload validation
+const compositionMetricsPayloadSchema = z.object({
+  pageType: z.string().min(1, "Page type is required"),
+  duration: z.number().min(0, "Duration must be positive"),
+  success: z.boolean(),
+  cacheHit: z.boolean().optional(),
+  error: z.string().optional(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
+});
 
 // POST endpoint para receber métricas do sistema (webhook style)
 export async function POST(request: NextRequest) {
   const logger = getLogger();
 
   try {
-    const body = await request.json();
-
-    // Validar dados recebidos
-    if (!body || typeof body !== "object") {
-      return NextResponse.json(
-        { error: "Invalid request body" },
-        { status: 400 },
-      );
+    // Parse and validate request body
+    const parseResult = await parseRequestBody(request, compositionMetricsPayloadSchema);
+    if (!parseResult.success) {
+      return (parseResult as { success: false; error: NextResponse }).error;
     }
+
+    const body = parseResult.data;
 
     // Em produção, salvar métricas no banco/cache
     logger.info("Composition metrics received", {
@@ -195,16 +211,17 @@ export async function POST(request: NextRequest) {
     // 3. Atualizar agregações
     // 4. Trigger alerts se necessário
 
-    return NextResponse.json({ status: "ok", received: true }, { status: 200 });
+    return createSuccessResponse({ status: "ok", received: true });
   } catch (error) {
     const errorObj = error instanceof Error ? error : new Error(String(error));
     logger.error("Failed to process composition metrics", {
       error: errorObj,
     });
 
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return createErrorResponse(
+      "COMPOSITION_METRICS_PROCESSING_FAILED",
+      "Internal server error",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

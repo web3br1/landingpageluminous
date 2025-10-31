@@ -62,9 +62,8 @@ export const accessibilityGate: QualityGate = {
           stdio: "pipe",
           timeout: 120000,
         });
-      } catch (error: any) {
-        const output =
-          error.stdout?.toString() || error.stderr?.toString() || "";
+      } catch (error: unknown) {
+        const output = getCommandOutput(error);
 
         // Try to parse axe-core results
         const violations = extractAccessibilityViolations(output);
@@ -288,4 +287,12 @@ function extractAccessibilityViolations(output: string) {
       moderateMatches.length +
       minorMatches.length,
   };
+}
+
+function getCommandOutput(error: unknown): string {
+  if (error && typeof error === 'object' && 'stdout' in error) {
+    const err = error as { stdout?: unknown; stderr?: unknown };
+    return (err.stdout as string)?.toString() || (err.stderr as string)?.toString() || "";
+  }
+  return "";
 }

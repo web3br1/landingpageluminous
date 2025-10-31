@@ -7,29 +7,32 @@
 
 ## 📊 **SPRINT AT A GLANCE**
 
-| Métrica | Atual | Meta Sprint | Meta Final |
-|---------|-------|-------------|------------|
-| **Cobertura Global** | 48% | 60%+ | 70%+ |
-| **Testes Falhando** | ~8-10 | 0 | 0 |
-| **Build Status** | ✅ Verde | ✅ Verde | ✅ Verde |
-| **Score TDD** | 68 | 75+ | 80+ |
+| Métrica              | Atual    | Meta Sprint | Meta Final |
+| -------------------- | -------- | ----------- | ---------- |
+| **Cobertura Global** | 48%      | 60%+        | 70%+       |
+| **Testes Falhando**  | ~8-10    | 0           | 0          |
+| **Build Status**     | ✅ Verde | ✅ Verde    | ✅ Verde   |
+| **Score TDD**        | 68       | 75+         | 80+        |
 
 ---
 
 ## 🎯 **SPRINT GOALS**
 
 ### ✅ **Completados (Fase 1)**
+
 - [x] Build sempre verde estabelecido
-- [x] Imports @shared/* funcionando
+- [x] Imports @shared/\* funcionando
 - [x] Scripts de análise criados
 - [x] Baseline de qualidade estabelecida
 
 ### 🚀 **Em Andamento**
+
 - [ ] Correção sistemática de testes falhando
 - [ ] Expansão de cobertura Utils/Helpers
 - [ ] Templates de teste padronizados
 
 ### 📋 **Próximos**
+
 - [ ] Cobertura de componentes críticos
 - [ ] Automação de validações
 - [ ] Refino de edge cases
@@ -41,6 +44,7 @@
 ### 🔄 **BACKLOG** (Próximas Prioridades)
 
 #### **Dia 1-2: Correção Sistemática**
+
 - [ ] **TASK-001:** Corrigir Result.success undefined em MockContentMapper
 - [ ] **TASK-002:** Resolver vi.mock assíncrono em composer-validation
 - [ ] **TASK-003:** Padronizar unwrapResult helper em todos os testes
@@ -48,6 +52,7 @@
 - [ ] **TASK-005:** Validar todos os testes falhando restantes
 
 #### **Dia 3-4: Utils/Helpers Expansion**
+
 - [ ] **TASK-006:** Mapear funções helpers puras elegíveis para teste
 - [ ] **TASK-007:** Criar template `test-templates/utils.test.ts`
 - [ ] **TASK-008:** Implementar testes para `lib/utils/advanced-utils.ts`
@@ -55,6 +60,7 @@
 - [ ] **TASK-010:** Validar cobertura mínima 80% em utils
 
 #### **Dia 6-8: Components & Edge Cases**
+
 - [ ] **TASK-011:** Testes Hero component (render + props)
 - [ ] **TASK-012:** Testes Section components básicos
 - [ ] **TASK-013:** Testes CTA components
@@ -62,6 +68,7 @@
 - [ ] **TASK-015:** Edge cases: empty props, error states
 
 #### **Dia 9-10: Automação & Refino**
+
 - [ ] **TASK-016:** Script `scripts/coverage-diff.mjs`
 - [ ] **TASK-017:** Husky + lint-staged para coverage mínimo
 - [ ] **TASK-018:** Template gerador de testes (CLI/plop)
@@ -73,6 +80,7 @@
 ### 🚧 **DOING** (Em Execução)
 
 #### **Sprint Week 1 - Correção de Testes**
+
 - [x] **TASK-021:** Executar análise detalhada dos 8-10 testes falhando ✅
 - [x] **TASK-022:** Categorizar tipos de falha (Result, mocks, async) ✅
 - [x] **TASK-023:** Implementar correções prioritárias (unwrapResult, vi.mock, process.env) ✅
@@ -96,7 +104,8 @@
 ### 🔍 **CODE REVIEW** (Pronto para Revisão)
 
 #### **Aguardando Validação**
-- [x] **TASK-025:** Correção de imports @shared/* (✅ Aprovado)
+
+- [x] **TASK-025:** Correção de imports @shared/\* (✅ Aprovado)
 - [x] **TASK-026:** Helper unwrapResult implementado (✅ Aprovado)
 - [x] **TASK-027:** vi.stubEnv para process.env (✅ Aprovado)
 
@@ -105,6 +114,7 @@
 ### 🧪 **TEST COVERAGE** (Validado)
 
 #### **Cobertura Atingida**
+
 - [x] **TASK-028:** Build sempre verde (48% baseline) ✅
 - [x] **TASK-029:** Scripts de análise funcionando ✅
 - [x] **TASK-030:** Baseline Fase 1 estabelecida ✅
@@ -114,6 +124,7 @@
 ### ✅ **DONE** (Concluído)
 
 #### **Fase 1 - Estabilização Completa**
+
 - [x] **TASK-031:** Correção de 7+ erros críticos de TypeScript
 - [x] **TASK-032:** Build Next.js passando 100%
 - [x] **TASK-033:** 376/771 testes executáveis
@@ -137,13 +148,16 @@ Dia 5: [██████████████████] 100% - Sprint Re
 ## 🚨 **BLOCKERS & RISKS**
 
 ### **🔴 Críticos**
+
 - [ ] Nenhum identificado
 
 ### **🟡 Médios**
+
 - [ ] Testes com mocks complexos podem atrasar progresso
 - [ ] Dependências circulares em alguns módulos
 
 ### **🟢 Baixos**
+
 - [ ] Curva de aprendizado dos templates iniciais
 
 ---
@@ -151,16 +165,19 @@ Dia 5: [██████████████████] 100% - Sprint Re
 ## 🎯 **SPRINT CEREMONIES**
 
 ### **Daily Standup** (10 min/dia)
+
 - **O que fiz ontem?** Status das correções
 - **O que farei hoje?** Próximas tarefas prioritárias
 - **Impedimentos?** Bloqueadores técnicos
 
 ### **Sprint Review** (Dia 5)
+
 - Métricas atingidas vs. planejadas
 - Demonstração de cobertura expandida
 - Ajustes na estratégia se necessário
 
 ### **Sprint Retrospective** (Dia 10)
+
 - Lições aprendidas
 - Melhorias para próximos sprints
 - Ajustes no processo
@@ -170,6 +187,7 @@ Dia 5: [██████████████████] 100% - Sprint Re
 ## 📊 **DEFINITION OF DONE**
 
 ### **Para Cada Tarefa:**
+
 - [ ] Código implementado
 - [ ] Testes passando
 - [ ] Build verde
@@ -177,6 +195,7 @@ Dia 5: [██████████████████] 100% - Sprint Re
 - [ ] Cobertura mantida/acrescentada
 
 ### **Para o Sprint:**
+
 - [ ] Cobertura 60%+
 - [ ] 0 testes falhando
 - [ ] Build sempre verde
@@ -187,13 +206,13 @@ Dia 5: [██████████████████] 100% - Sprint Re
 
 ## 🏆 **SPRINT SUCCESS CRITERIA**
 
-| Critério | Status | Evidência |
-|----------|--------|-----------|
-| **Cobertura +12pts** | 🚧 Em andamento | Scripts de análise |
-| **0 testes falhando** | 🚧 Em andamento | `pnpm test` verde |
-| **Templates criados** | 📋 Planejado | Pasta `test-templates/` |
-| **Build sempre verde** | ✅ Concluído | CI/CD pipeline |
-| **Score TDD 75+** | 🚧 Em andamento | Relatórios automáticos |
+| Critério               | Status          | Evidência               |
+| ---------------------- | --------------- | ----------------------- |
+| **Cobertura +12pts**   | 🚧 Em andamento | Scripts de análise      |
+| **0 testes falhando**  | 🚧 Em andamento | `pnpm test` verde       |
+| **Templates criados**  | 📋 Planejado    | Pasta `test-templates/` |
+| **Build sempre verde** | ✅ Concluído    | CI/CD pipeline          |
+| **Score TDD 75+**      | 🚧 Em andamento | Relatórios automáticos  |
 
 ---
 

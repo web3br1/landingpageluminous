@@ -111,7 +111,7 @@ export function OptimizedLazySection({
     component: section.component,
     hasContent: !!section.content,
     contentType: typeof section.content,
-    contentKeys: section.content ? Object.keys(section.content as any) : [],
+    contentKeys: section.content ? Object.keys(section.content as unknown) : [],
     timestamp: Date.now(),
     environment: {
       isServer: typeof window === "undefined",
@@ -173,22 +173,25 @@ export function OptimizedLazySection({
     const shouldLoadImmediately =
       !shouldLazyLoad || !lazyLoadingEnabled || lazyConfig.priority === "high";
 
-    // Use intersection observer for lazy sections
-    const isIntersecting = useLazyIntersectionObserver(sectionRef, {
-      rootMargin: lazyConfig.rootMargin,
-      threshold: lazyConfig.threshold,
-    });
-
-    // TEMPORÁRIO: Forçar renderização imediata para debug
-    console.log(`[OptimizedLazySection] FORCE RENDERING section ${section.id}`);
-
+    // Simplified lazy loading for BLOCO 2 - timeout based
     useEffect(() => {
-      const renderTime = performance.now();
-      onSectionLoad?.(section.id, renderTime);
-      console.log(
-        `[OptimizedLazySection] Section ${section.id} rendered at ${renderTime}`,
-      );
-    }, [section.id, onSectionLoad]);
+      if (shouldLoadImmediately) {
+        setIsLoaded(true);
+        const renderTime = performance.now();
+        onSectionLoad?.(section.id, renderTime);
+        return;
+      }
+
+      // Simple timeout-based lazy loading
+      const timer = setTimeout(() => {
+        setIsLoaded(true);
+        const renderTime = performance.now();
+        onSectionLoad?.(section.id, renderTime);
+        console.log(`[LazySection] ${section.id} loaded after timeout`);
+      }, 200); // Small delay to allow critical content to load first
+
+      return () => clearTimeout(timer);
+    }, [section.id, shouldLoadImmediately, onSectionLoad]);
 
     if (!ComponentClass) {
       console.error(`Component not found for section: ${section.id}`);
@@ -201,6 +204,21 @@ export function OptimizedLazySection({
           <div className="text-center">
             <p>Seção não encontrada: {section.id}</p>
           </div>
+        </section>
+      );
+    }
+
+    // Only render when loaded
+    if (!isLoaded) {
+      return (
+        <section
+          ref={sectionRef}
+          id={section.id}
+          className="section-wrapper py-20 md:py-28"
+          data-section={section.id}
+          data-debug="lazy-placeholder"
+        >
+          <SectionLoadingFallback sectionId={section.id} />
         </section>
       );
     }

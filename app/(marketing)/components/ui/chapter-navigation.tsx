@@ -7,6 +7,7 @@ import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { type Chapter } from "@/lib/hooks/use-scroll-storytelling";
 import { SCROLL_CONFIG } from "@/lib/hooks/scroll-config";
 import { useAnimations } from "@/lib/hooks/use-animations";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 interface ChapterNavigationProps {
   chapters: Chapter[];
@@ -180,7 +181,7 @@ export function useKeyboardNavigation(
       }
       // Only handle if no input/textarea is focused (SSR safe)
       if (typeof document !== "undefined") {
-        const activeElement = document.activeElement as HTMLElement;
+        const activeElement = isHTMLElement(document.activeElement) ? document.activeElement : null;
         if (
           activeElement &&
           (activeElement.tagName === "INPUT" ||

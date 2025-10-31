@@ -1,7 +1,9 @@
 import { describe, it, expect } from "vitest";
 
 // Mock das funções utilitárias reais
-const cn = (...inputs: (string | undefined | null | boolean | Record<string, boolean>)[]): string => {
+const cn = (
+  ...inputs: (string | undefined | null | boolean | Record<string, boolean>)[]
+): string => {
   const classes: string[] = [];
 
   for (const input of inputs) {
@@ -19,12 +21,18 @@ const cn = (...inputs: (string | undefined | null | boolean | Record<string, boo
   return classes.join(" ");
 };
 
-const formatDate = (date: Date | string | number, options?: Intl.DateTimeFormatOptions): string => {
+const formatDate = (
+  date: Date | string | number,
+  options?: Intl.DateTimeFormatOptions,
+): string => {
   const d = new Date(date);
   return d.toLocaleDateString("pt-BR", options);
 };
 
-const formatNumber = (num: number, options?: Intl.NumberFormatOptions): string => {
+const formatNumber = (
+  num: number,
+  options?: Intl.NumberFormatOptions,
+): string => {
   return num.toLocaleString("pt-BR", options);
 };
 
@@ -42,7 +50,7 @@ const slugify = (text: string): string => {
 const debounce = <T extends (...args: any[]) => any>(
   func: T,
   wait: number,
-  immediate = false
+  immediate = false,
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -63,7 +71,7 @@ const debounce = <T extends (...args: any[]) => any>(
 
 const throttle = <T extends (...args: any[]) => any>(
   func: T,
-  limit: number
+  limit: number,
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle = false;
 
@@ -71,7 +79,7 @@ const throttle = <T extends (...args: any[]) => any>(
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 };
@@ -85,7 +93,11 @@ const capitalizeFirst = (str: string): string => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-const truncateText = (text: string, maxLength: number, suffix = "..."): string => {
+const truncateText = (
+  text: string,
+  maxLength: number,
+  suffix = "...",
+): string => {
   if (text.length <= maxLength) return text;
   return text.slice(0, maxLength - suffix.length) + suffix;
 };
@@ -97,21 +109,27 @@ describe("Utility Functions", () => {
     });
 
     it("should filter out falsy values", () => {
-      expect(cn("class1", null, undefined, false, "class2")).toBe("class1 class2");
+      expect(cn("class1", null, undefined, false, "class2")).toBe(
+        "class1 class2",
+      );
     });
 
     it("should handle conditional classes", () => {
       const isActive = true;
       const isDisabled = false;
-      expect(cn("base", isActive && "active", isDisabled && "disabled")).toBe("base active");
+      expect(cn("base", isActive && "active", isDisabled && "disabled")).toBe(
+        "base active",
+      );
     });
 
     it("should handle object syntax", () => {
-      expect(cn({ "class1": true, "class2": false, "class3": true })).toBe("class1 class3");
+      expect(cn({ class1: true, class2: false, class3: true })).toBe(
+        "class1 class3",
+      );
     });
 
     it("should combine strings and objects", () => {
-      expect(cn("base", { "active": true, "disabled": false })).toBe("base active");
+      expect(cn("base", { active: true, disabled: false })).toBe("base active");
     });
 
     it("should return empty string for no valid inputs", () => {
@@ -128,7 +146,11 @@ describe("Utility Functions", () => {
 
     it("should format date with custom options", () => {
       const date = new Date(2023, 0, 15);
-      const result = formatDate(date, { year: "numeric", month: "long", day: "numeric" });
+      const result = formatDate(date, {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      });
       expect(result).toContain("15 de janeiro de 2023");
     });
 
@@ -151,7 +173,10 @@ describe("Utility Functions", () => {
     });
 
     it("should format currency", () => {
-      const result = formatNumber(1234.56, { style: "currency", currency: "BRL" });
+      const result = formatNumber(1234.56, {
+        style: "currency",
+        currency: "BRL",
+      });
       expect(result).toContain("R$");
       expect(result).toContain("1.234");
     });
@@ -190,7 +215,7 @@ describe("Utility Functions", () => {
       debouncedFn();
       expect(mockFn).not.toHaveBeenCalled();
 
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 150));
       expect(mockFn).toHaveBeenCalledTimes(1);
     });
 
@@ -202,10 +227,10 @@ describe("Utility Functions", () => {
       debouncedFn();
       debouncedFn();
 
-      await new Promise(resolve => setTimeout(resolve, 50));
+      await new Promise((resolve) => setTimeout(resolve, 50));
       expect(mockFn).not.toHaveBeenCalled();
 
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
       expect(mockFn).toHaveBeenCalledTimes(1);
     });
 
@@ -229,7 +254,7 @@ describe("Utility Functions", () => {
 
       expect(mockFn).toHaveBeenCalledTimes(1);
 
-      await new Promise(resolve => setTimeout(resolve, 150));
+      await new Promise((resolve) => setTimeout(resolve, 150));
 
       throttledFn();
       expect(mockFn).toHaveBeenCalledTimes(2);
@@ -274,7 +299,9 @@ describe("Utility Functions", () => {
 
     it("should truncate long text", () => {
       expect(truncateText("Hello World", 8)).toBe("Hello...");
-      expect(truncateText("This is a very long text", 15)).toBe("This is a ve...");
+      expect(truncateText("This is a very long text", 15)).toBe(
+        "This is a ve...",
+      );
     });
 
     it("should use custom suffix", () => {
@@ -288,7 +315,3 @@ describe("Utility Functions", () => {
     });
   });
 });
-
-
-
-

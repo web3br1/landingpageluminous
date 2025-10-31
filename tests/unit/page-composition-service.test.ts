@@ -297,7 +297,8 @@ describe("PageCompositionService - Unit Tests", () => {
       });
 
       // Override config provider for this specific test
-      const originalMock = mockConfigProvider.getPageConfig.getMockImplementation();
+      const originalMock =
+        mockConfigProvider.getPageConfig.getMockImplementation();
       mockConfigProvider.getPageConfig.mockReturnValue(mockConfigResult);
 
       try {
@@ -324,7 +325,8 @@ describe("PageCompositionService - Unit Tests", () => {
   describe("composePage - Error Handling", () => {
     it("should handle configuration provider errors", async () => {
       // Mock config provider to return error
-      const originalMock = mockConfigProvider.getPageConfig.getMockImplementation();
+      const originalMock =
+        mockConfigProvider.getPageConfig.getMockImplementation();
       mockConfigProvider.getPageConfig.mockReturnValue(
         Result.err({
           message: "Configuration provider error",
@@ -339,10 +341,9 @@ describe("PageCompositionService - Unit Tests", () => {
         expect(isErr(result)).toBe(true);
         expect(result.error.message).toContain("Configuration provider error");
         expect(mockErrorTracker.captureException).toHaveBeenCalled();
-        expect(mockFallbackProvider.getFallbackComposition).toHaveBeenCalledWith(
-          "landing",
-          expect.any(Object),
-        );
+        expect(
+          mockFallbackProvider.getFallbackComposition,
+        ).toHaveBeenCalledWith("landing", expect.any(Object));
       } finally {
         // Restore original mock implementation
         if (originalMock) {

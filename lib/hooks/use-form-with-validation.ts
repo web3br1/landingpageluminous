@@ -44,7 +44,7 @@ interface FormConfig<T extends FieldValues> {
   };
   sanitizeInputs?: boolean;
   onSubmitSuccess?: (data: T) => Promise<void> | void;
-  onSubmitError?: (error: any) => void;
+  onSubmitError?: (error: unknown) => void;
 }
 
 interface FormState {
@@ -56,25 +56,25 @@ interface FormState {
 
 interface UseFormWithValidationReturn {
   // React Hook Form methods
-  register: any;
+  register: unknown;
   handleSubmit: (
-    onValid: (data: any) => Promise<void> | void,
-    onInvalid?: (errors: any) => void,
+    onValid: (data: unknown) => Promise<void> | void,
+    onInvalid?: (errors: unknown) => void,
   ) => (e?: React.FormEvent) => Promise<void>;
-  watch: any;
-  getValues: any;
-  setValue: any;
-  trigger: any;
-  formState: any;
+  watch: unknown;
+  getValues: unknown;
+  setValue: unknown;
+  trigger: unknown;
+  formState: unknown;
 
   // Rate limiting
   rateLimitState: RateLimitState;
 
   // Utility methods
   resetForm: () => void;
-  sanitizeField: (name: Path<any>, value: string) => string;
+  sanitizeField: (name: Path<unknown>, value: string) => string;
   canSubmit: boolean;
-  getFieldErrorMessage: (name: Path<any>) => string | undefined;
+  getFieldErrorMessage: (name: Path<unknown>) => string | undefined;
 }
 
 const DEFAULT_RATE_LIMIT: RateLimitConfig = {
@@ -95,7 +95,7 @@ export function useFormWithValidation({
   sanitizeInputs = true,
   onSubmitSuccess,
   onSubmitError,
-}: any): UseFormWithValidationReturn {
+}: unknown): UseFormWithValidationReturn {
   const [formState, setFormState] = useState<FormState>({
     isSubmitting: false,
     isSuccess: false,
@@ -191,7 +191,7 @@ export function useFormWithValidation({
 
   // Sanitize field value
   const sanitizeField = useCallback(
-    (name: Path<any>, value: string): string => {
+    (name: Path<unknown>, value: string): string => {
       if (!sanitizeInputs) return value;
 
       // Basic sanitization for now (can be enhanced later with schema analysis)
@@ -209,8 +209,8 @@ export function useFormWithValidation({
   // Enhanced submit handler with backend rate limiting and error handling
   const handleSubmit = useCallback(
     (
-      onValid: (data: any) => Promise<void> | void,
-      onInvalid?: (errors: any) => void,
+      onValid: (data: unknown) => Promise<void> | void,
+      onInvalid?: (errors: unknown) => void,
     ) => {
       return async (e?: React.FormEvent) => {
         if (e) {
@@ -270,15 +270,15 @@ export function useFormWithValidation({
                   Object.keys(data).forEach((key) => {
                     if (typeof data[key] === "string") {
                       data[key] = sanitizeField(
-                        key as Path<any>,
+                        key as Path<unknown>,
                         data[key] as string,
-                      ) as any;
+                      ) as unknown;
                     }
                   });
                 }
 
                 // Call user submit handler
-                await onValid(data as any);
+                await onValid(data as unknown);
 
                 // Report successful usage to backend
                 if (backendRateLimit) {
@@ -289,7 +289,7 @@ export function useFormWithValidation({
                 }
 
                 // Call success callback
-                await onSubmitSuccess?.(data as any);
+                await onSubmitSuccess?.(data as unknown);
 
                 // Update form state
                 setFormState((prev) => ({
@@ -331,7 +331,7 @@ export function useFormWithValidation({
                 isSubmitting: false,
               }));
 
-              onInvalid?.(errors as any);
+              onInvalid?.(errors as unknown);
             },
           )(e);
         } catch (error) {
@@ -374,8 +374,8 @@ export function useFormWithValidation({
 
   // Get field error message
   const getFieldErrorMessage = useCallback(
-    (name: Path<any>): string | undefined => {
-      const error = form.formState.errors[name] as any;
+    (name: Path<unknown>): string | undefined => {
+      const error = form.formState.errors[name] as unknown;
       return error?.message;
     },
     [form.formState.errors],

@@ -2,7 +2,18 @@
 // Provides insights on error patterns and performance issues
 
 import { NextRequest, NextResponse } from "next/server";
-import { logger } from "@/lib/logger";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
+
+// Import logger from shared if available, fallback to console
+const logger = {
+  info: (message: string, context?: any) => console.info(message, context),
+  error: (message: string, context?: any) => console.error(message, context),
+  warn: (message: string, context?: any) => console.warn(message, context),
+};
 
 // Mock data for demonstration - in production, this would come from your monitoring database
 const mockErrorPatterns = [
@@ -104,16 +115,17 @@ export async function GET(request: NextRequest) {
         break;
     }
 
-    return NextResponse.json({
+    return createSuccessResponse({
       success: true,
       data: reportData,
       generatedAt: new Date().toISOString(),
     });
   } catch (error) {
     logger.error("Error generating monitoring report", { error });
-    return NextResponse.json(
-      { error: "Failed to generate report" },
-      { status: 500 },
+    return createErrorResponse(
+      "MONITORING_REPORT_GENERATION_FAILED",
+      "Failed to generate report",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }
@@ -179,15 +191,16 @@ export async function POST(request: NextRequest) {
       status: "completed",
     };
 
-    return NextResponse.json({
+    return createSuccessResponse({
       success: true,
       report,
     });
   } catch (error) {
     logger.error("Error generating custom report", { error });
-    return NextResponse.json(
-      { error: "Failed to generate custom report" },
-      { status: 500 },
+    return createErrorResponse(
+      "CUSTOM_REPORT_GENERATION_FAILED",
+      "Failed to generate custom report",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

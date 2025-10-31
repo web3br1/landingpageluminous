@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import {
   THEME_REGISTRY,
-  getThemePack,
   type ThemePack,
 } from "@/lib/theme/theme-registry";
 
@@ -165,8 +164,8 @@ export function ThemeSwitcher({
   }, [selectedTheme, applyTheme]);
 
   // Get theme info
-  const currentThemeData = getThemePack(selectedTheme);
-  const previewThemeData = previewTheme ? getThemePack(previewTheme) : null;
+  const currentThemeData = THEME_REGISTRY.getTheme();
+  const previewThemeData = previewTheme ? THEME_REGISTRY.getTheme() : null;
 
   if (compact) {
     return (
@@ -180,8 +179,8 @@ export function ThemeSwitcher({
           <div
             className="w-4 h-4 rounded border-2 border-gray-300"
             style={{
-              background: currentThemeData?.tokens.colors.primary
-                ? `hsl(${currentThemeData.tokens.colors.primary})`
+              background: currentThemeData?.colors.primary
+                ? `hsl(${currentThemeData.colors.primary})`
                 : "#3b82f6",
             }}
           />
@@ -256,8 +255,8 @@ export function ThemeSwitcher({
           <div
             className="w-6 h-6 rounded border-2 border-gray-300"
             style={{
-              background: currentThemeData?.tokens.colors.primary
-                ? `hsl(${currentThemeData.tokens.colors.primary})`
+              background: currentThemeData?.colors.primary
+                ? `hsl(${currentThemeData.colors.primary})`
                 : "#3b82f6",
             }}
           />
@@ -270,8 +269,7 @@ export function ThemeSwitcher({
       {showPreview && previewThemeData && (
         <div className="mb-4 p-3 bg-blue-50 dark:bg-blue-900/20 rounded-md border border-blue-200 dark:border-blue-800">
           <p className="text-sm text-blue-800 dark:text-blue-200">
-            <strong>Preview:</strong> {previewThemeData.name} -{" "}
-            {previewThemeData.description}
+            <strong>Preview:</strong> {previewThemeData.name}
           </p>
         </div>
       )}
@@ -289,7 +287,7 @@ export function ThemeSwitcher({
                 ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20"
                 : "border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500"
             }`}
-            title={`${theme.name}: ${theme.description}`}
+            title={theme.name}
           >
             <div className="flex flex-col items-center gap-2">
               <div
@@ -303,7 +301,6 @@ export function ThemeSwitcher({
                   {theme.name}
                 </div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 capitalize">
-                  {theme.category}
                 </div>
               </div>
             </div>
@@ -395,10 +392,8 @@ export function ThemePreviewCard({
             {theme.name}
           </h4>
           <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
-            {theme.description}
           </p>
           <span className="inline-block mt-2 px-2 py-1 text-xs bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 rounded-full capitalize">
-            {theme.category}
           </span>
         </div>
       </div>

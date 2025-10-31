@@ -1,6 +1,7 @@
 "use client";
 
 import { ProductionMonitor } from "../production-monitoring";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 export enum ErrorCategory {
   NETWORK = "network",
@@ -92,11 +93,11 @@ class ComprehensiveErrorTracker {
   // Comprehensive error categorization
   private categorizeError(
     error: Error | string | unknown,
-    context?: any,
+    context?: unknown,
   ): ErrorCategory {
     const errorMessage = error instanceof Error ? error.message : String(error);
     const errorStack = error instanceof Error ? error.stack : undefined;
-    const contextMessage = context?.message || "";
+    const contextMessage = (context as Error)?.message || "";
 
     const fullMessage = `${errorMessage} ${contextMessage}`.toLowerCase();
 
@@ -197,14 +198,14 @@ class ComprehensiveErrorTracker {
   private calculateSeverity(
     error: Error | string | unknown,
     category: ErrorCategory,
-    context?: any,
+    context?: unknown,
   ): ErrorSeverity {
     // Critical errors that break the app
     if (
       category === ErrorCategory.WEBPACK ||
       category === ErrorCategory.SECURITY ||
-      context?.boundary === "global" ||
-      context?.severity === "critical"
+      (context as any)?.boundary === "global" ||
+      (context as any)?.severity === "critical"
     ) {
       return ErrorSeverity.CRITICAL;
     }
@@ -214,8 +215,8 @@ class ComprehensiveErrorTracker {
       category === ErrorCategory.REACT ||
       category === ErrorCategory.NETWORK ||
       category === ErrorCategory.PERFORMANCE ||
-      context?.boundary === "section" ||
-      (context?.retryCount && context.retryCount >= 3)
+      (context as any)?.boundary === "section" ||
+      ((context as any)?.retryCount && (context as any).retryCount >= 3)
     ) {
       return ErrorSeverity.HIGH;
     }
@@ -277,10 +278,10 @@ class ComprehensiveErrorTracker {
 
     // WebAssembly errors (if used)
     if ("WebAssembly" in window) {
-      window.addEventListener("webassemblyerror", (event: any) => {
+      window.addEventListener("webassemblyerror", (event: unknown) => {
         this.trackError("WebAssembly Error", {
           type: "webassembly",
-          message: event.message || "WebAssembly compilation/linking error",
+          message: (event as Error).message || "WebAssembly compilation/linking error",
         });
       });
     }
@@ -324,7 +325,8 @@ class ComprehensiveErrorTracker {
     window.addEventListener(
       "error",
       (event) => {
-        const target = event.target as HTMLElement;
+        if (!isHTMLElement(event.target)) return;
+        const target = event.target;
         if (
           target &&
           (target.tagName === "IMG" || target.tagName === "SCRIPT")
@@ -358,7 +360,7 @@ class ComprehensiveErrorTracker {
     if (process.env.NODE_ENV === "development") {
       // Track React warnings in development
       const originalWarn = console.warn;
-      console.warn = (...args: any[]) => {
+      console.warn = (...args: unknown[]) => {
         const message = args.join(" ");
         if (message.includes("React") || message.includes("Warning:")) {
           this.trackError(new Error(message), {
@@ -427,7 +429,7 @@ class ComprehensiveErrorTracker {
   }
 
   // Main error tracking method
-  trackError(error: Error | string | unknown, context?: any): void {
+  trackError(error: Error | string | unknown, context?: unknown): void {
     if (!this.isInitialized) {
       // Queue error for later processing
       const trackedError = this.createTrackedError(error, context);
@@ -493,7 +495,7 @@ class ComprehensiveErrorTracker {
 
   private createTrackedError(
     error: Error | string | unknown,
-    context?: any,
+    context?: unknown,
   ): TrackedError {
     const errorObj = error instanceof Error ? error : new Error(String(error));
     const category = this.categorizeError(error, context);
@@ -515,7 +517,7 @@ class ComprehensiveErrorTracker {
     };
   }
 
-  private buildErrorContext(additionalContext?: any): ErrorContext {
+  private buildErrorContext(additionalContext?: unknown): ErrorContext {
     return {
       url: typeof window !== "undefined" ? window.location.href : "",
       userAgent:
@@ -554,14 +556,14 @@ class ComprehensiveErrorTracker {
   private generateTags(
     error: Error | string | unknown,
     category: ErrorCategory,
-    context?: any,
+    context?: unknown,
   ): string[] {
     const tags: string[] = [category];
 
-    if (context?.boundary) tags.push(`boundary:${context.boundary}`);
-    if (context?.sectionId) tags.push(`section:${context.sectionId}`);
-    if (context?.componentName) tags.push(`component:${context.componentName}`);
-    if (context?.type) tags.push(`type:${context.type}`);
+    if ((context as any)?.boundary) tags.push(`boundary:${(context as any).boundary}`);
+    if ((context as any)?.sectionId) tags.push(`section:${(context as any).sectionId}`);
+    if ((context as any)?.componentName) tags.push(`component:${(context as any).componentName}`);
+    if ((context as any)?.type) tags.push(`type:${(context as any).type}`);
 
     return tags;
   }
@@ -643,7 +645,7 @@ export const errorTracker = ComprehensiveErrorTracker.getInstance();
 
 // React hook for error tracking in components
 export function useErrorTracking(sectionId?: string) {
-  const trackError = (error: Error | string | unknown, context?: any) => {
+  const trackError = (error: Error | string | unknown, context?: unknown) => {
     errorTracker.trackError(error, {
       ...context,
       sectionId,

@@ -2,6 +2,7 @@
 // Advanced Real User Monitoring with comprehensive metrics and insights
 
 import { advancedAnalytics } from "../analytics/advanced-analytics";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 // Removed webVitalsMonitor import - using basic monitoring
 
 interface UserExperienceMetrics {
@@ -44,7 +45,7 @@ interface UserSession {
   performance: PerformanceMetrics;
   device: DeviceInfo;
   location?: GeoLocation;
-  customMetrics: Record<string, any>;
+  customMetrics: Record<string, unknown>;
 }
 
 interface PageView {
@@ -83,7 +84,7 @@ interface UserInteraction {
   timestamp: number;
   element?: ElementInfo;
   position: { x: number; y: number };
-  context: Record<string, any>;
+  context: Record<string, unknown>;
 }
 
 interface ErrorEvent {
@@ -95,7 +96,7 @@ interface ErrorEvent {
   column?: number;
   timestamp: number;
   userAgent: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
 }
 
 interface PerformanceMetrics {
@@ -155,8 +156,8 @@ interface RUMAlert {
   message: string;
   sessionId: string;
   timestamp: number;
-  metrics: Record<string, any>;
-  context: Record<string, any>;
+  metrics: Record<string, unknown>;
+  context: Record<string, unknown>;
 }
 
 // ===== RUM ENGINE =====
@@ -263,7 +264,7 @@ class RealUserMonitoring {
   }
 
   private async collectDeviceInfo(): Promise<DeviceInfo> {
-    const connection = (navigator as any).connection;
+    const connection = (navigator as unknown).connection;
 
     return {
       userAgent: navigator.userAgent,
@@ -276,7 +277,7 @@ class RealUserMonitoring {
       touchSupport: "ontouchstart" in window,
       connectionType: connection?.effectiveType,
       memoryInfo: {
-        deviceMemory: (navigator as any).deviceMemory,
+        deviceMemory: (navigator as unknown).deviceMemory,
         hardwareConcurrency: navigator.hardwareConcurrency,
       },
     };
@@ -327,7 +328,7 @@ class RealUserMonitoring {
     }
 
     // Get Web Vitals
-    const vitals: any[] = []; // Simplified - removed webVitalsMonitor
+    const vitals: unknown[] = []; // Simplified - removed webVitalsMonitor
     vitals.forEach((vital) => {
       switch (vital.name) {
         case "LCP":
@@ -666,7 +667,7 @@ class RealUserMonitoring {
     return [...this.alerts];
   }
 
-  recordCustomMetric(key: string, value: any): void {
+  recordCustomMetric(key: string, value: unknown): void {
     if (this.currentSession) {
       this.currentSession.customMetrics[key] = value;
     }
@@ -729,7 +730,8 @@ class InteractionTracker {
   }
 
   private handleClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
+    if (!isHTMLElement(event.target)) return;
+    const target = event.target;
     const element = target.closest(
       'button, a, [role="button"], [data-track-click]',
     );
@@ -744,7 +746,7 @@ class InteractionTracker {
         clickData.count++;
         if (clickData.count >= this.config.rageClickThreshold) {
           this.trackInteraction("rage_click", {
-            element: this.getElementInfo(element as HTMLElement),
+            element: this.getElementInfo(element),
             clickCount: clickData.count,
             timeWindow: now - clickData.timestamp,
           });
@@ -754,7 +756,7 @@ class InteractionTracker {
       }
 
       this.trackInteraction("click", {
-        element: this.getElementInfo(element as HTMLElement),
+        element: this.getElementInfo(element),
         position: { x: event.clientX, y: event.clientY },
       });
     }
@@ -788,7 +790,7 @@ class InteractionTracker {
 
   private trackInteraction(
     type: UserInteraction["type"],
-    context: Record<string, any>,
+    context: Record<string, unknown>,
   ): void {
     const interaction: UserInteraction = {
       type,
@@ -836,7 +838,7 @@ export const realUserMonitoring =
   typeof window === "undefined" ? null : RealUserMonitoring.getInstance();
 
 // Utility functions - SSR safe
-export const trackRUMEvent = (type: string, data: Record<string, any>) => {
+export const trackRUMEvent = (type: string, data: Record<string, unknown>) => {
   try {
     if (realUserMonitoring) {
       realUserMonitoring.recordCustomMetric(type, data);

@@ -21,7 +21,7 @@ interface ExperimentLogContext {
   conversionValue?: number;
   funnelStep?: number;
   timeToConvert?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
   traceId?: string;
 }
 
@@ -96,7 +96,7 @@ function logFeatureFlagUsage(context: {
   rolloutPercentage?: number;
   userId?: string;
   sessionId?: string;
-  conditions?: Record<string, any>;
+  conditions?: Record<string, unknown>;
   traceId?: string;
   evaluationTime?: number;
   cacheHit?: boolean;
@@ -460,7 +460,7 @@ export function trackExperimentEvent(
   variantId: string,
   eventType: "view" | "click" | "convert" | "custom",
   eventName?: string,
-  metadata?: Record<string, any>,
+  metadata?: Record<string, unknown>,
 ): void {
   const event = {
     experimentId,

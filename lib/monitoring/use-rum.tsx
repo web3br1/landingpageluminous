@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { realUserMonitoring, trackRUMEvent } from "./real-user-monitoring";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 interface UseRUMOptions {
   trackPageViews?: boolean;
@@ -12,15 +13,15 @@ interface UseRUMOptions {
 }
 
 interface RUMHookReturn {
-  session: any;
-  alerts: any[];
-  trackEvent: (type: string, data: Record<string, any>) => void;
+  session: unknown;
+  alerts: unknown[];
+  trackEvent: (type: string, data: Record<string, unknown>) => void;
   trackPerformance: (
     metric: string,
     value: number,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ) => void;
-  getSessionMetrics: () => any;
+  getSessionMetrics: () => unknown;
   forceFlush: () => Promise<void>;
 }
 
@@ -32,8 +33,8 @@ export function useRUM(options: UseRUMOptions = {}): RUMHookReturn {
     enableAlerts = true,
   } = options;
 
-  const [session, setSession] = useState<any>(null);
-  const [alerts, setAlerts] = useState<any[]>([]);
+  const [session, setSession] = useState<unknown>(null);
+  const [alerts, setAlerts] = useState<unknown[]>([]);
 
   // Update session and alerts periodically - only on client
   useEffect(() => {
@@ -47,7 +48,7 @@ export function useRUM(options: UseRUMOptions = {}): RUMHookReturn {
           const newAlerts = realUserMonitoring.getAlerts();
 
           // Only update state if values actually changed to prevent unnecessary re-renders
-          setSession((currentSession: any) => {
+          setSession((currentSession: unknown) => {
             if (JSON.stringify(currentSession) !== JSON.stringify(newSession)) {
               return newSession;
             }
@@ -122,7 +123,9 @@ export function useRUM(options: UseRUMOptions = {}): RUMHookReturn {
             value: "duration" in entry ? entry.duration : 0,
             startTime: entry.startTime,
             size:
-              "transferSize" in entry ? (entry as any).transferSize : undefined,
+              "transferSize" in entry
+                ? (entry as unknown).transferSize
+                : undefined,
           });
         });
       });
@@ -151,12 +154,15 @@ export function useRUM(options: UseRUMOptions = {}): RUMHookReturn {
     });
   }, [customMetrics]);
 
-  const trackEvent = useCallback((type: string, data: Record<string, any>) => {
-    trackRUMEvent(type, data);
-  }, []);
+  const trackEvent = useCallback(
+    (type: string, data: Record<string, unknown>) => {
+      trackRUMEvent(type, data);
+    },
+    [],
+  );
 
   const trackPerformance = useCallback(
-    (metric: string, value: number, context?: Record<string, any>) => {
+    (metric: string, value: number, context?: Record<string, unknown>) => {
       trackRUMEvent("performance", {
         metric,
         value,
@@ -209,7 +215,7 @@ export function useRUM(options: UseRUMOptions = {}): RUMHookReturn {
 
 // Hook for tracking user frustration signals
 export function useFrustrationTracking(
-  trackEvent?: (type: string, data: Record<string, any>) => void,
+  trackEvent?: (type: string, data: Record<string, unknown>) => void,
 ) {
   // Use provided trackEvent or fallback to useRUM
   const rumTrackEvent = trackEvent || useRUM().trackEvent;
@@ -231,7 +237,7 @@ export function useFrustrationTracking(
             type: "rage_clicking",
             clickCount,
             timeWindow: timeSinceLastClick,
-            element: (event.target as HTMLElement)?.tagName,
+            element: isHTMLElement(event.target) ? event.target.tagName : undefined,
             position: { x: event.clientX, y: event.clientY },
           });
         }
@@ -285,7 +291,7 @@ export function useFrustrationTracking(
   }, [rumTrackEvent]);
 
   return {
-    trackFrustration: (type: string, details: Record<string, any>) => {
+    trackFrustration: (type: string, details: Record<string, unknown>) => {
       rumTrackEvent("frustration", { type, ...details });
     },
   };
@@ -309,7 +315,7 @@ export function useBusinessMetrics() {
   );
 
   const trackConversion = useCallback(
-    (type: string, value?: number, metadata?: Record<string, any>) => {
+    (type: string, value?: number, metadata?: Record<string, unknown>) => {
       trackEvent("business", {
         type: "conversion",
         conversionType: type,
@@ -322,7 +328,7 @@ export function useBusinessMetrics() {
   );
 
   const trackGoal = useCallback(
-    (goalName: string, properties?: Record<string, any>) => {
+    (goalName: string, properties?: Record<string, unknown>) => {
       trackEvent("business", {
         type: "goal",
         goalName,
@@ -342,7 +348,7 @@ export function useBusinessMetrics() {
 
 // Hook for real-time performance monitoring
 export function usePerformanceMonitoring(
-  trackEvent?: (type: string, data: Record<string, any>) => void,
+  trackEvent?: (type: string, data: Record<string, unknown>) => void,
   thresholds: {
     lcp?: number;
     fid?: number;
@@ -355,7 +361,7 @@ export function usePerformanceMonitoring(
 
   // Create trackPerformance function that uses rumTrackEvent
   const trackPerformance = useCallback(
-    (metric: string, value: number, context?: Record<string, any>) => {
+    (metric: string, value: number, context?: Record<string, unknown>) => {
       rumTrackEvent("performance", {
         metric,
         value,
@@ -451,12 +457,12 @@ export function usePerformanceMonitoring(
             break;
           case "first-input":
             metricName = "FID";
-            value = (entry as any).processingStart - entry.startTime;
+            value = (entry as unknown).processingStart - entry.startTime;
             threshold = memoizedThresholds.fid || 100;
             break;
           case "layout-shift":
             metricName = "CLS";
-            value = (entry as any).value;
+            value = (entry as unknown).value;
             threshold = memoizedThresholds.cls || 0.1;
             break;
         }

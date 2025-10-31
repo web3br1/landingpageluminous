@@ -185,7 +185,7 @@ export async function withCircuitBreaker<T>(
 }
 
 // Analytics-specific wrapper with queue for failed operations
-interface QueuedOperation<T = any> {
+interface QueuedOperation<T = unknown> {
   id: string;
   operation: () => Promise<T>;
   timestamp: number;

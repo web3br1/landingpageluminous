@@ -1,4 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  createRateLimitResponse,
+  HTTP_STATUS,
+} from "../../../lib/architecture/api-handler";
 
 // Rate limiting for CSP reports (prevent DoS)
 const CSP_REPORT_RATE_LIMIT = {
@@ -10,7 +16,7 @@ const CSP_REPORT_RATE_LIMIT = {
 // Clean expired rate limit entries
 setInterval(() => {
   const now = Date.now();
-  for (const [key, data] of CSP_REPORT_RATE_LIMIT.store.entries()) {
+  for (const [key, data] of Array.from(CSP_REPORT_RATE_LIMIT.store.entries())) {
     if (now > data.resetTime) {
       CSP_REPORT_RATE_LIMIT.store.delete(key);
     }
@@ -51,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     if (!checkCSPReportRateLimit(clientIP)) {
       console.warn("[CSP REPORT RATE LIMITED]", { clientIP });
-      return NextResponse.json({ status: "rate-limited" }, { status: 429 });
+      return createRateLimitResponse(60, CSP_REPORT_RATE_LIMIT.maxRequests);
     }
 
     const report = await request.json();
@@ -97,24 +103,25 @@ export async function POST(request: NextRequest) {
     }
 
     // Always return 200 OK to CSP reports
-    return NextResponse.json({ status: "ok" }, { status: 200 });
+    return createSuccessResponse({ status: "ok" });
   } catch (error) {
     console.error("[CSP REPORT ERROR]", error);
 
     // Still return 200 to avoid browser retries
-    return NextResponse.json(
-      { status: "error", message: "Failed to process CSP report" },
-      { status: 200 },
-    );
+    return createSuccessResponse({
+      status: "error",
+      message: "Failed to process CSP report"
+    });
   }
 }
 
 // GET endpoint to view CSP violations (development only)
 export async function GET(request: NextRequest) {
   if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json(
-      { error: "CSP violations endpoint only available in development" },
-      { status: 403 },
+    return createErrorResponse(
+      "NOT_ALLOWED_IN_PRODUCTION",
+      "CSP violations endpoint only available in development",
+      { status: HTTP_STATUS.FORBIDDEN }
     );
   }
 
@@ -136,12 +143,13 @@ export async function GET(request: NextRequest) {
       ],
     };
 
-    return NextResponse.json(mockViolations);
+    return createSuccessResponse(mockViolations);
   } catch (error) {
     console.error("[CSP VIOLATIONS FETCH ERROR]", error);
-    return NextResponse.json(
-      { error: "Failed to fetch CSP violations" },
-      { status: 500 },
+    return createErrorResponse(
+      "FETCH_CSP_VIOLATIONS_FAILED",
+      "Failed to fetch CSP violations",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

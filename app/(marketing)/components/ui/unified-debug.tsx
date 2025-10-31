@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { flags, type Experiment } from "@/lib/flags";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 import { DEBUG_CONFIG } from "@/lib/hooks/scroll-config";
 
 interface UnifiedDebugProps {
@@ -182,18 +183,24 @@ export function UnifiedDebug({ scrollDebug }: UnifiedDebugProps) {
                       </span>
                     </div>
                     <div className="flex flex-wrap gap-1">
-                      {exp.variants.map((variant: any) => (
-                        <span
-                          key={variant.id}
-                          className={`px-2 py-1 rounded text-xs ${
-                            variant.id === exp.currentVariant
-                              ? "bg-blue-100 text-blue-800 font-medium"
-                              : "bg-neutral-200 text-neutral-600"
-                          }`}
-                        >
-                          {variant.name} ({variant.weight}%)
-                        </span>
-                      ))}
+                      {exp.variants.map((variant: unknown) => {
+                        if (typeof variant !== 'object' || variant === null || !('id' in variant) || !('name' in variant)) {
+                          return null;
+                        }
+                        const v = variant as { id: string; name: string };
+                        return (
+                          <span
+                            key={v.id}
+                            className={`px-2 py-1 rounded text-xs ${
+                              v.id === exp.currentVariant
+                                ? "bg-blue-100 text-blue-800 font-medium"
+                                : "bg-neutral-200 text-neutral-600"
+                            }`}
+                          >
+                            {v.name}
+                          </span>
+                        );
+                      })}
                     </div>
                   </div>
                 ))}

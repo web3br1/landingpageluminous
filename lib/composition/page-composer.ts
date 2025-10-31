@@ -39,7 +39,7 @@ function handleCompositionResult(
 export async function composePage(
   pageType: PageType,
   context?: CompositionContext,
-): Promise<any[]> {
+): Promise<unknown[]> {
   // Check if page type exists in our configuration before attempting composition
   const validPageTypes: PageType[] = [
     "landing",
@@ -74,11 +74,11 @@ export async function composePage(
     const composition = await composePageComposition(pageType, context);
     // Return sections array directly for test compatibility
     return composition.sections;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // For other composition errors, still return fallback composition sections for test compatibility
     console.warn(
       "Page composition failed, returning fallback composition:",
-      error.message,
+      (error as Error).message,
     );
     const fallback = await createFallbackComposition(pageType, error);
     return fallback.sections;
@@ -131,11 +131,11 @@ export async function composePageFull(
       options,
     );
     return composition;
-  } catch (error: any) {
+  } catch (error: unknown) {
     // For other composition errors, still return fallback composition for test compatibility
     console.warn(
       "Page composition failed, returning fallback composition:",
-      error.message,
+      (error as Error).message,
     );
     return createFallbackComposition(pageType, error);
   }
@@ -273,7 +273,7 @@ export function validateSectionIdInput(
     );
   }
 
-  if (!validIds.includes(sectionId as any)) {
+  if (!validIds.includes(sectionId as SectionId)) {
     throw new Error(`Invalid section id: ${sectionId}`);
   }
 }
@@ -295,10 +295,10 @@ export function getUserSegmentsSafe(): string[] {
 }
 
 // Legacy fallback content - minimal implementation
-function getFallbackContent(sectionId: string): any {
+function getFallbackContent(sectionId: string): unknown {
   logger.warn("Using legacy fallback content", { sectionId });
 
-  const fallbacks: Record<string, any> = {
+  const fallbacks: Record<string, unknown> = {
     hero: {
       content: {
         headline: "Sistema Temporariamente Indisponível",
@@ -339,7 +339,7 @@ function getFallbackContent(sectionId: string): any {
 async function composeSectionContent(
   sectionId: string,
   pageType: string,
-): Promise<any> {
+): Promise<unknown> {
   // This would delegate to content mapper in a full implementation
   // For now, return fallback
   logger.warn("Using legacy section composition", { sectionId, pageType });
@@ -349,11 +349,14 @@ async function composeSectionContent(
 async function composeSectionContentAsync(
   sectionId: string,
   pageType: string,
-): Promise<any> {
+): Promise<unknown> {
   return composeSectionContent(sectionId, pageType);
 }
 
-function composeSectionContentSync(sectionId: string, pageType: string): any {
+function composeSectionContentSync(
+  sectionId: string,
+  pageType: string,
+): unknown {
   logger.warn("Using legacy sync section composition", { sectionId, pageType });
   return getFallbackContent(sectionId);
 }
@@ -387,7 +390,7 @@ function collectExperiments(sections: SectionConfig[]) {
 
 export async function createFallbackComposition(
   pageType: PageType,
-  error: any,
+  error: unknown,
 ): Promise<PageComposition> {
   logger.warn("Creating legacy fallback composition", { pageType, error });
 
@@ -419,7 +422,7 @@ export async function createFallbackComposition(
 
 function createFallbackCompositionSync(
   pageType: PageType,
-  error: any,
+  error: unknown,
 ): PageComposition {
   // Sync version of fallback
   logger.warn("Creating legacy sync fallback composition", { pageType, error });
@@ -449,6 +452,6 @@ function createFallbackCompositionSync(
   };
 }
 
-function createMinimalFallbackContent(sectionId: string): any {
+function createMinimalFallbackContent(sectionId: string): unknown {
   return getFallbackContent(sectionId);
 }

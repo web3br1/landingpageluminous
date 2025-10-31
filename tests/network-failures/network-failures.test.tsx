@@ -30,7 +30,6 @@ const simulateOnline = () => {
   window.dispatchEvent(new Event("online"));
 };
 
-
 // Simple components for testing
 const SimpleNetworkComponent = () => {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -49,9 +48,7 @@ const SimpleNetworkComponent = () => {
   }, []);
 
   return (
-      <div data-testid="network-status">
-      {isOnline ? "Online" : "Offline"}
-    </div>
+    <div data-testid="network-status">{isOnline ? "Online" : "Offline"}</div>
   );
 };
 
@@ -89,8 +86,12 @@ const SimpleApiComponent = ({ autoFetch = false }: { autoFetch?: boolean }) => {
       <div data-testid="loading">{loading ? "Loading" : "Idle"}</div>
       <div data-testid="data">{data || "No data"}</div>
       <div data-testid="error">{error || "No error"}</div>
-      <button onClick={fetchData} data-testid="fetch">Fetch</button>
-      <button onClick={fetchData} data-testid="retry">Retry</button>
+      <button onClick={fetchData} data-testid="fetch">
+        Fetch
+      </button>
+      <button onClick={fetchData} data-testid="retry">
+        Retry
+      </button>
     </div>
   );
 };
@@ -119,7 +120,7 @@ describe("Network Failures Tests", () => {
     });
 
     it("should detect offline status", () => {
-        simulateOffline();
+      simulateOffline();
       render(<SimpleNetworkComponent />);
       expect(screen.getByTestId("network-status")).toHaveTextContent("Offline");
     });
@@ -243,9 +244,9 @@ describe("Network Failures Tests", () => {
       };
 
       // Error boundary should catch this error too
-        render(
+      render(
         <SimpleErrorBoundary>
-            <FailingComponent />
+          <FailingComponent />
         </SimpleErrorBoundary>,
       );
 
@@ -270,7 +271,7 @@ describe("Network Failures Tests", () => {
       expect(screen.getByTestId("network-status")).toHaveTextContent("Online");
 
       // Simulate going offline
-        act(() => {
+      act(() => {
         simulateOffline();
       });
 
@@ -284,7 +285,7 @@ describe("Network Failures Tests", () => {
       expect(screen.getByTestId("network-status")).toHaveTextContent("Offline");
 
       // Simulate coming back online
-        act(() => {
+      act(() => {
         simulateOnline();
       });
 
@@ -294,8 +295,8 @@ describe("Network Failures Tests", () => {
     it("should render SimpleNetworkComponent correctly", () => {
       render(<SimpleNetworkComponent />);
       expect(screen.getByTestId("network-status")).toBeInTheDocument();
-        });
-      });
+    });
+  });
 
   describe("Offline Queue Management", () => {
     // Simple offline queue component
@@ -329,7 +330,7 @@ describe("Network Failures Tests", () => {
       const processItem = async (item: unknown) => {
         try {
           await fetch("/api/queue", {
-                    method: "POST",
+            method: "POST",
             body: JSON.stringify(item),
           });
           setProcessedItems((prev) => [...prev, item]);
@@ -342,14 +343,16 @@ describe("Network Failures Tests", () => {
         // Process all queued items
         queue.forEach((item) => processItem(item));
         setQueue([]);
-        };
+      };
 
-        return (
-          <div>
+      return (
+        <div>
           <div data-testid="queue-status">
             {isOnline ? "Online" : "Offline"} - Queue: {queue.length}
           </div>
-          <div data-testid="processed-count">Processed: {processedItems.length}</div>
+          <div data-testid="processed-count">
+            Processed: {processedItems.length}
+          </div>
           <button
             onClick={() => addToQueue({ type: "test", data: "test-data" })}
             data-testid="add-to-queue"
@@ -358,20 +361,24 @@ describe("Network Failures Tests", () => {
           </button>
           <button onClick={processQueue} data-testid="process-queue">
             Process Queue
-            </button>
-          </div>
-        );
-      };
+          </button>
+        </div>
+      );
+    };
 
     it("should queue requests when offline", () => {
       simulateOffline();
       render(<OfflineQueueComponent />);
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 0",
+      );
 
       fireEvent.click(screen.getByTestId("add-to-queue"));
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 1");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 1",
+      );
     });
 
     it("should allow manual queue processing", () => {
@@ -382,53 +389,75 @@ describe("Network Failures Tests", () => {
       fireEvent.click(screen.getByTestId("add-to-queue"));
       fireEvent.click(screen.getByTestId("add-to-queue"));
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 2");
-      expect(screen.getByTestId("processed-count")).toHaveTextContent("Processed: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 2",
+      );
+      expect(screen.getByTestId("processed-count")).toHaveTextContent(
+        "Processed: 0",
+      );
 
       // Manually process queue (simulated - doesn't actually process in this test)
       fireEvent.click(screen.getByTestId("process-queue"));
 
       // Queue should be cleared after manual processing
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 0",
+      );
     });
 
     it("should differentiate online vs offline behavior", () => {
       // Test online behavior first
       render(<OfflineQueueComponent />);
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Online - Queue: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Online - Queue: 0",
+      );
 
       // Simulate going offline and test offline behavior
       act(() => {
         simulateOffline();
       });
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 0",
+      );
 
       // Add item while offline
       fireEvent.click(screen.getByTestId("add-to-queue"));
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 1");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 1",
+      );
     });
 
     it("should show correct queue length", () => {
       simulateOffline();
       render(<OfflineQueueComponent />);
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 0",
+      );
 
       fireEvent.click(screen.getByTestId("add-to-queue"));
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 1");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 1",
+      );
 
       fireEvent.click(screen.getByTestId("add-to-queue"));
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 2");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 2",
+      );
 
       fireEvent.click(screen.getByTestId("add-to-queue"));
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Offline - Queue: 3");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Offline - Queue: 3",
+      );
     });
 
     it("should render OfflineQueueComponent correctly", () => {
       render(<OfflineQueueComponent />);
       expect(screen.getByTestId("queue-status")).toBeInTheDocument();
-      expect(screen.getByTestId("processed-count")).toHaveTextContent("Processed: 0");
+      expect(screen.getByTestId("processed-count")).toHaveTextContent(
+        "Processed: 0",
+      );
       expect(screen.getByTestId("add-to-queue")).toBeInTheDocument();
     });
   });
@@ -528,19 +557,14 @@ describe("Network Failures Tests", () => {
 
       // Make concurrent requests
       const promises = [
-        fetch("/api/test").then(r => r.json()),
-        fetch("/api/test").then(r => r.json()),
-        fetch("/api/test").then(r => r.json()),
+        fetch("/api/test").then((r) => r.json()),
+        fetch("/api/test").then((r) => r.json()),
+        fetch("/api/test").then((r) => r.json()),
       ];
 
       const results = await Promise.all(promises);
 
-      expect(results).toEqual([
-        { request: 1 },
-        { request: 2 },
-        { request: 3 },
-      ]);
+      expect(results).toEqual([{ request: 1 }, { request: 2 }, { request: 3 }]);
     });
   });
-
 });

@@ -4,33 +4,92 @@ import React from "react";
 import { useExperiment, useABContent } from "@/lib/hooks/use-feature-flags";
 import { usePersonalization } from "@/lib/personalization/personalization-context";
 import { PersonalizedCTA } from "../ui/personalized-cta";
+import { createPerformanceValidator } from "../../lib/architecture/component-props";
+import { withComponentContext } from "../../lib/architecture/logger-pattern";
+import { SimpleErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
+
+// Cache for personalization results (in-memory for this component)
+const personalizationCache = new Map<string, { data: any; timestamp: number }>();
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
+
+// Schema for personalization props validation
+const personalizationPropsSchema = {
+  // Component doesn't have explicit props, but we validate internal state
+};
 
 // Example of a personalized hero component that adapts based on user segments and experiments
-export function PersonalizedHero() {
+function PersonalizedHero() {
+  // Component-specific logger
+  const logger = withComponentContext("PersonalizedHero");
+
   const { activeSegments, personalizeContent, trackUserAction } =
     usePersonalization();
   const headlineExperiment = useExperiment("hero_headline");
 
-  // Personalized content based on user segments
-  const personalizedContent = personalizeContent(
-    {
-      headline: "Sistema de Automação Empresarial",
-      subheadline:
-        "Transforme dados em decisões inteligentes com nossa plataforma de automação empresarial.",
-      badge: "Novo: IA Conversacional",
-    },
-    "hero",
-  );
+  // Generate cache key based on user context
+  const cacheKey = React.useMemo(() => {
+    const segmentsKey = activeSegments.sort().join(",");
+    const experimentKey = headlineExperiment?.variant || "default";
+    return `${segmentsKey}:${experimentKey}`;
+  }, [activeSegments, headlineExperiment?.variant]);
 
-  // Safety check for content
-  if (
-    !personalizedContent ||
-    !personalizedContent.headline ||
-    !personalizedContent.subheadline
-  ) {
-    console.warn(
-      "PersonalizedHero: Invalid personalized content, using fallback",
+  // Check cache first
+  const cachedResult = personalizationCache.get(cacheKey);
+  const isCacheValid = cachedResult && (Date.now() - cachedResult.timestamp) < CACHE_TTL;
+
+  // Personalized content based on user segments (with caching)
+  const personalizedContent = React.useMemo(() => {
+    if (isCacheValid) {
+      logger.debug("Using cached personalization", { cacheKey, age: Date.now() - cachedResult!.timestamp });
+      return cachedResult!.data;
+    }
+
+    logger.debug("Computing fresh personalization", { cacheKey, segments: activeSegments.length });
+
+    const startTime = performance.now();
+    const result = personalizeContent(
+      {
+        headline: "Sistema de Automação Empresarial",
+        subheadline:
+          "Transforme dados em decisões inteligentes com nossa plataforma de automação empresarial.",
+        badge: "Novo: IA Conversacional",
+      },
+      "hero",
     );
+
+    const computationTime = performance.now() - startTime;
+    logger.info("Personalization computed", {
+      cacheKey,
+      computationTimeMs: Math.round(computationTime),
+      segments: activeSegments.length,
+      experimentVariant: headlineExperiment?.variant
+    });
+
+    // Cache the result
+    personalizationCache.set(cacheKey, { data: result, timestamp: Date.now() });
+
+    return result;
+  }, [cacheKey, isCacheValid, cachedResult, personalizeContent, activeSegments.length, headlineExperiment?.variant, logger]);
+
+  // Safety check for content with structured validation
+  const content = personalizedContent as {
+    headline?: string;
+    subheadline?: string;
+    badge?: string;
+  } | null;
+
+  const isContentValid = content && content.headline && content.subheadline;
+
+  if (!isContentValid) {
+    logger.error("PersonalizedHero: Invalid personalized content, using fallback", {
+      hasContent: !!content,
+      hasHeadline: !!(content?.headline),
+      hasSubheadline: !!(content?.subheadline),
+      cacheKey,
+      segments: activeSegments.length,
+      experimentVariant: headlineExperiment?.variant
+    });
+
     return (
       <div className="text-center py-16">
         <h1 className="text-4xl font-bold text-red-600">
@@ -43,6 +102,17 @@ export function PersonalizedHero() {
     );
   }
 
+  // Log successful render
+  React.useEffect(() => {
+    logger.info("PersonalizedHero rendered successfully", {
+      cacheKey,
+      segments: activeSegments.length,
+      experimentVariant: headlineExperiment?.variant,
+      hasValidContent: isContentValid,
+      cacheUsed: isCacheValid
+    });
+  }, [cacheKey, activeSegments.length, headlineExperiment?.variant, isContentValid, isCacheValid, logger]);
+
   // A/B test different value propositions
   const valueProposition = useABContent(
     "hero_headline",
@@ -51,8 +121,7 @@ export function PersonalizedHero() {
       variant_a: "Automatize seus relatórios em minutos, não dias",
       variant_b: "Da planilha manual para o dashboard inteligente",
     },
-    "Transforme dados em decisões inteligentes",
-  );
+  ) as string;
 
   // Track hero view
   React.useEffect(() => {
@@ -74,9 +143,9 @@ export function PersonalizedHero() {
         {/* Content */}
         <div className="space-y-8">
           {/* Personalized Badge */}
-          {personalizedContent.badge && (
+          {content.badge && (
             <div className="inline-flex items-center px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-medium">
-              {personalizedContent.badge}
+              {content.badge}
             </div>
           )}
 
@@ -86,12 +155,12 @@ export function PersonalizedHero() {
             className="font-display font-bold leading-tight text-[clamp(1.5rem,4vw,3.75rem)] text-foreground"
             data-experiment={`headline_${headlineExperiment.variant}`}
           >
-            {personalizedContent.headline}
+            {content.headline}
           </h1>
 
           {/* Personalized Subheadline with A/B tested value prop */}
           <p className="text-xl text-muted-foreground max-w-2xl leading-relaxed">
-            {valueProposition}. {personalizedContent.subheadline}
+            {valueProposition}. {content.subheadline}
           </p>
 
           {/* Personalized CTA */}
@@ -158,8 +227,26 @@ export function usePersonalizedHero() {
   const headlineExperiment = useExperiment("hero_headline");
 
   return {
-    getPersonalizedContent: (baseContent: any) =>
+    getPersonalizedContent: (baseContent: unknown) =>
       personalizeContent(baseContent, "hero"),
     experiment: headlineExperiment,
   };
 }
+
+// Export the component with error boundary protection
+const PersonalizedHeroWithErrorBoundary = ({ children }: { children?: React.ReactNode }) => (
+  <SimpleErrorBoundary
+    onError={(error) => {
+      const logger = withComponentContext("PersonalizedHero");
+      logger.error("PersonalizedHero crashed", error, {
+        component: "PersonalizedHero",
+        hasErrorBoundary: true,
+      });
+    }}
+  >
+    <PersonalizedHero />
+  </SimpleErrorBoundary>
+);
+
+export { PersonalizedHeroWithErrorBoundary as PersonalizedHero };
+export default PersonalizedHeroWithErrorBoundary;

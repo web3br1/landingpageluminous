@@ -89,6 +89,8 @@ export default [
       ],
       "@typescript-eslint/no-explicit-any": "error",
       complexity: ["error", 10],
+      "max-lines": ["error", { max: 300 }],
+      "max-params": ["error", 4],
       "prefer-const": "error",
       "no-var": "error",
     },

@@ -210,13 +210,13 @@ export class DuplicateContentDetector {
         },
         // Add robots meta to discourage indexing of duplicates
         robots: {
-          ...((baseMetadata.robots as any) || {}),
+          ...(typeof baseMetadata.robots === 'object' && baseMetadata.robots ? baseMetadata.robots : {}),
           index: false,
           follow: true,
         },
         // Add meta tag indicating this is a duplicate
         other: {
-          ...((baseMetadata as any).other || {}),
+          ...(typeof baseMetadata.other === 'object' && baseMetadata.other ? baseMetadata.other : {}),
           robots: "noindex,follow",
           googlebot: "noindex,follow",
         },

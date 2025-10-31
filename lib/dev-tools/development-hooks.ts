@@ -37,8 +37,8 @@ interface ComponentDebugInfo {
 
 export function useComponentDebugger(
   componentName: string,
-  props?: Record<string, any>,
-  state?: Record<string, any>,
+  props?: Record<string, unknown>,
+  state?: Record<string, unknown>,
 ) {
   const isDev = useDevelopmentMode();
   const [debugInfo, setDebugInfo] = useState<ComponentDebugInfo>({
@@ -98,7 +98,7 @@ export function useComponentDebugger(
 
   // Track effect runs
   const trackEffect = useCallback(
-    (effectName: string, deps?: any[]) => {
+    (effectName: string, deps?: unknown[]) => {
       if (!isDev) return;
 
       setDebugInfo((prev) => ({
@@ -339,11 +339,11 @@ export function useCompositionDebugger(pageType: string) {
   }, [isDev]);
 
   const trackComposition = useCallback(
-    (sections: any[], renderTime: number) => {
+    (sections: unknown[], renderTime: number) => {
       if (!isDev) return;
 
       setCompositionStats({
-        sections: sections.map((s) => s.id),
+        sections: sections.map((s) => (s as any).id),
         renderTime,
         cacheHits: Math.floor(Math.random() * 10), // Mock data
         cacheMisses: Math.floor(Math.random() * 5),
@@ -354,7 +354,7 @@ export function useCompositionDebugger(pageType: string) {
         pageType,
         sectionsCount: sections.length,
         renderTime,
-        sections: sections.map((s) => s.id),
+        sections: sections.map((s) => (s as any).id),
       });
     },
     [isDev, pageType],

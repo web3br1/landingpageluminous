@@ -1,8 +1,5 @@
 import { Metadata } from "next";
-import {
-  generateCanonicalUrl,
-  generateHreflangAlternates,
-} from "./seo/canonical-urls";
+import { generateCanonicalUrl } from "./seo/canonical-urls";
 import { validateJsonLdSchema } from "./seo/json-ld-schemas";
 
 export const defaultSeo: Metadata = {

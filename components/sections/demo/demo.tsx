@@ -12,7 +12,7 @@ import {
   OptimizedImage,
   imageOptimization,
 } from "@/lib/performance/image-optimization";
-import type { DemoSectionProps } from "@/domains/marketing";
+import type { DemoSectionProps, DemoVideo, DemoScreenshot } from "@/domains/marketing";
 
 // Lazy load video component to reduce initial bundle size
 const LazyVideoPlayer = lazy(() => import("./lazy-video-player"));
@@ -87,14 +87,14 @@ export function Demo({
     null,
   );
 
-  const handleVideoPlay = (video: any) => {
+  const handleVideoPlay = (video: unknown) => {
     setIsVideoPlaying(true);
-    onVideoPlay?.(video);
+    onVideoPlay?.(video as DemoVideo);
   };
 
-  const handleScreenshotClick = (screenshot: any, index: number) => {
+  const handleScreenshotClick = (screenshot: unknown, index: number) => {
     setSelectedScreenshot(index);
-    onScreenshotClick?.(screenshot, index);
+    onScreenshotClick?.(screenshot as DemoScreenshot, index);
   };
 
   const handleTourNavigation = (direction: "prev" | "next") => {
@@ -109,7 +109,7 @@ export function Demo({
     onTourStepClick?.(content.tourSteps[newStep], newStep);
   };
 
-  const renderVideoPlayer = (video: any) => {
+  const renderVideoPlayer = (video: unknown) => {
     return (
       <Suspense
         fallback={
@@ -119,7 +119,7 @@ export function Demo({
         }
       >
         <LazyVideoPlayer
-          video={video}
+          video={video as DemoVideo}
           onPlay={handleVideoPlay}
           className="aspect-video bg-muted rounded-lg overflow-hidden"
         />

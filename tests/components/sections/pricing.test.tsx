@@ -26,6 +26,11 @@ describe("Pricing Component", () => {
       enabled: true,
       defaultPeriod: "monthly",
     },
+    highlightPopular: true,
+    tracking: {
+      section: "pricing",
+      sectionId: "pricing",
+    },
     plans: [
       {
         id: "starter",
@@ -132,7 +137,7 @@ describe("Pricing Component", () => {
       const annualToggle = screen.getByText("Anual");
       await user.click(annualToggle);
 
-      expect(screen.getByText(/Economia de/)).toBeInTheDocument();
+      expect(screen.getByText(/Economize/)).toBeInTheDocument();
     });
   });
 
@@ -140,11 +145,17 @@ describe("Pricing Component", () => {
     it("should render plan features with correct styling", () => {
       render(<Pricing content={mockContent} />);
 
-      const includedFeatures = screen.getAllByText("✓");
-      expect(includedFeatures.length).toBeGreaterThan(0);
+      // Check for included features (green check icons)
+      const checkIcons = document.querySelectorAll(
+        'svg[data-testid="check-icon"], svg.lucide-check',
+      );
+      expect(checkIcons.length).toBeGreaterThan(0);
 
-      const excludedFeatures = screen.getAllByText("✗");
-      expect(excludedFeatures.length).toBeGreaterThan(0);
+      // Check for excluded features (red x icons)
+      const xIcons = document.querySelectorAll(
+        'svg[data-testid="x-icon"], svg.lucide-x',
+      );
+      expect(xIcons.length).toBeGreaterThan(0);
     });
 
     it("should show feature names", () => {
@@ -168,36 +179,39 @@ describe("Pricing Component", () => {
     it("should apply special styling to popular plan", () => {
       render(<Pricing content={mockContent} />);
 
-      const popularPlan = screen
-        .getByText("Profissional")
-        .closest("[data-popular]");
-      expect(popularPlan).toHaveAttribute("data-popular", "true");
+      // Popular plan should have the badge
+      const popularBadge = screen.getByText("Mais Popular");
+      expect(popularBadge).toBeInTheDocument();
+
+      // Popular plan card should have special styling classes
+      const popularPlanCard = popularBadge.closest(".pricing-card");
+      expect(popularPlanCard).toHaveClass("scale-105", "border-primary");
     });
   });
 
   describe("plan interactions", () => {
     it("should handle plan selection", async () => {
-      const onPlanClick = vi.fn();
+      const onPlanSelect = vi.fn();
       const user = userEvent.setup();
 
-      render(<Pricing content={mockContent} onPlanClick={onPlanClick} />);
+      render(<Pricing content={mockContent} onPlanSelect={onPlanSelect} />);
 
       const ctaButton = screen.getAllByText("Começar teste grátis")[0];
       await user.click(ctaButton);
 
-      expect(onPlanClick).toHaveBeenCalledWith("starter", mockContent.plans[0]);
+      expect(onPlanSelect).toHaveBeenCalledWith("starter", "monthly");
     });
 
     it("should handle popular plan selection", async () => {
-      const onPlanClick = vi.fn();
+      const onPlanSelect = vi.fn();
       const user = userEvent.setup();
 
-      render(<Pricing content={mockContent} onPlanClick={onPlanClick} />);
+      render(<Pricing content={mockContent} onPlanSelect={onPlanSelect} />);
 
       const popularCta = screen.getAllByText("Começar teste grátis")[1];
       await user.click(popularCta);
 
-      expect(onPlanClick).toHaveBeenCalledWith("pro", mockContent.plans[1]);
+      expect(onPlanSelect).toHaveBeenCalledWith("pro", "monthly");
     });
   });
 

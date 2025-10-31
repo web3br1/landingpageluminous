@@ -546,7 +546,7 @@ export class AdvancedWebhookService {
    */
   async healthCheck(): Promise<{
     healthy: boolean;
-    details: Record<string, unknown>;
+    details: Record<string, any>;
   }> {
     try {
       const stats = this.getStats();

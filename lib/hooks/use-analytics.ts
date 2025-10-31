@@ -3,7 +3,7 @@
  * Provides client-side only analytics with proper SSR handling
  */
 
-import { useEffect, useCallback } from 'react';
+import { useEffect, useCallback } from "react";
 
 // Analytics event types
 export interface AnalyticsEvent {
@@ -12,7 +12,7 @@ export interface AnalyticsEvent {
   action?: string;
   label?: string;
   value?: number;
-  properties?: Record<string, any>;
+  properties?: Record<string, unknown>;
 }
 
 // Analytics configuration
@@ -25,20 +25,20 @@ export interface AnalyticsConfig {
 // Default configuration
 const DEFAULT_CONFIG: AnalyticsConfig = {
   enabled: true,
-  debug: process.env.NODE_ENV === 'development',
+  debug: process.env.NODE_ENV === "development",
 };
 
 /**
  * Check if we're in a browser environment
  */
 function isBrowser(): boolean {
-  return typeof window !== 'undefined' && typeof document !== 'undefined';
+  return typeof window !== "undefined" && typeof document !== "undefined";
 }
 
 /**
  * Safe console logging for analytics events
  */
-function logAnalytics(event: string, data: any): void {
+function logAnalytics(event: string, data: unknown): void {
   if (DEFAULT_CONFIG.debug) {
     console.log(`[Analytics] ${event}:`, data);
   }
@@ -49,14 +49,14 @@ function logAnalytics(event: string, data: any): void {
  */
 function trackEvent(event: AnalyticsEvent): void {
   if (!isBrowser() || !DEFAULT_CONFIG.enabled) {
-    logAnalytics('skipped (SSR or disabled)', event);
+    logAnalytics("skipped (SSR or disabled)", event);
     return;
   }
 
   try {
     // Placeholder for actual analytics implementation
     // In production, this would integrate with GA4, Plausible, etc.
-    logAnalytics('tracked', event);
+    logAnalytics("tracked", event);
 
     // Example: Send to dataLayer for GTM
     if (window.dataLayer) {
@@ -72,9 +72,8 @@ function trackEvent(event: AnalyticsEvent): void {
 
     // Example: Send to custom analytics endpoint
     // fetch('/api/analytics', { method: 'POST', body: JSON.stringify(event) });
-
   } catch (error) {
-    console.warn('Analytics tracking failed:', error);
+    console.warn("Analytics tracking failed:", error);
   }
 }
 
@@ -85,9 +84,9 @@ export function usePageView(pageName?: string): void {
   useEffect(() => {
     if (pageName) {
       trackEvent({
-        event: 'page_view',
-        category: 'navigation',
-        action: 'view',
+        event: "page_view",
+        category: "navigation",
+        action: "view",
         label: pageName,
       });
     }
@@ -102,35 +101,52 @@ export function useAnalyticsEvent() {
     trackEvent(event);
   }, []);
 
-  const trackClick = useCallback((elementName: string, properties?: Record<string, any>) => {
-    trackEvent({
-      event: 'click',
-      category: 'interaction',
-      action: 'click',
-      label: elementName,
-      properties,
-    });
-  }, []);
+  const trackClick = useCallback(
+    (elementName: string, properties?: Record<string, unknown>) => {
+      trackEvent({
+        event: "click",
+        category: "interaction",
+        action: "click",
+        label: elementName,
+        properties,
+      });
+    },
+    [],
+  );
 
-  const trackConversion = useCallback((conversionType: string, value?: number, properties?: Record<string, any>) => {
-    trackEvent({
-      event: 'conversion',
-      category: 'goal',
-      action: conversionType,
-      value,
-      properties,
-    });
-  }, []);
+  const trackConversion = useCallback(
+    (
+      conversionType: string,
+      value?: number,
+      properties?: Record<string, unknown>,
+    ) => {
+      trackEvent({
+        event: "conversion",
+        category: "goal",
+        action: conversionType,
+        value,
+        properties,
+      });
+    },
+    [],
+  );
 
-  const trackError = useCallback((errorType: string, errorMessage?: string, properties?: Record<string, any>) => {
-    trackEvent({
-      event: 'error',
-      category: 'error',
-      action: errorType,
-      label: errorMessage,
-      properties,
-    });
-  }, []);
+  const trackError = useCallback(
+    (
+      errorType: string,
+      errorMessage?: string,
+      properties?: Record<string, unknown>,
+    ) => {
+      trackEvent({
+        event: "error",
+        category: "error",
+        action: errorType,
+        label: errorMessage,
+        properties,
+      });
+    },
+    [],
+  );
 
   return {
     track,
@@ -143,7 +159,9 @@ export function useAnalyticsEvent() {
 /**
  * Hook for tracking scroll depth
  */
-export function useScrollTracking(thresholds: number[] = [25, 50, 75, 100]): void {
+export function useScrollTracking(
+  thresholds: number[] = [25, 50, 75, 100],
+): void {
   useEffect(() => {
     if (!isBrowser()) return;
 
@@ -151,26 +169,29 @@ export function useScrollTracking(thresholds: number[] = [25, 50, 75, 100]): voi
     const trackedThresholds = new Set<number>();
 
     const handleScroll = () => {
-      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      const scrollTop =
+        window.pageYOffset || document.documentElement.scrollTop;
       const windowHeight = window.innerHeight;
       const documentHeight = Math.max(
         document.body.scrollHeight,
         document.body.offsetHeight,
         document.documentElement.clientHeight,
         document.documentElement.scrollHeight,
-        document.documentElement.offsetHeight
+        document.documentElement.offsetHeight,
       );
 
-      const scrollPercent = Math.round((scrollTop / (documentHeight - windowHeight)) * 100);
+      const scrollPercent = Math.round(
+        (scrollTop / (documentHeight - windowHeight)) * 100,
+      );
 
       // Track new thresholds
-      thresholds.forEach(threshold => {
+      thresholds.forEach((threshold) => {
         if (scrollPercent >= threshold && !trackedThresholds.has(threshold)) {
           trackedThresholds.add(threshold);
           trackEvent({
-            event: 'scroll_depth',
-            category: 'engagement',
-            action: 'scroll',
+            event: "scroll_depth",
+            category: "engagement",
+            action: "scroll",
             label: `${threshold}%`,
             value: threshold,
           });
@@ -192,8 +213,8 @@ export function useScrollTracking(thresholds: number[] = [25, 50, 75, 100]): voi
       }
     };
 
-    window.addEventListener('scroll', throttledScroll, { passive: true });
-    return () => window.removeEventListener('scroll', throttledScroll);
+    window.addEventListener("scroll", throttledScroll, { passive: true });
+    return () => window.removeEventListener("scroll", throttledScroll);
   }, [thresholds]);
 }
 
@@ -209,10 +230,10 @@ export function useTimeTracking(pageName?: string): void {
     const trackTime = () => {
       const timeSpent = Math.round((Date.now() - startTime) / 1000);
       trackEvent({
-        event: 'time_spent',
-        category: 'engagement',
-        action: 'time',
-        label: pageName || 'current_page',
+        event: "time_spent",
+        category: "engagement",
+        action: "time",
+        label: pageName || "current_page",
         value: timeSpent,
       });
     };
@@ -229,12 +250,12 @@ export function useTimeTracking(pageName?: string): void {
       }
     };
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       trackTime();
     };
   }, [pageName]);
@@ -248,31 +269,37 @@ export function useFormAnalytics(formName: string) {
 
   const trackFormStart = useCallback(() => {
     track({
-      event: 'form_start',
-      category: 'form',
-      action: 'start',
+      event: "form_start",
+      category: "form",
+      action: "start",
       label: formName,
     });
   }, [track, formName]);
 
-  const trackFormSubmit = useCallback((success: boolean) => {
-    track({
-      event: 'form_submit',
-      category: 'form',
-      action: success ? 'success' : 'error',
-      label: formName,
-      value: success ? 1 : 0,
-    });
-  }, [track, formName]);
+  const trackFormSubmit = useCallback(
+    (success: boolean) => {
+      track({
+        event: "form_submit",
+        category: "form",
+        action: success ? "success" : "error",
+        label: formName,
+        value: success ? 1 : 0,
+      });
+    },
+    [track, formName],
+  );
 
-  const trackFormField = useCallback((fieldName: string, action: 'focus' | 'blur' | 'change') => {
-    track({
-      event: 'form_field',
-      category: 'form',
-      action,
-      label: `${formName}_${fieldName}`,
-    });
-  }, [track, formName]);
+  const trackFormField = useCallback(
+    (fieldName: string, action: "focus" | "blur" | "change") => {
+      track({
+        event: "form_field",
+        category: "form",
+        action,
+        label: `${formName}_${fieldName}`,
+      });
+    },
+    [track, formName],
+  );
 
   return {
     trackFormStart,
@@ -284,18 +311,20 @@ export function useFormAnalytics(formName: string) {
 /**
  * SSR-safe analytics initialization
  */
-export function initializeAnalytics(config: Partial<AnalyticsConfig> = {}): void {
+export function initializeAnalytics(
+  config: Partial<AnalyticsConfig> = {},
+): void {
   if (!isBrowser()) return;
 
   // Merge config
   Object.assign(DEFAULT_CONFIG, config);
 
-  logAnalytics('initialized', DEFAULT_CONFIG);
+  logAnalytics("initialized", DEFAULT_CONFIG);
 }
 
 // Type declarations for global objects
 declare global {
   interface Window {
-    dataLayer?: any[];
+    dataLayer?: unknown[];
   }
 }

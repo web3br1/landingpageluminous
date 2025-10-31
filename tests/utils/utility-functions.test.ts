@@ -24,7 +24,7 @@ const formatCurrency = (amount: number, currency = "BRL"): string => {
 
 const debounce = <T extends (...args: any[]) => any>(
   func: T,
-  wait: number
+  wait: number,
 ): ((...args: Parameters<T>) => void) => {
   let timeout: NodeJS.Timeout | null = null;
 
@@ -35,7 +35,7 @@ const debounce = <T extends (...args: any[]) => any>(
 };
 
 const sleep = (ms: number): Promise<void> => {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
 const generateId = (): string => {

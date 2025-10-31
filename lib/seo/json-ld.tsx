@@ -1,7 +1,53 @@
 import { jsonLd, stringifyForScript } from "../seo";
 
 interface JsonLdProps {
-  additionalSchemas?: Record<string, any>[];
+  additionalSchemas?: Record<string, unknown>[];
+}
+
+// Interfaces for page data types
+interface ArticlePageData {
+  slug: string;
+  title: string;
+  excerpt?: string;
+  description?: string;
+  image?: string;
+  publishedAt?: string;
+  updatedAt?: string;
+  author?: {
+    name?: string;
+  };
+  category?: string;
+  tags?: string[];
+}
+
+interface ProductPageData {
+  slug: string;
+  name: string;
+  description?: string;
+  images?: string[];
+  category?: string;
+  price?: number;
+  currency?: string;
+  availability?: string;
+  brand?: string;
+  features?: string[];
+  rating?: {
+    value: number;
+    count: number;
+  };
+}
+
+interface OrganizationPageData {
+  name: string;
+  description?: string;
+  url?: string;
+  logo?: string;
+  sameAs?: string[];
+  foundingDate?: string;
+  contactPoint?: {
+    telephone?: string;
+    email?: string;
+  };
 }
 
 /**
@@ -30,7 +76,7 @@ export function JsonLd({ additionalSchemas = [] }: JsonLdProps) {
 /**
  * Hook para gerar schema dinâmico baseado no contexto da página
  */
-export function usePageSchema(pageType: string, pageData?: any) {
+export function usePageSchema(pageType: string, pageData?: ArticlePageData | ProductPageData | OrganizationPageData | unknown) {
   const baseSchemas = [...jsonLd];
 
   // Adicionar schemas específicos por página
@@ -46,19 +92,20 @@ export function usePageSchema(pageType: string, pageData?: any) {
     case "blog":
     case "article":
       if (pageData) {
+        const articleData = pageData as ArticlePageData;
         baseSchemas.push({
           "@context": "https://schema.org",
           "@type": "Article",
-          "@id": `https://dataflow.com.br${pageData.slug}/#article`,
-          name: pageData.title,
-          description: pageData.excerpt || pageData.description,
-          image: pageData.image,
-          datePublished: pageData.publishedAt,
-          dateModified: pageData.updatedAt,
+          "@id": `https://dataflow.com.br${articleData.slug}/#article`,
+          name: articleData.title,
+          description: articleData.excerpt || articleData.description,
+          ...(articleData.image && { image: articleData.image }),
+          ...(articleData.publishedAt && { datePublished: articleData.publishedAt }),
+          ...(articleData.updatedAt && { dateModified: articleData.updatedAt }),
           author: {
             "@type": "Organization",
             "@id": "https://dataflow.com.br/#organization",
-            name: pageData.author?.name || "DataFlow Team",
+            name: articleData.author?.name || "DataFlow Team",
             url: "https://dataflow.com.br",
             logo: "https://dataflow.com.br/logo.png",
             sameAs: ["https://dataflow.com.br"],
@@ -70,34 +117,40 @@ export function usePageSchema(pageType: string, pageData?: any) {
           },
           mainEntityOfPage: {
             "@type": "WebPage",
-            "@id": `https://dataflow.com.br${pageData.slug}/#webpage`,
+            "@id": `https://dataflow.com.br${articleData.slug}/#webpage`,
           },
-          articleSection: pageData.category,
-          keywords: pageData.tags?.join(", "),
+          articleSection: articleData.category,
+          keywords: articleData.tags?.join(", "),
         } as any);
       }
       break;
 
     case "product":
       if (pageData) {
+        const productData = pageData as ProductPageData;
         baseSchemas.push({
           "@context": "https://schema.org",
           "@type": "Product",
-          "@id": `https://dataflow.com.br${pageData.slug}/#product`,
-          name: pageData.name,
-          description: pageData.description,
-          image: pageData.images,
+          "@id": `https://dataflow.com.br${productData.slug}/#product`,
+          name: productData.name,
+          description: productData.description,
+          ...(productData.images && { image: productData.images }),
           brand: {
             "@id": "https://dataflow.com.br/#organization",
           },
-          offers: pageData.offers || [],
-          aggregateRating: pageData.rating
+          offers: productData.price ? [{
+            "@type": "Offer" as const,
+            price: productData.price.toString(),
+            priceCurrency: productData.currency || "BRL",
+            availability: productData.availability || "https://schema.org/InStock",
+          } as any] : [],
+          aggregateRating: productData.rating
             ? {
                 "@type": "AggregateRating",
-                ratingValue: pageData.rating.value,
-                reviewCount: pageData.rating.count,
-                bestRating: 5,
-                worstRating: 1,
+                ratingValue: productData.rating.value.toString(),
+                ratingCount: productData.rating.count.toString(),
+                bestRating: "5",
+                worstRating: "1",
               }
             : undefined,
         } as any);

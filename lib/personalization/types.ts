@@ -27,7 +27,7 @@ export interface UserCriteria {
   location?: string[]; // country codes
 
   // Custom
-  customFlags?: Record<string, any>;
+  customFlags?: Record<string, unknown>;
 }
 
 export interface UserProfile {
@@ -85,7 +85,7 @@ export interface ConversionEvent {
     | "purchase";
   value?: number;
   timestamp: Date;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ExperimentImpression {
@@ -116,7 +116,7 @@ export interface PersonalizationCondition {
     | "less_than"
     | "in"
     | "not_in";
-  value: any;
+  value: unknown;
 }
 
 export interface PersonalizationAction {
@@ -127,15 +127,15 @@ export interface PersonalizationAction {
     | "redirect"
     | "custom";
   target: string; // CSS selector or content key
-  value: any;
-  metadata?: Record<string, any>;
+  value: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 // Content Personalization
 export interface PersonalizedContent {
-  baseContent: any;
-  overrides: Record<string, any>; // segmentId -> content override
-  experiments: Record<string, any>; // experimentId -> variant content
+  baseContent: unknown;
+  overrides: Record<string, unknown>; // segmentId -> content override
+  experiments: Record<string, unknown>; // experimentId -> variant content
 }
 
 // Analytics for Personalization

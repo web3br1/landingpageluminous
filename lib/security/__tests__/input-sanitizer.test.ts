@@ -62,12 +62,12 @@ describe("InputSanitizer", () => {
   describe("sanitizeEmail", () => {
     it("should accept valid emails", () => {
       const email = "user@example.com";
-      const result = InputSanitizer.sanitizeEmail(email);
+      const result = await InputSanitizer.sanitizeEmail(email);
       expect(result).toBe(email);
     });
 
     it("should reject invalid emails", () => {
-      expect(() => InputSanitizer.sanitizeEmail("invalid-email")).toThrow(
+      await expect(InputSanitizer.sanitizeEmail("invalid-email")).rejects.toThrow(
         "Invalid email format",
       );
     });

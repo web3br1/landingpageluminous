@@ -11,7 +11,14 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import React, { Suspense, useState } from "react";
 import { render, screen, waitFor, act } from "@testing-library/react";
-import { RouteBasedLazyLoading, shouldLazyLoad, getChunkId, traceLazyLoad, prefetch, load } from "@/lib/composition/performance/route-based-lazy-loading";
+import {
+  RouteBasedLazyLoading,
+  shouldLazyLoad,
+  getChunkId,
+  traceLazyLoad,
+  prefetch,
+  load,
+} from "@/lib/composition/performance/route-based-lazy-loading";
 import { Boundary } from "@/lib/error/Boundary";
 import { logger } from "@/shared/observ";
 
@@ -199,7 +206,7 @@ describe("Critical Flows Integration Tests", () => {
 
         return React.createElement("div", {
           "data-testid": "ssr-test",
-          children: mounted ? "Hydrated" : "SSR Render"
+          children: mounted ? "Hydrated" : "SSR Render",
         });
       }
 
@@ -221,25 +228,32 @@ describe("Critical Flows Integration Tests", () => {
         return React.createElement("div", {
           "data-testid": "hydration-test",
           children: [
-            React.createElement("span", { key: "count", children: count.toString() }),
+            React.createElement("span", {
+              key: "count",
+              children: count.toString(),
+            }),
             React.createElement("button", {
               key: "button",
               "data-testid": "increment",
-              onClick: () => setCount(c => c + 1),
-              children: "Increment"
-            })
-          ]
+              onClick: () => setCount((c) => c + 1),
+              children: "Increment",
+            }),
+          ],
         });
       }
 
       // SSR render
-      const ssrHtml = renderToString(React.createElement(HydrationTestComponent));
+      const ssrHtml = renderToString(
+        React.createElement(HydrationTestComponent),
+      );
 
       // Client render should match SSR
       render(React.createElement(HydrationTestComponent));
 
       // Should hydrate without console errors (no mismatches)
-      const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+      const consoleSpy = vi
+        .spyOn(console, "error")
+        .mockImplementation(() => {});
 
       await waitFor(() => {
         expect(screen.getByTestId("hydration-test")).toBeInTheDocument();
@@ -249,7 +263,7 @@ describe("Critical Flows Integration Tests", () => {
       // Should not have hydration mismatches
       expect(consoleSpy).not.toHaveBeenCalledWith(
         expect.stringContaining("hydration"),
-        expect.anything()
+        expect.anything(),
       );
 
       consoleSpy.mockRestore();
@@ -262,9 +276,16 @@ describe("Critical Flows Integration Tests", () => {
         return React.createElement("div", {
           "data-testid": "conditional",
           children: [
-            React.createElement("div", { key: "always", children: "Always rendered" }),
-            isClient && React.createElement("div", { key: "client", children: "Client only" })
-          ]
+            React.createElement("div", {
+              key: "always",
+              children: "Always rendered",
+            }),
+            isClient &&
+              React.createElement("div", {
+                key: "client",
+                children: "Client only",
+              }),
+          ],
         });
       }
 
@@ -290,13 +311,10 @@ describe("Critical Flows Integration Tests", () => {
       }
 
       render(
-        React.createElement(
-          Boundary,
-          {
-            onError: mockOnError,
-            children: React.createElement(FailingComponent)
-          }
-        )
+        React.createElement(Boundary, {
+          onError: mockOnError,
+          children: React.createElement(FailingComponent),
+        }),
       );
 
       // Should show error boundary fallback
@@ -306,12 +324,12 @@ describe("Critical Flows Integration Tests", () => {
       // Should call telemetry
       expect(mockOnError).toHaveBeenCalledWith(
         expect.any(Error),
-        expect.any(Object)
+        expect.any(Object),
       );
 
       expect(mockOnError).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Component failed" }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -336,13 +354,10 @@ describe("Critical Flows Integration Tests", () => {
       }
 
       render(
-        React.createElement(
-          Boundary,
-          {
-            onError: mockOnError,
-            children: React.createElement(AsyncErrorComponent)
-          }
-        )
+        React.createElement(Boundary, {
+          onError: mockOnError,
+          children: React.createElement(AsyncErrorComponent),
+        }),
       );
 
       // Initially should show loading
@@ -356,7 +371,7 @@ describe("Critical Flows Integration Tests", () => {
       expect(screen.getByText("Something went wrong")).toBeInTheDocument();
       expect(mockOnError).toHaveBeenCalledWith(
         expect.objectContaining({ message: "Async operation failed" }),
-        expect.any(Object)
+        expect.any(Object),
       );
     });
 
@@ -373,19 +388,16 @@ describe("Critical Flows Integration Tests", () => {
 
         return React.createElement("div", {
           "data-testid": "success",
-          children: `Success on attempt ${attempt}`
+          children: `Success on attempt ${attempt}`,
         });
       }
 
       render(
-        React.createElement(
-          Boundary,
-          {
-            onError: mockOnError,
-            maxRetries: 1,
-            children: React.createElement(FailingThenSuccessComponent)
-          }
-        )
+        React.createElement(Boundary, {
+          onError: mockOnError,
+          maxRetries: 1,
+          children: React.createElement(FailingThenSuccessComponent),
+        }),
       );
 
       // Should show retry button
@@ -424,7 +436,7 @@ describe("Critical Flows Integration Tests", () => {
 
         return React.createElement("div", {
           "data-testid": "network-status",
-          children: isOnline ? "Online" : "Offline"
+          children: isOnline ? "Online" : "Offline",
         });
       }
 
@@ -485,10 +497,22 @@ describe("Critical Flows Integration Tests", () => {
 
         return React.createElement("div", {
           children: [
-            React.createElement("div", { key: "status", "data-testid": "status", children: loading ? "Loading" : "Idle" }),
-            React.createElement("div", { key: "data", "data-testid": "data", children: data ? JSON.stringify(data) : "No data" }),
-            React.createElement("div", { key: "error", "data-testid": "error", children: error || "No error" }),
-          ]
+            React.createElement("div", {
+              key: "status",
+              "data-testid": "status",
+              children: loading ? "Loading" : "Idle",
+            }),
+            React.createElement("div", {
+              key: "data",
+              "data-testid": "data",
+              children: data ? JSON.stringify(data) : "No data",
+            }),
+            React.createElement("div", {
+              key: "error",
+              "data-testid": "error",
+              children: error || "No error",
+            }),
+          ],
         });
       }
 
@@ -516,16 +540,16 @@ describe("Critical Flows Integration Tests", () => {
 
         const addToQueue = (item: any) => {
           if (!navigator.onLine) {
-            setQueue(prev => [...prev, item]);
+            setQueue((prev) => [...prev, item]);
           } else {
-            setProcessed(prev => [...prev, item]);
+            setProcessed((prev) => [...prev, item]);
           }
         };
 
         React.useEffect(() => {
           const handleOnline = () => {
             // Process queue when coming online
-            setProcessed(prev => [...prev, ...queue]);
+            setProcessed((prev) => [...prev, ...queue]);
             setQueue([]);
           };
 
@@ -538,15 +562,15 @@ describe("Critical Flows Integration Tests", () => {
             React.createElement("div", {
               key: "status",
               "data-testid": "queue-status",
-              children: `Queue: ${queue.length}, Processed: ${processed.length}`
+              children: `Queue: ${queue.length}, Processed: ${processed.length}`,
             }),
             React.createElement("button", {
               key: "add",
               "data-testid": "add-item",
               onClick: () => addToQueue({ id: Date.now() }),
-              children: "Add Item"
-            })
-          ]
+              children: "Add Item",
+            }),
+          ],
         });
       }
 
@@ -559,14 +583,18 @@ describe("Critical Flows Integration Tests", () => {
         addButton.click();
       });
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Queue: 2, Processed: 0");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Queue: 2, Processed: 0",
+      );
 
       // Simulate coming online
       act(() => {
         simulateOnline();
       });
 
-      expect(screen.getByTestId("queue-status")).toHaveTextContent("Queue: 0, Processed: 2");
+      expect(screen.getByTestId("queue-status")).toHaveTextContent(
+        "Queue: 0, Processed: 2",
+      );
     });
   });
 });

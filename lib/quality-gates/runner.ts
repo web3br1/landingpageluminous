@@ -114,21 +114,21 @@ export class QualityGateRunner {
   }
 
   private async runGateWithTimeout(
-    gate: any,
+    gate: unknown,
     prData: PRData,
     startTime: number,
   ): Promise<GateResult> {
     return new Promise((resolve) => {
       const timeout = setTimeout(() => {
         resolve({
-          gate: gate.id,
-          name: gate.name,
+          gate: getGateProperty(gate, 'id', 'unknown'),
+          name: getGateProperty(gate, 'name', 'Unknown Gate'),
           success: false,
           duration: Date.now() - startTime,
-          error: `Timeout after ${gate.timeout}ms`,
-          required: gate.required,
+          error: `Timeout after ${getGateProperty(gate, 'timeout', 30000)}ms`,
+          required: getGateProperty(gate, 'required', true),
         });
-      }, gate.timeout);
+      }, getGateProperty(gate, 'timeout', 30000));
 
       gate
         .run(prData)
@@ -142,12 +142,12 @@ export class QualityGateRunner {
         .catch((error: Error) => {
           clearTimeout(timeout);
           resolve({
-            gate: gate.id,
-            name: gate.name,
+            gate: getGateProperty(gate, 'id', 'unknown'),
+            name: getGateProperty(gate, 'name', 'Unknown Gate'),
             success: false,
             duration: Date.now() - startTime,
             error: error.message,
-            required: gate.required,
+            required: getGateProperty(gate, 'required', true),
           });
         });
     });
@@ -234,4 +234,12 @@ export class QualityGateRunner {
       security: getScore("security"),
     };
   }
+}
+
+function getGateProperty<T>(gate: unknown, property: string, defaultValue: T): T {
+  if (gate && typeof gate === 'object' && property in gate) {
+    const value = (gate as Record<string, unknown>)[property];
+    return (typeof value === typeof defaultValue ? value : defaultValue) as T;
+  }
+  return defaultValue;
 }

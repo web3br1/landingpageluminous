@@ -439,7 +439,7 @@ export const metrics = MetricsFactory.getMetrics();
 
 // ===== UTILITY FUNCTIONS =====
 
-export function withMetrics<T extends any[], R>(
+export function withMetrics<T extends unknown[], R>(
   operation: string,
   fn: (...args: T) => R,
   labels: Record<string, string> = {},
@@ -462,7 +462,7 @@ export function withMetrics<T extends any[], R>(
   };
 }
 
-export async function withMetricsAsync<T extends any[], R>(
+export async function withMetricsAsync<T extends unknown[], R>(
   operation: string,
   fn: (...args: T) => Promise<R>,
   args: T,

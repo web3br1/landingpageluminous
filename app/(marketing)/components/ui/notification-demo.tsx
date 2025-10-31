@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CtaButton } from "./cta-button";
+import { CtaButton } from "./cta-button-unified";
 import { notify } from "@/lib/notifications";
 import { useErrorHandler } from "@/lib/error-handling";
 

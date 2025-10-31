@@ -8,7 +8,7 @@ export const revalidate = 3600;
 // Generate metadata dynamically from composition
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const composition = await composePageFull("demo", undefined, { flags: {} });
+    const composition = await composePageFull("demo", undefined);
 
     if (!composition?.metadata) {
       return {
@@ -39,7 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Demo() {
   try {
     // Compose page content asynchronously with demo data
-    const composition = await composePageFull("demo", undefined, { flags: {} });
+    const composition = await composePageFull("demo", undefined);
 
     if (!composition) {
       return <div>Error: No composition available</div>;

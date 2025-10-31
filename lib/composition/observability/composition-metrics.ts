@@ -17,7 +17,7 @@ export class CompositionMetrics {
 
   recordPageCompositionStart(
     pageType: PageType,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ) {
     metrics.incrementCounter("page_composition_started_total", 1, {
       page_type: pageType,
@@ -254,7 +254,7 @@ export const compositionMetrics = CompositionMetrics.getInstance();
 
 // ===== UTILITY FUNCTIONS =====
 
-export function withCompositionMetrics<T extends any[], R>(
+export function withCompositionMetrics<T extends unknown[], R>(
   operation: string,
   sectionId: SectionId,
   pageType: PageType,
@@ -290,7 +290,7 @@ export function withCompositionMetrics<T extends any[], R>(
   };
 }
 
-export async function withCompositionMetricsAsync<T extends any[], R>(
+export async function withCompositionMetricsAsync<T extends unknown[], R>(
   operation: string,
   sectionId: SectionId,
   pageType: PageType,

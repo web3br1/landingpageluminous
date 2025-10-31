@@ -12,7 +12,7 @@ import {
   MockPerformance,
   MockError,
   Utils,
-} from "../../test-helpers";
+} from "../../../../tests/__shared__/lib/test-helpers";
 import { Result, isOk } from "@shared/core";
 
 describe("PageCompositionService", () => {
@@ -103,7 +103,7 @@ describe("PageCompositionService", () => {
       mockPerformance.mockTimer(100);
 
       // Mock validation to fail
-      jest.mock("../composer-validation", () => ({
+      jest.mock("../../composer-validation", () => ({
         validatePageComposition: jest.fn().mockReturnValue({
           success: false,
           error: { message: "Validation failed" },
@@ -479,13 +479,13 @@ describe("PageCompositionService", () => {
       mockFallback.mockSuccess();
 
       // Mock validation to fail by making jest.mock work
-      const originalValidate = await import("../composer-validation");
+      const originalValidate = await import("../../composer-validation");
       const mockValidate = vi.fn().mockReturnValue({
         success: false,
         error: { message: "Invalid composition structure" },
       });
 
-      vi.doMock("../composer-validation", () => ({
+      vi.doMock("../../composer-validation", () => ({
         validatePageComposition: mockValidate,
       }));
 
@@ -498,7 +498,7 @@ describe("PageCompositionService", () => {
       expect(mockErrorTracker.captureException).toHaveBeenCalled();
 
       // Restore mock
-      vi.doUnmock("../composer-validation");
+      vi.doUnmock("../../composer-validation");
     });
 
     it("should collect experiments from multiple sections", async () => {

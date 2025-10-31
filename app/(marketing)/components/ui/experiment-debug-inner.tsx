@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 import { flags, type Experiment } from "@/lib/flags";
 import { DEBUG_CONFIG } from "@/lib/hooks/scroll-config";
 import { cn } from "@/lib/utils";
@@ -43,7 +44,7 @@ export function ExperimentDebugInner({ className }: ExperimentDebugProps) {
   };
 
   const handleOutsideClick = (e: React.MouseEvent) => {
-    if (e.target === e.currentTarget) {
+    if (isHTMLElement(e.target) && isHTMLElement(e.currentTarget) && e.target === e.currentTarget) {
       setIsVisible(false);
     }
   };
@@ -208,19 +209,29 @@ export function ExperimentDebugInner({ className }: ExperimentDebugProps) {
                             Distribution:
                           </div>
                           <div className="flex flex-wrap gap-2">
-                            {exp.variants.map((variant: any) => (
-                              <span
-                                key={variant.id}
-                                className={cn(
-                                  "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
-                                  variant.id === exp.currentVariant
-                                    ? "bg-primary text-primary-foreground"
-                                    : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
-                                )}
-                              >
-                                {variant.name} ({variant.weight}%)
-                              </span>
-                            ))}
+                            {exp.variants.map((variant: unknown) => {
+                              if (typeof variant !== 'object' || variant === null || !('id' in variant) || !('name' in variant)) {
+                                return null;
+                              }
+                              const v = variant as {
+                                id: string;
+                                name: string;
+                                weight?: number;
+                              };
+                              return (
+                                <span
+                                  key={v.id}
+                                  className={cn(
+                                    "px-2.5 py-1 rounded-md text-xs font-medium transition-colors",
+                                    v.id === exp.currentVariant
+                                      ? "bg-primary text-primary-foreground"
+                                      : "bg-neutral-100 text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300",
+                                  )}
+                                >
+                                  {v.name}
+                                </span>
+                              );
+                            })}
                           </div>
                         </div>
                       </motion.div>

@@ -1,0 +1,82 @@
+name: 🔍 Quality Audit - Integrations & Unused Code
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  push:
+    branches: [ main ]
+  schedule:
+    # Executa diariamente às 6:00 UTC (3:00 BRT)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: ⚙️ Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: 📦 Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: 🔍 Run Quality Audit
+      id: audit
+      run: |
+        node scripts/audit-integrations-and-unused.mjs
+      continue-on-error: true
+
+    - name: 📊 Upload audit results
+      uses: actions/upload-artifact@v4
+      with:
+        name: quality-audit-results
+        path: |
+          quality-history/
+        retention-days: 30
+
+    - name: 💬 Comment PR with audit summary
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const path = require('path');
+
+          // Encontrar o relatório executivo mais recente
+          const reportDir = 'quality-history';
+          const files = fs.readdirSync(reportDir).filter(f => f.endsWith('-executive-summary.md'));
+          const latestReport = files.sort().reverse()[0];
+
+          if (latestReport) {
+            const reportPath = path.join(reportDir, latestReport);
+            const summary = fs.readFileSync(reportPath, 'utf8');
+
+            // Postar comentário no PR
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🔍 Quality Audit Results\n\n${summary}`
+            });
+          }
+
+    - name: 🚨 Fail on critical issues
+      if: steps.audit.outcome == 'failure'
+      run: |
+        echo "❌ Pull request blocked due to critical quality issues."
+        echo "Please review the audit results above and fix critical issues before merging."
+        exit 1
+
+    - name: 📈 Update quality metrics
+      if: always()
+      run: |
+        # Aqui você pode integrar com ferramentas de observabilidade
+        # como DataDog, New Relic, ou dashboards customizados
+        echo "Quality metrics updated for monitoring"

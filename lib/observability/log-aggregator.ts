@@ -21,7 +21,7 @@ export interface LogEntry {
   sessionId?: string;
   traceId?: string;
   spanId?: string;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
   environment: string;
   version: string;
   hostname: string;
@@ -141,7 +141,7 @@ export class LogAggregator {
     level: LogLevel,
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     error?: Error,
   ): void {
     // Check if level should be logged
@@ -543,7 +543,7 @@ export class EnhancedLogger {
   trace(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
   ): void {
     this.aggregator.log(LogLevel.TRACE, message, component, {
       ...CorrelationContext.getAll(),
@@ -554,7 +554,7 @@ export class EnhancedLogger {
   debug(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
   ): void {
     this.aggregator.log(LogLevel.DEBUG, message, component, {
       ...CorrelationContext.getAll(),
@@ -565,7 +565,7 @@ export class EnhancedLogger {
   info(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
   ): void {
     this.aggregator.log(LogLevel.INFO, message, component, {
       ...CorrelationContext.getAll(),
@@ -576,7 +576,7 @@ export class EnhancedLogger {
   warn(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     error?: Error,
   ): void {
     this.aggregator.log(
@@ -594,7 +594,7 @@ export class EnhancedLogger {
   error(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     error?: Error,
   ): void {
     this.aggregator.log(
@@ -612,7 +612,7 @@ export class EnhancedLogger {
   fatal(
     message: string,
     component: string,
-    metadata: Record<string, any> = {},
+    metadata: Record<string, unknown> = {},
     error?: Error,
   ): void {
     this.aggregator.log(
@@ -631,38 +631,47 @@ export class EnhancedLogger {
    * Create child logger with fixed component
    */
   child(component: string): {
-    trace: (message: string, metadata?: Record<string, any>) => void;
-    debug: (message: string, metadata?: Record<string, any>) => void;
-    info: (message: string, metadata?: Record<string, any>) => void;
+    trace: (message: string, metadata?: Record<string, unknown>) => void;
+    debug: (message: string, metadata?: Record<string, unknown>) => void;
+    info: (message: string, metadata?: Record<string, unknown>) => void;
     warn: (
       message: string,
-      metadata?: Record<string, any>,
+      metadata?: Record<string, unknown>,
       error?: Error,
     ) => void;
     error: (
       message: string,
-      metadata?: Record<string, any>,
+      metadata?: Record<string, unknown>,
       error?: Error,
     ) => void;
     fatal: (
       message: string,
-      metadata?: Record<string, any>,
+      metadata?: Record<string, unknown>,
       error?: Error,
     ) => void;
   } {
     return {
-      trace: (message: string, metadata?: Record<string, any>) =>
+      trace: (message: string, metadata?: Record<string, unknown>) =>
         this.trace(message, component, metadata),
-      debug: (message: string, metadata?: Record<string, any>) =>
+      debug: (message: string, metadata?: Record<string, unknown>) =>
         this.debug(message, component, metadata),
-      info: (message: string, metadata?: Record<string, any>) =>
+      info: (message: string, metadata?: Record<string, unknown>) =>
         this.info(message, component, metadata),
-      warn: (message: string, metadata?: Record<string, any>, error?: Error) =>
-        this.warn(message, component, metadata, error),
-      error: (message: string, metadata?: Record<string, any>, error?: Error) =>
-        this.error(message, component, metadata, error),
-      fatal: (message: string, metadata?: Record<string, any>, error?: Error) =>
-        this.fatal(message, component, metadata, error),
+      warn: (
+        message: string,
+        metadata?: Record<string, unknown>,
+        error?: Error,
+      ) => this.warn(message, component, metadata, error),
+      error: (
+        message: string,
+        metadata?: Record<string, unknown>,
+        error?: Error,
+      ) => this.error(message, component, metadata, error),
+      fatal: (
+        message: string,
+        metadata?: Record<string, unknown>,
+        error?: Error,
+      ) => this.fatal(message, component, metadata, error),
     };
   }
 }

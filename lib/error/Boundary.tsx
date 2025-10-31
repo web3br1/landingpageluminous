@@ -3,7 +3,7 @@ import { Component, ReactNode } from "react";
 interface BoundaryProps {
   children: ReactNode;
   fallback?: (error: Error, retry: () => void) => ReactNode;
-  onError?: (error: Error, errorInfo: any) => void;
+  onError?: (error: Error, errorInfo: unknown) => void;
   maxRetries?: number;
 }
 
@@ -11,7 +11,7 @@ interface BoundaryState {
   hasError: boolean;
   error: Error | null;
   retryCount: number;
-  errorInfo: any;
+  errorInfo: unknown;
 }
 
 export class Boundary extends Component<BoundaryProps, BoundaryState> {
@@ -32,7 +32,7 @@ export class Boundary extends Component<BoundaryProps, BoundaryState> {
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: unknown) {
     const { onError } = this.props;
 
     this.setState({

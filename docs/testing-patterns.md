@@ -256,7 +256,7 @@ Imports espalhados em múltiplas bibliotecas (`@testing-library/react`, `vitest`
 // ❌ Antes: Múltiplas fontes de import
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
-import { setupBrowserAPIs } from "@/lib/test-utils";
+import { setupBrowserAPIs } from "@/lib/test/test-utils";
 
 // ✅ Agora: Uma fonte centralizada
 import {
@@ -266,7 +266,7 @@ import {
   render,
   screen,
   setupBrowserAPIs,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 ```
 
 #### **Benefícios:**

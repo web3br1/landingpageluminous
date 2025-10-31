@@ -5,7 +5,7 @@ import { vi } from "vitest";
 // Configuração de timeout para testes de hooks (animações e observadores)
 vi.setConfig({ testTimeout: 15000 }); // 15 segundos para hooks complexos
 import { useScrollConfig } from "@/lib/hooks/use-scroll-config";
-import { setupBrowserAPIs } from "@/lib/test-utils";
+import { setupBrowserAPIs } from "@/lib/test/test-utils";
 
 // Setup comprehensive browser API mocks for all hook tests
 // ✅ Resolvido: APIs Browser - Uma chamada resolve todos os mocks necessários

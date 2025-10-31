@@ -7,11 +7,23 @@ import {
   useResilientMutation,
 } from "@/lib/network/use-resilient-fetch";
 
+// ===== API RESPONSE TYPES =====
+
+export interface EdgePersonalizationApiResponse {
+  success: boolean;
+  data?: EdgePersonalizationData;
+  error?: string;
+  cached: boolean;
+  timestamp: number;
+  processingTime: number;
+  version: string;
+}
+
 // Types for edge personalization
 interface EdgePersonalizationData {
   userId: string;
   segments: string[];
-  content: Record<string, any>;
+  content: Record<string, unknown>;
   experiments: Record<string, string>;
   geo: {
     country: string;
@@ -67,7 +79,22 @@ export function useEdgePersonalization(
           throw new Error(`Edge personalization failed: ${response.status}`);
         }
 
-        personalizationData = await response.json();
+        let apiResponse: EdgePersonalizationApiResponse;
+        try {
+          apiResponse = await response.json();
+        } catch (parseError) {
+          console.warn("Failed to parse personalization response:", parseError);
+          personalizationData = null;
+          return;
+        }
+
+        if (!apiResponse.success || !apiResponse.data) {
+          console.warn("Personalization API returned error:", apiResponse.error);
+          personalizationData = null;
+          return;
+        }
+
+        personalizationData = apiResponse.data;
 
         // Cache the result
         if (enableCache && personalizationData) {
@@ -137,7 +164,7 @@ export function useEdgePersonalization(
 
   const updatePersonalizationWrapper = async (
     action: string,
-    updateData: any,
+    updateData: unknown,
   ) => {
     return await updatePersonalization({
       userId: data?.userId || "anonymous",

@@ -4,6 +4,36 @@
 import { useEffect, useRef, useState } from "react";
 import { getPerformanceCircuitBreaker } from "./use-performance-circuit-breaker";
 
+// ===== TYPES =====
+
+export interface CircuitBreakerStats {
+  // Circuit state
+  state: "closed" | "open" | "half-open";
+  isTripped: boolean;
+  lastTripTime?: number;
+  lastResetTime?: number;
+
+  // Performance metrics
+  failureCount: number;
+  successCount: number;
+  totalRequests: number;
+  failureRate: number;
+
+  // Resource usage
+  activeTimers: number;
+  activeEventListeners: number;
+  memoryUsage: number;
+
+  // Timing
+  lastCheckTime: number;
+  cooldownRemaining?: number;
+  nextRetryTime?: number;
+
+  // Performance score
+  performanceScore: number;
+  isHealthy: boolean;
+}
+
 interface ComponentCircuitBreakerConfig {
   componentName: string;
   maxTimers: number; // Max concurrent timers per component
@@ -114,10 +144,10 @@ class ComponentCircuitBreaker {
     if (
       this.config.maxMemoryUsage &&
       typeof performance !== "undefined" &&
-      (performance as any).memory
+      (performance as unknown).memory
     ) {
       const memoryMB =
-        (performance as any).memory.usedJSHeapSize / (1024 * 1024);
+        (performance as unknown).memory.usedJSHeapSize / (1024 * 1024);
       if (memoryMB > this.config.maxMemoryUsage) {
         console.warn(
           `[ComponentCircuitBreaker:${this.config.componentName}] Memory usage too high (${memoryMB.toFixed(2)}MB), tripping circuit`,
@@ -232,7 +262,7 @@ export function useComponentCircuitBreaker(
   config?: Partial<ComponentCircuitBreakerConfig>,
 ) {
   const circuitBreakerRef = useRef<ComponentCircuitBreaker | null>(null);
-  const [stats, setStats] = useState<any>(null);
+  const [stats, setStats] = useState<CircuitBreakerStats | null>(null);
 
   useEffect(() => {
     circuitBreakerRef.current = getComponentCircuitBreaker(

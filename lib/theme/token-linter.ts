@@ -170,8 +170,8 @@ export function validateTokenContrast(theme: ThemePack): ContrastIssue[] {
 // Breaking change detection
 export interface BreakingChange {
   field: string;
-  oldValue: any;
-  newValue: any;
+  oldValue: unknown;
+  newValue: unknown;
   impact: "low" | "medium" | "high";
   description: string;
 }

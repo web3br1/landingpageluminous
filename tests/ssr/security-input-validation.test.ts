@@ -18,7 +18,7 @@ describe("Security Input Validation SSR", () => {
 
     it("deve sanitizar email", () => {
       const email = "user@example.com";
-      const sanitized = InputSanitizer.sanitizeEmail(email);
+      const sanitized = await InputSanitizer.sanitizeEmail(email);
       expect(sanitized).toBe(email);
     });
   });

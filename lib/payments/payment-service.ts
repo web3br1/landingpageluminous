@@ -54,7 +54,7 @@ export class UnifiedPaymentService {
       phone?: string;
     },
     paymentMethod: "card" | "pix" | "boleto",
-    paymentData?: any,
+    paymentData?: unknown,
     metadata?: Record<string, string>,
   ): Promise<Result<UnifiedPaymentIntent, PaymentError>> {
     const provider = this.getProvider(currency);
@@ -111,7 +111,7 @@ export class UnifiedPaymentService {
     },
     planId: string,
     paymentMethodId: string,
-    paymentData: any,
+    paymentData: unknown,
     couponCode?: string,
     currency: string = "BRL",
   ): Promise<Result<UnifiedSubscription, PaymentError>> {
@@ -224,7 +224,7 @@ export class UnifiedPaymentService {
   async validateCoupon(
     couponCode: string,
     provider: PaymentProvider,
-  ): Promise<Result<any, PaymentError>> {
+  ): Promise<Result<unknown, PaymentError>> {
     if (provider === "stripe") {
       return this.stripeService.validateCoupon(couponCode);
     } else {

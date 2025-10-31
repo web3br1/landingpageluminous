@@ -19,11 +19,16 @@ test.describe("Stable E2E Journeys", () => {
       await expect(page.locator("body")).toBeVisible();
 
       // Verificar elementos essenciais do hero
-      const heroSection = page.locator("[data-testid='hero-section'], section:first-child, [id='hero']");
+      const heroSection = page.locator(
+        "[data-testid='hero-section'], section:first-child, [id='hero']",
+      );
       await expect(heroSection).toBeVisible();
 
       // Interagir com CTA primário se existir
-      const primaryCTA = page.locator("button, a").filter({ hasText: /comece|start|trial|get/i }).first();
+      const primaryCTA = page
+        .locator("button, a")
+        .filter({ hasText: /comece|start|trial|get/i })
+        .first();
       if (await primaryCTA.isVisible()) {
         await primaryCTA.click();
 
@@ -33,8 +38,12 @@ test.describe("Stable E2E Journeys", () => {
 
       // Verificar seções principais estão presentes
       const mainSections = [
-        page.locator("[data-testid='features-section'], #features, section").filter({ hasText: /features|funcionalidades/i }),
-        page.locator("[data-testid='pricing-section'], #pricing, section").filter({ hasText: /pricing|preços|planos/i }),
+        page
+          .locator("[data-testid='features-section'], #features, section")
+          .filter({ hasText: /features|funcionalidades/i }),
+        page
+          .locator("[data-testid='pricing-section'], #pricing, section")
+          .filter({ hasText: /pricing|preços|planos/i }),
       ];
 
       for (const section of mainSections) {
@@ -67,7 +76,9 @@ test.describe("Stable E2E Journeys", () => {
       await expect(page.locator("body")).toBeVisible();
 
       // Verificar se error boundaries estão funcionando
-      const errorBoundaries = page.locator("[data-testid='error-boundary'], .error-boundary");
+      const errorBoundaries = page.locator(
+        "[data-testid='error-boundary'], .error-boundary",
+      );
       const errorCount = await errorBoundaries.count();
 
       // Se houver erros, verificar que são tratados
@@ -77,7 +88,9 @@ test.describe("Stable E2E Journeys", () => {
           await expect(boundary).toBeVisible();
 
           // Verificar se há botão de retry
-          const retryButton = boundary.locator("button").filter({ hasText: /retry|tentar|tente/i });
+          const retryButton = boundary
+            .locator("button")
+            .filter({ hasText: /retry|tentar|tente/i });
           if (await retryButton.isVisible()) {
             await retryButton.click();
             // Verificar que não quebrou completamente
@@ -88,7 +101,7 @@ test.describe("Stable E2E Journeys", () => {
 
       // Testar navegação mesmo com possíveis erros
       const navigationElements = page.locator("a, button").filter({
-        hasText: /pricing|preços|features|funcionalidades|about|sobre/i
+        hasText: /pricing|preços|features|funcionalidades|about|sobre/i,
       });
 
       const navCount = await navigationElements.count();
@@ -125,7 +138,7 @@ test.describe("Stable E2E Journeys", () => {
           await route.abort();
         } else if (requestCount % 5 === 0) {
           // Simular timeout
-          await new Promise(resolve => setTimeout(resolve, 10000)); // Timeout
+          await new Promise((resolve) => setTimeout(resolve, 10000)); // Timeout
           await route.fulfill({
             status: 408,
             contentType: "application/json",
@@ -147,8 +160,12 @@ test.describe("Stable E2E Journeys", () => {
       await expect(page).not.toHaveTitle(/error|erro|failed/i);
 
       // Verificar se há indicadores de loading ou retry
-      const loadingElements = page.locator("[data-testid='loading'], .loading, .spinner");
-      const retryElements = page.locator("button").filter({ hasText: /retry|tentar|reload/i });
+      const loadingElements = page.locator(
+        "[data-testid='loading'], .loading, .spinner",
+      );
+      const retryElements = page
+        .locator("button")
+        .filter({ hasText: /retry|tentar|reload/i });
 
       // Se há loading, deve eventualmente resolver ou mostrar opção de retry
       if (await loadingElements.isVisible()) {
@@ -165,11 +182,15 @@ test.describe("Stable E2E Journeys", () => {
         await expect(page.locator("body")).toBeVisible();
 
         // Verificação básica de funcionalidade
-        const heroExists = await page.locator("[data-testid='hero-section'], #hero, section:first-child").isVisible();
+        const heroExists = await page
+          .locator("[data-testid='hero-section'], #hero, section:first-child")
+          .isVisible();
         expect(heroExists).toBe(true);
 
         // Pequena interação para testar estabilidade
-        const interactiveElements = page.locator("button, a").filter({ hasText: /learn|more|see|view/i });
+        const interactiveElements = page
+          .locator("button, a")
+          .filter({ hasText: /learn|more|see|view/i });
         if (await interactiveElements.isVisible()) {
           await interactiveElements.first().click();
           await expect(page.locator("body")).toBeVisible();

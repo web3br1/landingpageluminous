@@ -34,9 +34,8 @@ export const staticAnalysisGate: QualityGate = {
           stdio: "pipe",
           timeout: 60000,
         });
-      } catch (error: any) {
-        const output =
-          error.stdout?.toString() || error.stderr?.toString() || "";
+      } catch (error: unknown) {
+        const output = getCommandOutput(error);
         const errorCount = (output.match(/error/g) || []).length;
 
         return {
@@ -61,9 +60,8 @@ export const staticAnalysisGate: QualityGate = {
           stdio: "pipe",
           timeout: 60000,
         });
-      } catch (error: any) {
-        const output =
-          error.stdout?.toString() || error.stderr?.toString() || "";
+      } catch (error: unknown) {
+        const output = getCommandOutput(error);
 
         let eslintResults;
         try {
@@ -73,11 +71,11 @@ export const staticAnalysisGate: QualityGate = {
         }
 
         const errorCount = eslintResults.reduce(
-          (sum: number, file: any) => sum + (file.errorCount || 0),
+          (sum: number, file: unknown) => sum + (file.errorCount || 0),
           0,
         );
         const warningCount = eslintResults.reduce(
-          (sum: number, file: any) => sum + (file.warningCount || 0),
+          (sum: number, file: unknown) => sum + (file.warningCount || 0),
           0,
         );
 
@@ -168,4 +166,12 @@ async function calculateStaticAnalysisScore(): Promise<number> {
     console.warn("Failed to calculate static analysis score:", error);
     return 75; // Default good score
   }
+}
+
+function getCommandOutput(error: unknown): string {
+  if (error && typeof error === 'object' && 'stdout' in error) {
+    const err = error as { stdout?: unknown; stderr?: unknown };
+    return (err.stdout as string)?.toString() || (err.stderr as string)?.toString() || "";
+  }
+  return "";
 }

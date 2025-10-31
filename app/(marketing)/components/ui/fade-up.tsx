@@ -18,22 +18,13 @@ export function FadeUp({
 }: FadeUpProps) {
   const { animations, prefersReducedMotion } = useAnimations();
 
-  // Choose animation based on trigger - default to mount
-  const animationProps =
-    trigger === "mount" ? animations.fadeUp : animations.fadeUp; // Fallback to basic fadeUp
-
   return (
     <motion.div
-      {...animationProps}
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay }}
       className={className}
-      style={
-        delay
-          ? {
-              ...((animationProps?.style as any) || {}),
-              transitionDelay: `${delay}s`,
-            }
-          : animationProps?.style
-      }
     >
       {children}
     </motion.div>

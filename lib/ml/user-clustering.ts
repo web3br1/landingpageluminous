@@ -312,7 +312,7 @@ export const userClustering = new KMeansClustering(5); // 5 clusters by default
 // Utility functions for feature extraction
 export const featureUtils = {
   // Extract features from user profile
-  extractFeatures(userProfile: any, sessionData?: any): UserFeatures {
+  extractFeatures(userProfile: unknown, sessionData?: unknown): UserFeatures {
     const now = new Date();
     const hour = now.getHours();
     const dayOfWeek = now.getDay();

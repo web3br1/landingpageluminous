@@ -21,8 +21,8 @@ export async function composePage(
   const result = await service.composePage(pageType);
 
   if (!result.success) {
-    logger.error("Page composition failed", { pageType, error: result.error });
-    throw new Error(`Page composition failed: ${result.error.message}`);
+    logger.error("Page composition failed", { pageType, error: (result as any).error });
+    throw new Error(`Page composition failed: ${(result as any).error.message}`);
   }
 
   return result.value;
@@ -42,9 +42,9 @@ export function composePageSync(pageType: PageType): PageComposition {
   if (!result.success) {
     logger.error("Sync page composition failed", {
       pageType,
-      error: result.error,
+      error: (result as any).error,
     });
-    throw new Error(`Sync page composition failed: ${result.error.message}`);
+    throw new Error(`Sync page composition failed: ${(result as any).error.message}`);
   }
 
   return result.value;
@@ -123,7 +123,7 @@ export function validateSectionIdInput(
     );
   }
 
-  if (!validIds.includes(sectionId as any)) {
+  if (!validIds.includes(sectionId as SectionId)) {
     throw new Error(`Invalid section id: ${sectionId}`);
   }
 }
@@ -160,10 +160,10 @@ export function getUserSegmentsSafe(): string[] {
 }
 
 // Legacy fallback content - minimal implementation
-function getFallbackContent(sectionId: string): any {
+function getFallbackContent(sectionId: string): unknown {
   logger.warn("Using legacy fallback content", { sectionId });
 
-  const fallbacks: Record<string, any> = {
+  const fallbacks: Record<string, unknown> = {
     hero: {
       content: {
         headline: "Sistema Temporariamente Indisponível",
@@ -204,7 +204,7 @@ function getFallbackContent(sectionId: string): any {
 async function composeSectionContent(
   sectionId: string,
   pageType: string,
-): Promise<any> {
+): Promise<unknown> {
   // This would delegate to content mapper in a full implementation
   // For now, return fallback
   logger.warn("Using legacy section composition", { sectionId, pageType });
@@ -214,11 +214,14 @@ async function composeSectionContent(
 async function composeSectionContentAsync(
   sectionId: string,
   pageType: string,
-): Promise<any> {
+): Promise<unknown> {
   return composeSectionContent(sectionId, pageType);
 }
 
-function composeSectionContentSync(sectionId: string, pageType: string): any {
+function composeSectionContentSync(
+  sectionId: string,
+  pageType: string,
+): unknown {
   logger.warn("Using legacy sync section composition", { sectionId, pageType });
   return getFallbackContent(sectionId);
 }
@@ -252,7 +255,7 @@ function collectExperiments(sections: SectionConfig[]) {
 
 async function createFallbackComposition(
   pageType: PageType,
-  error: any,
+  error: unknown,
 ): Promise<PageComposition> {
   logger.warn("Creating legacy fallback composition", { pageType, error });
 
@@ -268,7 +271,7 @@ async function createFallbackComposition(
 
   return {
     pageType,
-    sections: fallbackSections,
+    sections: fallbackSections as SectionConfig[],
     metadata: {
       title: "Sistema Temporariamente Indisponível",
       description: "Estamos trabalhando para restaurar o serviço.",
@@ -284,7 +287,7 @@ async function createFallbackComposition(
 
 function createFallbackCompositionSync(
   pageType: PageType,
-  error: any,
+  error: unknown,
 ): PageComposition {
   // Sync version of fallback
   logger.warn("Creating legacy sync fallback composition", { pageType, error });
@@ -312,6 +315,6 @@ function createFallbackCompositionSync(
   };
 }
 
-function createMinimalFallbackContent(sectionId: string): any {
+function createMinimalFallbackContent(sectionId: string): unknown {
   return getFallbackContent(sectionId);
 }

@@ -10,7 +10,7 @@ import {
   MockPerformance,
   MockError,
   Utils,
-} from "../../test-helpers";
+} from "../../../../tests/__shared__/lib/test-helpers";
 import { Result, isOk } from "@shared/core";
 
 // Helper function to safely extract values from Result

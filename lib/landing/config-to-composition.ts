@@ -7,9 +7,9 @@ export function toComposition(cfg: LandingPageConfig): PageComposition {
     sections: cfg.sections
       .filter((s) => s.visible)
       .map((s, index) => ({
-        id: s.id as any,
+        id: s.id as unknown,
         component: s.kind,
-        content: s.props as any,
+        content: s.props as unknown,
         order: index,
         enabled: true,
       })),

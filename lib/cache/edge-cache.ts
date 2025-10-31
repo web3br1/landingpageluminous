@@ -1,12 +1,12 @@
 // Edge Cache System for Global Performance
 // Supports multiple cache backends: Vercel KV, Redis, Cloudflare KV
 
-export interface CacheEntry<T = any> {
+export interface CacheEntry<T = unknown> {
   data: T;
   timestamp: number;
   ttl: number;
   tags?: string[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface CacheConfig {
@@ -20,7 +20,7 @@ export interface CacheConfig {
 class EdgeCache {
   private config: CacheConfig;
   private memoryCache = new Map<string, CacheEntry>();
-  private backend: any = null;
+  private backend: unknown = null;
 
   constructor(config: CacheConfig) {
     this.config = config;
@@ -64,7 +64,7 @@ class EdgeCache {
     // Try backend first
     if (this.backend && this.config.backend !== "memory") {
       try {
-        const data = await this.backend.get(namespacedKey);
+        const data = await (this.backend as any).get(namespacedKey);
         if (data) {
           const entry: CacheEntry<T> = JSON.parse(data);
           if (this.isExpired(entry)) {
@@ -81,7 +81,7 @@ class EdgeCache {
     // Fallback to memory cache
     const memoryEntry = this.memoryCache.get(namespacedKey);
     if (memoryEntry && !this.isExpired(memoryEntry)) {
-      return memoryEntry.data;
+      return memoryEntry.data as T;
     }
 
     return null;
@@ -94,7 +94,7 @@ class EdgeCache {
     options: {
       ttl?: number;
       tags?: string[];
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
     } = {},
   ): Promise<void> {
     const ttl = options.ttl || this.config.defaultTtl;
@@ -111,7 +111,7 @@ class EdgeCache {
     // Set in backend
     if (this.backend && this.config.backend !== "memory") {
       try {
-        await this.backend.set(namespacedKey, JSON.stringify(entry), {
+        await (this.backend as any).set(namespacedKey, JSON.stringify(entry), {
           ex: ttl,
         });
       } catch (error) {
@@ -137,7 +137,7 @@ class EdgeCache {
 
     if (this.backend && this.config.backend !== "memory") {
       try {
-        await this.backend.del(namespacedKey);
+        await (this.backend as any).del(namespacedKey);
       } catch (error) {
         console.warn("Cache backend delete error:", error);
       }
@@ -171,7 +171,7 @@ class EdgeCache {
     options: {
       ttl?: number;
       tags?: string[];
-      metadata?: Record<string, any>;
+      metadata?: Record<string, unknown>;
     } = {},
   ): Promise<T> {
     let data = await this.get<T>(key);
@@ -239,7 +239,7 @@ class EdgeCache {
 const defaultConfig: CacheConfig = {
   defaultTtl: 300, // 5 minutes
   maxEntries: 1000,
-  backend: (process.env.CACHE_BACKEND as any) || "memory",
+  backend: (process.env.CACHE_BACKEND as "memory" | "redis" | "vercel-kv" | "cloudflare-kv") || "memory",
   connectionString: process.env.REDIS_URL || process.env.KV_URL,
   namespace: process.env.CACHE_NAMESPACE || "luminaris",
 };
@@ -252,7 +252,7 @@ export const cacheUtils = {
   getUserPersonalization: (userId: string) =>
     edgeCache.get(`user:${userId}:personalization`),
 
-  setUserPersonalization: (userId: string, data: any, ttl = 1800) =>
+  setUserPersonalization: (userId: string, data: unknown, ttl = 1800) =>
     edgeCache.set(`user:${userId}:personalization`, data, {
       ttl,
       tags: ["user", "personalization"],
@@ -264,7 +264,7 @@ export const cacheUtils = {
 
   setPageContent: (
     pageKey: string,
-    content: any,
+    content: unknown,
     variant?: string,
     ttl = 3600,
   ) =>
@@ -295,7 +295,7 @@ export const cacheUtils = {
   setGeoContent: (
     country: string,
     contentKey: string,
-    content: any,
+    content: unknown,
     ttl = 7200,
   ) =>
     edgeCache.set(`geo:${country}:${contentKey}`, content, {

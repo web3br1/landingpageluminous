@@ -14,24 +14,24 @@ describe("SSR Safety Corrections Validation", () => {
   });
 
   describe("Theme Utils Functions", () => {
-    it("getSystemTheme should not crash in SSR", () => {
-      const { getSystemTheme } = require("../../lib/theme/theme-utils");
+    it("getSystemTheme should not crash in SSR", async () => {
+      const { getSystemTheme } = await import("../../lib/theme/theme-utils");
 
       // Should return fallback value without crashing
       const result = getSystemTheme();
       expect(result).toBe("light");
     });
 
-    it("getStoredTheme should not crash in SSR", () => {
-      const { getStoredTheme } = require("../../lib/theme/theme-utils");
+    it("getStoredTheme should not crash in SSR", async () => {
+      const { getStoredTheme } = await import("../../lib/theme/theme-utils");
 
       // Should return null without crashing
       const result = getStoredTheme();
       expect(result).toBeNull();
     });
 
-    it("applyTheme should not crash in SSR", () => {
-      const { applyTheme } = require("../../lib/theme/theme-utils");
+    it("applyTheme should not crash in SSR", async () => {
+      const { applyTheme } = await import("../../lib/theme/theme-utils");
 
       // Should not throw any errors
       expect(() => {
@@ -39,8 +39,8 @@ describe("SSR Safety Corrections Validation", () => {
       }).not.toThrow();
     });
 
-    it("setTheme should not crash in SSR", () => {
-      const { setTheme } = require("../../lib/theme/theme-utils");
+    it("setTheme should not crash in SSR", async () => {
+      const { setTheme } = await import("../../lib/theme/theme-utils");
 
       // Should not throw any errors
       expect(() => {
@@ -50,42 +50,60 @@ describe("SSR Safety Corrections Validation", () => {
   });
 
   describe("Analytics Hooks", () => {
-    it("useScrollTracking should not crash when imported", () => {
-      const { useScrollTracking } = require("../../lib/hooks/use-analytics");
+    it("useAnalytics should not crash when imported", async () => {
+      const {
+        useAnalytics,
+      } = await import("../../lib/analytics/use-analytics.tsx");
 
       // Should be a function without throwing
-      expect(typeof useScrollTracking).toBe("function");
+      expect(typeof useAnalytics).toBe("function");
     });
 
-    it("useSectionTracking should not crash when imported", () => {
-      const { useSectionTracking } = require("../../lib/hooks/use-analytics");
+    it("useCTATracking should not crash when imported", async () => {
+      const { useCTATracking } = await import("../../lib/analytics/use-analytics.tsx");
 
       // Should be a function without throwing
-      expect(typeof useSectionTracking).toBe("function");
+      expect(typeof useCTATracking).toBe("function");
     });
   });
 
   describe("Browser Storage Utils", () => {
-    it("readLocalStorage should handle errors gracefully", () => {
-      const { readLocalStorage } = require("../../lib/utils/browser-storage");
+    it("readLocalStorage should handle errors gracefully", async () => {
+      // Temporarily mock window as undefined to simulate SSR
+      const originalWindow = global.window;
+      // @ts-ignore
+      delete global.window;
+
+      const { readLocalStorage } = await import("../../lib/utils/browser-storage");
 
       // Should not crash even if localStorage is not available
       const result = readLocalStorage("test-key");
       expect(result).toBeNull();
+
+      // Restore window
+      global.window = originalWindow;
     });
 
-    it("writeLocalStorage should handle errors gracefully", () => {
-      const { writeLocalStorage } = require("../../lib/utils/browser-storage");
+    it("writeLocalStorage should handle errors gracefully", async () => {
+      // Temporarily mock window as undefined to simulate SSR
+      const originalWindow = global.window;
+      // @ts-ignore
+      delete global.window;
+
+      const { writeLocalStorage } = await import("../../lib/utils/browser-storage");
 
       // Should not crash even if localStorage is not available
       const result = writeLocalStorage("test-key", "test-value");
       expect(result).toBe(false);
+
+      // Restore window
+      global.window = originalWindow;
     });
 
-    it("safeBrowserAPI should handle SSR gracefully", () => {
-      const { safeBrowserAPI } = require("../../lib/utils/browser-storage");
+    it("safeBrowserAPI should handle SSR gracefully", async () => {
+      const { safeBrowserAPI } = await import("../../lib/utils/browser-storage");
 
-      // Should return fallback in SSR
+      // Should return fallback in SSR when API throws
       const result = safeBrowserAPI(() => {
         throw new Error("SSR environment");
       }, "fallback");
@@ -94,26 +112,30 @@ describe("SSR Safety Corrections Validation", () => {
   });
 
   describe("SSR Safe Hook Imports", () => {
-    it("useSSRSafe hook should be importable", () => {
-      const { useSSRSafe } = require("../../lib/hooks/use-ssr-safe");
+    it("useSSRSafe hook should be importable", async () => {
+      const { useSSRSafe } = await import("../../lib/hooks/use-ssr-safe");
 
       expect(typeof useSSRSafe).toBe("function");
     });
 
-    it("useSSRSafeEventListener hook should be importable", () => {
-      const { useSSRSafeEventListener } = require("../../lib/hooks/use-ssr-safe");
+    it("useSSRSafeEventListener hook should be importable", async () => {
+      const {
+        useSSRSafeEventListener,
+      } = await import("../../lib/hooks/use-ssr-safe");
 
       expect(typeof useSSRSafeEventListener).toBe("function");
     });
   });
 
   describe("Performance Monitor", () => {
-    it("getMemoryUsage should not crash in SSR", () => {
-      const { getMemoryUsage } = require("../../lib/utils/performance-monitor");
+    it("getMemoryUsage should not crash in SSR", async () => {
+      const {
+        getMemoryUsage,
+      } = await import("../../lib/observability/performance-monitor");
 
-      // Should return 0 without crashing
+      // Should return null without crashing
       const result = getMemoryUsage();
-      expect(result).toBe(0);
+      expect(result).toBeNull();
     });
   });
 
@@ -127,12 +149,14 @@ describe("SSR Safety Corrections Validation", () => {
     });
   });
 
-  describe("RUM Analytics", () => {
-    it("useRUM should not crash when imported", async () => {
+  describe("Performance Tracking", () => {
+    it("usePerformanceTracking should not crash when imported", async () => {
       // Use dynamic import for .tsx files with modern syntax
-      const { default: useRUM } = await import("../../lib/monitoring/use-rum.tsx");
+      const { usePerformanceTracking } = await import(
+        "../../lib/analytics/use-analytics.tsx"
+      );
 
-      expect(typeof useRUM).toBe("function");
+      expect(typeof usePerformanceTracking).toBe("function");
     });
   });
 

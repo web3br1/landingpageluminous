@@ -11,7 +11,7 @@ import {
 } from "@jest/globals";
 
 import { SSRAdapter } from "../ssr-adapter";
-import { Factory, Utils } from "../../test-helpers";
+import { Factory, Utils } from "../../../../tests/__shared__/lib/test-helpers";
 
 describe("SSRAdapter", () => {
   let adapter: SSRAdapter;

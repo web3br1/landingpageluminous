@@ -459,10 +459,17 @@ export function MetricsDebugger() {
 
 type PanelKey = "performance" | "composition" | "errors" | "metrics";
 
+export interface VisiblePanels {
+  performance: boolean;
+  composition: boolean;
+  errors: boolean;
+  metrics: boolean;
+}
+
 export function DebugOverlay() {
   const isDev = useDevelopmentMode();
   const [showControls, setShowControls] = useState(true);
-  const [visiblePanels, setVisiblePanels] = useState<Record<PanelKey, boolean>>(
+  const [visiblePanels, setVisiblePanels] = useState<VisiblePanels>(
     {
       performance: true,
       composition: true,
@@ -618,7 +625,7 @@ function DebugControllerPanel({
 
 export const DebugUtils = {
   // Log component render
-  logRender: (componentName: string, props?: any) => {
+  logRender: (componentName: string, props?: unknown) => {
     if (process.env.NODE_ENV === "development") {
       logger.debug(`Component render: ${componentName}`, { props });
     }
@@ -667,7 +674,7 @@ export const DebugUtils = {
   },
 
   // Console table for debugging
-  logTable: (data: any[], title?: string) => {
+  logTable: (data: unknown[], title?: string) => {
     if (process.env.NODE_ENV === "development") {
       if (title) console.log(`📊 ${title}`);
       console.table(data);

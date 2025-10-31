@@ -121,9 +121,9 @@ export function VisualExperimentBuilder({
         />
 
         {/* Property panel - only show when element is selected */}
-        {computed.selectedElement && (
+        {computed.selectedElement && (computed.selectedElement as any).id && (
           <PropertyPanel
-            element={computed.selectedElement}
+            element={computed.selectedElement as any}
             onUpdate={(updates) => {
               if (state.selectedElementId) {
                 actions.updateElement(state.selectedElementId, updates);

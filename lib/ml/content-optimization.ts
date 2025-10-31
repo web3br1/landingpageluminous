@@ -154,7 +154,7 @@ class ContentOptimizer {
       {} as Record<string, ContentPerformance[]>,
     );
 
-    const segmentPerformance: Record<string, any> = {};
+    const segmentPerformance: Record<string, unknown> = {};
 
     Object.entries(segmentGroups).forEach(([segment, segmentData]) => {
       segmentPerformance[segment] = this.calculateAverageMetrics(segmentData);
@@ -176,7 +176,7 @@ class ContentOptimizer {
       {} as Record<string, ContentPerformance[]>,
     );
 
-    const devicePerformance: Record<string, any> = {};
+    const devicePerformance: Record<string, unknown> = {};
 
     Object.entries(deviceGroups).forEach(([device, deviceData]) => {
       devicePerformance[device] = this.calculateAverageMetrics(deviceData);
@@ -188,9 +188,9 @@ class ContentOptimizer {
   // Generate content optimization recommendations
   private generateRecommendations(
     contentId: string,
-    avgMetrics: any,
-    segmentPerformance: Record<string, any>,
-    devicePerformance: Record<string, any>,
+    avgMetrics: unknown,
+    segmentPerformance: Record<string, unknown>,
+    devicePerformance: Record<string, unknown>,
   ): ContentChange[] {
     const recommendations: ContentChange[] = [];
 
@@ -277,9 +277,9 @@ class ContentOptimizer {
 
   // Generate reasoning for optimizations
   private generateReasoning(
-    avgMetrics: any,
-    segmentPerformance: Record<string, any>,
-    devicePerformance: Record<string, any>,
+    avgMetrics: unknown,
+    segmentPerformance: Record<string, unknown>,
+    devicePerformance: Record<string, unknown>,
   ): string[] {
     const reasoning: string[] = [];
 
@@ -320,9 +320,9 @@ class ContentOptimizer {
   getContentInsights(contentId?: string): {
     topPerforming: ContentPerformance[];
     worstPerforming: ContentPerformance[];
-    segmentBreakdown: Record<string, any>;
-    deviceBreakdown: Record<string, any>;
-    trends: any[];
+    segmentBreakdown: Record<string, unknown>;
+    deviceBreakdown: Record<string, unknown>;
+    trends: unknown[];
   } {
     let data = this.performanceData;
 
@@ -367,7 +367,7 @@ class ContentOptimizer {
   }
 
   // Calculate performance trends
-  private calculateTrends(data: ContentPerformance[]): any[] {
+  private calculateTrends(data: ContentPerformance[]): unknown[] {
     if (data.length < 7) return [];
 
     // Group by day

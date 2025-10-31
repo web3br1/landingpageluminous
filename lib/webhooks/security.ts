@@ -268,13 +268,13 @@ export class WebhookAuditLogger {
   logRequest(
     input: WebhookEventInput,
     action: "received" | "accepted" | "rejected" | "rate_limited" | "error",
-    details?: any,
+    details?: unknown,
   ): void {
     const shouldLog = this.shouldLog(action);
 
     if (!shouldLog) return;
 
-    const logData: any = {
+    const logData: unknown = {
       action,
       provider: input.provider,
       timestamp: new Date().toISOString(),
@@ -314,9 +314,9 @@ export class WebhookAuditLogger {
   logProcessing(
     event: WebhookEvent,
     action: "started" | "completed" | "failed" | "retried" | "dead_letter",
-    details?: any,
+    details?: unknown,
   ): void {
-    const logData: any = {
+    const logData: unknown = {
       action,
       eventId: event.id,
       eventType: event.eventType,
@@ -378,7 +378,7 @@ export class WebhookAuditLogger {
   /**
    * Sanitize details object
    */
-  private sanitizeDetails(details: any): any {
+  private sanitizeDetails(details: unknown): unknown {
     if (!details || typeof details !== "object") return details;
 
     const sanitized = { ...details };
@@ -514,7 +514,7 @@ export class WebhookSecurityManager {
   logProcessing(
     event: WebhookEvent,
     action: "started" | "completed" | "failed" | "retried" | "dead_letter",
-    details?: any,
+    details?: unknown,
   ): void {
     this.auditLogger.logProcessing(event, action, details);
   }

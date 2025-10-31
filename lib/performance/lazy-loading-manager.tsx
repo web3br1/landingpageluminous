@@ -8,6 +8,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+import { safeNavigatorConnection, safeNavigatorBattery } from "../utils/browser-api-helpers";
 
 // Custom useInView hook to replace react-intersection-observer
 function useInView(
@@ -43,9 +44,9 @@ function useInView(
 }
 
 interface LazyComponentConfig {
-  component: () => Promise<{ default: React.ComponentType<any> }>;
+  component: () => Promise<{ default: React.ComponentType<unknown> }>;
   priority: "critical" | "high" | "medium" | "low";
-  fallback?: React.ComponentType<any>;
+  fallback?: React.ComponentType<unknown>;
   ssr?: boolean;
   preload?: boolean;
   loadCondition?: () => boolean;
@@ -68,7 +69,7 @@ interface LazyLoadMetrics {
 
 // Global lazy loading registry
 const lazyRegistry = new Map<string, LazyComponentConfig>();
-const loadQueue = new Map<string, Promise<any>>();
+const loadQueue = new Map<string, Promise<unknown>>();
 const loadMetrics = new Map<string, LazyLoadMetrics>();
 
 // Priority-based loading queue
@@ -76,12 +77,12 @@ class LazyLoadQueue {
   private queue: Array<{
     id: string;
     priority: number;
-    loadFn: () => Promise<any>;
+    loadFn: () => Promise<unknown>;
   }> = [];
   private loading = new Set<string>();
   private maxConcurrent = 3;
 
-  enqueue(id: string, priority: number, loadFn: () => Promise<any>) {
+  enqueue(id: string, priority: number, loadFn: () => Promise<unknown>) {
     this.queue.push({ id, priority, loadFn });
     this.queue.sort((a, b) => b.priority - a.priority); // Higher priority first
     this.processQueue();
@@ -133,7 +134,7 @@ class LazyLoadQueue {
 const loadQueueManager = new LazyLoadQueue();
 
 // Hook for lazy loading with priority management
-export function useLazyComponent<T extends React.ComponentType<any>>(
+export function useLazyComponent<T extends React.ComponentType<unknown>>(
   componentId: string,
   config: LazyComponentConfig,
 ): {
@@ -247,10 +248,8 @@ export function useSmartLazyLoading(
   useEffect(() => {
     // Detect device capabilities
     const checkCapabilities = async () => {
-      const connection = (navigator as any).connection;
-      const battery = (navigator as any).getBattery
-        ? await (navigator as any).getBattery()
-        : null;
+      const connection = safeNavigatorConnection();
+      const battery = await safeNavigatorBattery();
 
       setDeviceCapabilities({
         isSlowConnection:
@@ -258,7 +257,7 @@ export function useSmartLazyLoading(
           (connection.effectiveType === "slow-2g" ||
             connection.effectiveType === "2g"),
         isLowBattery: battery && battery.level < 0.2,
-        isDataSaver: connection && connection.saveData,
+        isDataSaver: false, // Note: saveData not available in our helper
       });
     };
 

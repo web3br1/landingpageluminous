@@ -68,7 +68,7 @@ const experimentUtils = {
   },
 
   // Select variant based on weight (same logic as client)
-  selectVariant: async (experiment: any): Promise<string> => {
+  selectVariant: async (experiment: unknown): Promise<string> => {
     const userHash = await experimentUtils.getRequestHash();
     let cumulativeWeight = 0;
 
@@ -93,7 +93,7 @@ const experimentUtils = {
 // Server-side flag resolution
 export async function getServerFlags() {
   const experiments: Record<string, string> = {};
-  const flags: Record<string, any> = {};
+  const flags: Record<string, unknown> = {};
 
   // Resolve experiment variants
   for (const experiment of EXPERIMENTS) {

@@ -6,11 +6,11 @@ export interface CacheKey {
   branch: string;
   maturityTarget: MaturityLevel;
   domains: Record<CacheDomain, string>; // hash por domínio
-  environment: 'local' | 'ci';
+  environment: "local" | "ci";
   timestamp: number;
 }
 
-export type CacheDomain = 'SRC' | 'TESTS' | 'CONFIG' | 'LOCKFILE';
+export type CacheDomain = "SRC" | "TESTS" | "CONFIG" | "LOCKFILE";
 
 export interface CacheEntry {
   key: CacheKey;
@@ -33,7 +33,7 @@ export interface CacheDecision {
   changedFiles?: string[];
 }
 
-export type MaturityLevel = 'M0' | 'M1' | 'M2' | 'M3';
+export type MaturityLevel = "M0" | "M1" | "M2" | "M3";
 
 export interface MaturityConfig {
   level: MaturityLevel;
@@ -78,7 +78,7 @@ export interface TestIssue {
 }
 
 export interface Recommendation {
-  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  priority: "CRITICAL" | "HIGH" | "MEDIUM" | "LOW";
   action: string;
   details: string;
   timeline: string;
@@ -87,7 +87,7 @@ export interface Recommendation {
 export interface EngineResults {
   available: boolean;
   scores?: Record<string, number>;
-  risks?: any[];
+  risks?: unknown[];
   reason?: string;
 }
 
@@ -100,7 +100,7 @@ export interface ContextualScores {
     weight: string;
     score: string;
     contribution: string;
-    source: 'classifier' | 'engine' | 'proxy';
+    source: "classifier" | "engine" | "proxy";
   }>;
 }
 
@@ -119,7 +119,7 @@ export interface StaticCoverageProxy {
     estimatedCovered: number;
     proxyCoverage: number;
   };
-  source: 'proxy';
+  source: "proxy";
 }
 
 export interface FileCoverage {
@@ -140,7 +140,7 @@ export interface TDDHistoryEntry {
   scores: ContextualScores;
   topFindings: Array<{
     file: string;
-    severity: 'RED' | 'YELLOW' | 'GREEN';
+    severity: "RED" | "YELLOW" | "GREEN";
     code: string;
   }>;
   riskyFiles: Array<{
@@ -149,18 +149,21 @@ export interface TDDHistoryEntry {
   }>;
   cache: {
     used: boolean;
-    domains: Record<CacheDomain, {
-      hit: boolean;
-      hash: string;
-      reason?: string;
-    }>;
+    domains: Record<
+      CacheDomain,
+      {
+        hit: boolean;
+        hash: string;
+        reason?: string;
+      }
+    >;
     key: string;
   };
 }
 
 export interface SafeTestInfo {
   file: string;
-  category: 'unit' | 'integration' | 'component' | 'e2e';
+  category: "unit" | "integration" | "component" | "e2e";
   estimatedDuration: number; // ms
   dependencies: string[]; // external dependencies
   safetyScore: number; // 0-100

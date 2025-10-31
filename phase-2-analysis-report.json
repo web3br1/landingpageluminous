@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-10-30T04:43:10.904Z",
+  "stats": {
+    "totalFiles": 0,
+    "filesWithUnknown": 0,
+    "totalUnknownUsages": 0,
+    "categories": {
+      "apiResponses": 0,
+      "domElements": 0,
+      "functionParams": 0,
+      "objectProps": 0,
+      "typeAssertions": 0,
+      "other": 0
+    },
+    "patterns": []
+  },
+  "patterns": []
+}

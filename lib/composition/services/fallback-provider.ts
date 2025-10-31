@@ -23,7 +23,7 @@ export class FallbackProvider implements IFallbackProvider {
       let config = this.getPageConfig(pageType);
 
       // Ensure config has valid sections array
-      if (!config || !config.sections || !Array.isArray(config.sections)) {
+      if (!config || !(config as any).sections || !Array.isArray((config as any).sections)) {
         logger.error("Invalid fallback config, using emergency fallback", {
           pageType,
         });
@@ -42,19 +42,23 @@ export class FallbackProvider implements IFallbackProvider {
         };
       }
 
-      const fallbackSections = config.sections.map((section: any) => {
-        const fallbackResult = this.getFallbackSectionContent(section.id);
+      const fallbackSections = config.sections.map((section: unknown) => {
+        if (typeof section !== 'object' || section === null || !('id' in section)) {
+          return null;
+        }
+        const sectionObj = section as { id: string; [key: string]: unknown };
+        const fallbackResult = this.getFallbackSectionContent(sectionObj.id);
         return {
-          ...section,
+          ...sectionObj,
           content: isOk(fallbackResult) ? fallbackResult.value : null,
         };
-      });
+      }).filter(Boolean);
 
       const composition: PageComposition = {
         sections: fallbackSections,
-        metadata: config.metadata,
+        metadata: (config as any).metadata,
         experiments: [],
-        analytics: config.analytics,
+        analytics: (config as any).analytics,
         pageType: pageType as PageType,
       };
 
@@ -112,9 +116,9 @@ export class FallbackProvider implements IFallbackProvider {
     return Result.ok(genericFallback);
   }
 
-  private getPageConfig(pageType: string): any {
+  private getPageConfig(pageType: string): unknown {
     // Centralized page configurations with fallbacks
-    const configs: Record<string, any> = {
+    const configs: Record<string, unknown> = {
       landing: {
         sections: [
           { id: "hero", component: "Hero", order: 1 },

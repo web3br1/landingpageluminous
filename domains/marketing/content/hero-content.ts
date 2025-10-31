@@ -19,8 +19,6 @@ export const heroContentVariants: Record<string, HeroContent> = {
     tracking: {
       section: "hero",
       sectionId: "hero",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
     },
   },
 
@@ -39,8 +37,6 @@ export const heroContentVariants: Record<string, HeroContent> = {
     tracking: {
       section: "hero",
       sectionId: "hero",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
     },
   },
 
@@ -59,8 +55,6 @@ export const heroContentVariants: Record<string, HeroContent> = {
     tracking: {
       section: "hero",
       sectionId: "hero",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
     },
   },
 
@@ -79,8 +73,6 @@ export const heroContentVariants: Record<string, HeroContent> = {
     tracking: {
       section: "hero",
       sectionId: "hero",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
     },
   },
 
@@ -99,8 +91,6 @@ export const heroContentVariants: Record<string, HeroContent> = {
     tracking: {
       section: "hero",
       sectionId: "hero",
-      eventCategory: "landing_page",
-      eventAction: "section_interaction",
     },
   },
 } as const;

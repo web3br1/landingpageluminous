@@ -1,0 +1,21 @@
+{
+  "testRunner": "vitest",
+  "mutate": ["lib/composition/performance/lazy-loading-policy.ts"],
+  "testFramework": "vitest",
+  "coverageAnalysis": "perTest",
+  "reporters": ["html", "json", "progress"],
+  "htmlReporter": {
+    "baseDir": "mutation-reports"
+  },
+  "jsonReporter": {
+    "file": "mutation-results.json"
+  },
+  "thresholds": {
+    "high": 80,
+    "low": 60,
+    "break": 50
+  },
+  "maxConcurrentTestRunners": 4,
+  "timeoutMS": 10000,
+  "timeoutFactor": 1.5
+}

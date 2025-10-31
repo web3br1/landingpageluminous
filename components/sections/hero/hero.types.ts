@@ -34,4 +34,5 @@ export interface HeroTracking {
   experimentId?: string;
   variant?: string;
   section: "hero";
+  sectionId?: string;
 }

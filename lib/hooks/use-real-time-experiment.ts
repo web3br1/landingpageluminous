@@ -14,7 +14,7 @@ interface ExperimentState {
   variant: string;
   themeId: string;
   experimentId: string;
-  customTokens?: Record<string, any>;
+  customTokens?: Record<string, unknown>;
   shouldTrack: boolean;
   isLoading: boolean;
 }

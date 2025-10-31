@@ -9,7 +9,7 @@ export interface SectionDefinition {
   category: "hero" | "content" | "conversion" | "social" | "footer";
   requiredProps?: string[];
   optionalProps?: string[];
-  defaultConfig?: Record<string, any>;
+  defaultConfig?: Record<string, unknown>;
 }
 
 // Available sections registry - Canonical composition-first sections
@@ -161,7 +161,7 @@ export function getAllSections(): SectionDefinition[] {
 
 export function validateSectionConfig(
   sectionId: string,
-  config: Record<string, any>,
+  config: Record<string, unknown>,
 ): boolean {
   const definition = getSectionDefinition(sectionId);
   if (!definition) return false;

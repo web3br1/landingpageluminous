@@ -3,10 +3,15 @@ import { headers } from "next/headers";
 import Stripe from "stripe";
 import { paymentConfig, isStripeEnabled } from "@/lib/payments/config";
 // import { observability } from '@/lib/observability' // Temporarily disabled due to build issues
-import { userService } from "@/lib/users/user-service";
+import { userService, UserSubscription } from "@/lib/users/user-service";
 import { emailService } from "@/lib/email/email-service";
-import { billingService } from "@/lib/billing/billing-service";
+import { billingService, BillingRecord } from "@/lib/billing/billing-service";
 import { isErr, isOk } from "@shared/core/Result";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
 
 // Initialize Stripe only if configured
 const stripe =
@@ -23,7 +28,11 @@ const webhookSecret =
     : null;
 
 // Utility function to log webhook events
-async function logWebhookEvent(eventType: string, eventId: string, data: any) {
+async function logWebhookEvent(
+  eventType: string,
+  eventId: string,
+  data: unknown,
+) {
   console.log(`[Stripe Webhook] ${eventType}: ${eventId}`, {
     timestamp: new Date().toISOString(),
     eventType,
@@ -44,7 +53,7 @@ async function logWebhookEvent(eventType: string, eventId: string, data: any) {
 // User and billing management functions using real services
 async function updateUserSubscription(
   customerId: string,
-  subscriptionData: any,
+  subscriptionData: Partial<UserSubscription>,
 ) {
   const result = await userService.updateUserSubscription(
     customerId,
@@ -60,11 +69,22 @@ async function updateUserSubscription(
   return true;
 }
 
+// Interface para dados de cobrança Stripe
+interface StripeChargeData {
+  customerId?: string;
+  amount?: number;
+  currency?: string;
+  attemptCount?: number;
+  errorMessage?: string;
+  status?: string;
+}
+
 async function sendConfirmationEmail(
   customerEmail: string,
   eventType: string,
-  data?: any,
+  data?: unknown,
 ) {
+  const chargeData = data as StripeChargeData;
   try {
     let emailResult;
 
@@ -93,7 +113,7 @@ async function sendConfirmationEmail(
       case "welcome":
         emailResult = await emailService.sendWelcomeEmail(
           customerEmail,
-          data?.customerId || "unknown",
+          (data as { customerId?: string })?.customerId || "unknown",
         );
         break;
       default:
@@ -120,9 +140,10 @@ async function updateBillingStatus(
   invoiceId: string,
   customerId: string,
   status: string,
-  data?: any,
+  data?: unknown,
 ) {
   try {
+    const chargeData = data as StripeChargeData;
     let billingResult;
 
     switch (status) {
@@ -130,26 +151,26 @@ async function updateBillingStatus(
         billingResult = await billingService.recordSuccessfulPayment(
           invoiceId,
           customerId,
-          data?.amount || 0,
-          data?.currency || "BRL",
+          chargeData.amount || 0,
+          chargeData.currency || "BRL",
         );
         break;
       case "failed":
         billingResult = await billingService.recordPaymentFailure(
           invoiceId,
           customerId,
-          data?.amount || 0,
-          data?.currency || "BRL",
-          data?.attemptCount || 1,
-          data?.errorMessage,
+          chargeData.amount || 0,
+          chargeData.currency || "BRL",
+          chargeData.attemptCount || 1,
+          chargeData.errorMessage,
         );
         break;
       default:
         billingResult = await billingService.updateBillingStatus(
           invoiceId,
           customerId,
-          status as any,
-          data,
+          status as "paid" | "failed" | "pending" | "cancelled",
+          data as Partial<BillingRecord>,
         );
     }
 
@@ -173,13 +194,13 @@ export async function POST(request: NextRequest) {
     // Check if Stripe is configured
     if (!isStripeEnabled || !stripe || !webhookSecret) {
       console.error("Stripe webhook: Stripe not configured");
-      return NextResponse.json(
+      return createErrorResponse(
+        "STRIPE_NOT_CONFIGURED",
+        "Stripe payment processing not configured",
         {
-          error: "Stripe payment processing not configured",
-          details:
-            "Configure STRIPE_SECRET_KEY and other required environment variables",
-        },
-        { status: 503 },
+          status: HTTP_STATUS.SERVICE_UNAVAILABLE,
+          details: "Configure STRIPE_SECRET_KEY and other required environment variables",
+        }
       );
     }
 
@@ -189,9 +210,10 @@ export async function POST(request: NextRequest) {
 
     if (!sig || !body) {
       console.error("Stripe webhook: Missing signature or body");
-      return NextResponse.json(
-        { error: "Missing signature or body" },
-        { status: 400 },
+      return createErrorResponse(
+        "MISSING_SIGNATURE",
+        "Missing signature or body",
+        { status: HTTP_STATUS.BAD_REQUEST }
       );
     }
 
@@ -200,11 +222,13 @@ export async function POST(request: NextRequest) {
 
     try {
       event = stripe.webhooks.constructEvent(body, sig, webhookSecret);
-    } catch (err: any) {
-      console.error(`Webhook signature verification failed:`, err.message);
-      return NextResponse.json(
-        { error: "Webhook signature verification failed" },
-        { status: 400 },
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      console.error(`Webhook signature verification failed:`, errorMessage);
+      return createErrorResponse(
+        "INVALID_SIGNATURE",
+        "Webhook signature verification failed",
+        { status: HTTP_STATUS.BAD_REQUEST }
       );
     }
 
@@ -221,9 +245,7 @@ export async function POST(request: NextRequest) {
         // Process successful payment
         if (session.customer && typeof session.customer === "string") {
           await updateUserSubscription(session.customer, {
-            sessionId: session.id,
-            status: "completed",
-            amount: session.amount_total,
+            status: "active",
           });
         }
 
@@ -247,7 +269,7 @@ export async function POST(request: NextRequest) {
           customerId: invoice.customer,
           amountPaid: invoice.amount_paid,
           currency: invoice.currency,
-          subscriptionId: (invoice as any).subscription,
+          subscriptionId: (invoice as { subscription?: string }).subscription,
         });
 
         // Update billing status
@@ -313,9 +335,16 @@ export async function POST(request: NextRequest) {
           subscription.id,
           {
             customerId: subscription.customer,
-            status: subscription.status,
-            currentPeriodStart: (subscription as any).current_period_start,
-            currentPeriodEnd: (subscription as any).current_period_end,
+            status: subscription.status as
+              | "active"
+              | "canceled"
+              | "incomplete"
+              | "suspended",
+            currentPeriodStart: (
+              subscription as { current_period_start?: number }
+            ).current_period_start,
+            currentPeriodEnd: (subscription as { current_period_end?: number })
+              .current_period_end,
           },
         );
 
@@ -323,8 +352,12 @@ export async function POST(request: NextRequest) {
         if (typeof subscription.customer === "string") {
           await updateUserSubscription(subscription.customer, {
             subscriptionId: subscription.id,
-            status: subscription.status,
-            planId: (subscription as any).items?.data?.[0]?.price?.id,
+            status: subscription.status as
+              | "active"
+              | "canceled"
+              | "incomplete"
+              | "suspended",
+            planId: (subscription as any).items?.data[0]?.price?.id,
             periodStart: (subscription as any).current_period_start,
             periodEnd: (subscription as any).current_period_end,
           });
@@ -346,7 +379,7 @@ export async function POST(request: NextRequest) {
           updatedSubscription.id,
           {
             customerId: updatedSubscription.customer,
-            status: updatedSubscription.status,
+            status: updatedSubscription.status as any,
             previousAttributes: event.data.previous_attributes,
           },
         );
@@ -355,7 +388,7 @@ export async function POST(request: NextRequest) {
         if (typeof updatedSubscription.customer === "string") {
           await updateUserSubscription(updatedSubscription.customer, {
             subscriptionId: updatedSubscription.id,
-            status: updatedSubscription.status,
+            status: updatedSubscription.status as any,
             planId: (updatedSubscription as any).items?.data?.[0]?.price?.id,
             periodStart: (updatedSubscription as any).current_period_start,
             periodEnd: (updatedSubscription as any).current_period_end,
@@ -408,12 +441,13 @@ export async function POST(request: NextRequest) {
         console.log(`Unhandled event type: ${event.type}`);
     }
 
-    return NextResponse.json({ received: true, event: event.type });
+    return createSuccessResponse({ received: true, event: event.type });
   } catch (error) {
     console.error("Stripe webhook processing error:", error);
-    return NextResponse.json(
-      { error: "Webhook processing failed" },
-      { status: 500 },
+    return createErrorResponse(
+      "WEBHOOK_PROCESSING_FAILED",
+      "Webhook processing failed",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

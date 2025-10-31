@@ -1,7 +1,7 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { jest } from "vitest";
-import { setupBrowserAPIs } from "@/lib/test-utils";
+import { setupBrowserAPIs } from "@/lib/test/test-utils";
 
 // Import ThemeProvider for UI components
 import { ThemeProvider } from "@/lib/theme/theme-context";
@@ -136,7 +136,7 @@ import {
   AvatarImage,
   AvatarFallback,
 } from "@/app/(marketing)/components/ui/avatar";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 describe("UI Components", () => {
   beforeEach(() => {

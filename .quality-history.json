@@ -1,0 +1,320 @@
+[
+  {
+    "timestamp": "2025-10-29T23:28:21.280Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 15,
+      "status": "failed",
+      "sample": "app/(conversion)/checkout/components/checkout-page.tsx(376,23): error TS2339: Property 'checkoutState' does not exist on type '{ selectedPlan: Plan; billingCycle: \"monthly\" | \"annual\"; paymentData: PaymentData; isProcessing: boolean; isCompleted: boolean; errors: PaymentErrors; ... 7 more ...; createHandleSubmit: (validatePaymentFn: () => boolean) => (e: FormEvent<...>) => Promise<...>; }'.\r\napp/(conversion)/checkout/components/checkout-page.tsx(377,26): error TS2339: Property 'checkoutState' does not exist on type '{ selectedPlan: Plan; billingCycle: \"monthly\" | \"annual\"; paymentData: PaymentData; isProcessing: boolean; isCompleted: boolean; errors: PaymentErrors; ... 7 more ...; createHandleSubmit: (validatePaymentFn: () => boolean) => (e: FormEvent<...>) => Promise<...>; }'.\r\napp/(conversion)/checkout/components/checkout-page.tsx(380,26): error TS2339: Property 'checkoutState' does not exist on type '{ selectedPlan: Plan; billingCycle: \"monthly\" | \"annual\"; paymentData: PaymentData; isProcessing: boolean; isCompleted: boolean; errors: PaymentErrors; ... 7 more ...; createHandleSubmit: (validatePaymentFn: () => boolean) => (e: FormEvent<...>) => Promise<...>; }'.\r\napp/(conversion)/checkout/components/checkout-page.tsx(383,26): error TS2339: Property 'checkoutState' does not exist on type '{ selectedPlan: Plan; billingCycle: \"monthly\" | \"annual\"; paymentData: PaymentData; isProcessing: boolean; isCompleted: boolean; errors: PaymentErrors; ... 7 more ...; createHandleSubmit: (validatePaymentFn: () => boolean) => (e: FormEvent<...>) => Promise<...>; }'.\r\napp/(conversion)/checkout/components/checkout-page.tsx(386,26): error TS2339: Property 'checkoutState' does not exist on type '{ selectedPlan: Plan; billingCycle: \"monthly\" | \"annual\"; paymentData: PaymentData; isProcessing: boolean; isCompleted: boolean; errors: PaymentErrors; ... 7 more ...; createHandleSubmit: (validatePaymentFn: () => boolean) => (e: FormEvent<...>) => Promise<...>; }'.\r"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:36:24.530Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 10,
+      "status": "failed",
+      "sample": "app/(conversion)/checkout/components/checkout-page.tsx(787,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\r\napp/(conversion)/checkout/components/checkout-page.tsx(1016,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\r\napp/(conversion)/checkout/components/checkout-page.tsx(1017,19): error TS1382: Unexpected token. Did you mean `{'>'}` or `&gt;`?\r\napp/(conversion)/checkout/components/checkout-page.tsx(1155,21): error TS17002: Expected corresponding JSX closing tag for 'div'.\r\napp/(conversion)/checkout/components/checkout-page.tsx(1156,18): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\r"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:45:21.919Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 11,
+      "status": "failed",
+      "sample": "app/(conversion)/checkout/components/checkout-page.tsx(690,6): error TS17008: JSX element 'div' has no corresponding closing tag.\r\napp/(conversion)/checkout/components/checkout-page.tsx(861,3): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\r\napp/(conversion)/checkout/components/checkout-page.tsx(862,1): error TS1381: Unexpected token. Did you mean `{'}'}` or `&rbrace;`?\r\napp/(conversion)/checkout/components/checkout-page.tsx(862,2): error TS1005: '</' expected.\r\ntemp-checkout.tsx(18,6): error TS17008: JSX element 'div' has no corresponding closing tag.\r"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:47:00.065Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:47:34.796Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:48:06.242Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:49:06.828Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "spawnSync C:\\WINDOWS\\system32\\cmd.exe ENOBUFS"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:50:09.202Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "Command failed: pnpm eslint . --format=compact 2>&1"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  },
+  {
+    "timestamp": "2025-10-29T23:51:28.263Z",
+    "tests": {
+      "total": 0,
+      "passed": 0,
+      "failed": 0,
+      "coverage": {
+        "statements": 0,
+        "branches": 0,
+        "functions": 0,
+        "lines": 0
+      },
+      "error": "Command failed: npx vitest run --reporter=json\nSourcemap for \"C:/Meus Projetos/Lading Page/node_modules/.pnpm/@adobe+css-tools@4.4.4/node_modules/@adobe/css-tools/dist/esm/adobe-css-tools.mjs\" points to missing source files\n"
+    },
+    "eslint": {
+      "total": 0,
+      "categories": {},
+      "files": 0,
+      "error": "Command failed: pnpm eslint . 2>&1"
+    },
+    "typescript": {
+      "errors": 0,
+      "status": "success"
+    },
+    "bundle": {
+      "totalSize": 0,
+      "chunkCount": 0,
+      "averageSize": 0
+    },
+    "performance": {
+      "lcp": null,
+      "cls": null,
+      "inp": null
+    }
+  }
+]

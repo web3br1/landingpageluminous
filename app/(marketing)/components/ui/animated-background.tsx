@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  motion,
-  useMotionValue,
-  useTransform,
-  useSpring,
-  useScroll,
-} from "@/lib/motion";
+import { motion, useMotionValue, useTransform, useSpring } from "@/lib/motion";
 import { useEffect, useRef, useState } from "react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 import { useAnimations } from "@/lib/hooks/use-animations";

@@ -1,0 +1,16 @@
+[
+  {
+    "timestamp": "2025-10-30T21:54:18.693Z",
+    "totalSize": 1950301,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 585090
+  },
+  {
+    "timestamp": "2025-10-30T22:36:01.949Z",
+    "totalSize": 1950259,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 585078
+  }
+]

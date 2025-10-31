@@ -13,6 +13,32 @@ import {
 } from "./environment-manager";
 import { getAdvancedFeatureFlags, FeatureFlagContext } from "./feature-flags";
 
+// ===== TYPES =====
+
+export interface ClientFlags {
+  // Core features
+  enableAnalytics?: boolean;
+  enablePersonalization?: boolean;
+  enableExperiments?: boolean;
+
+  // Performance features
+  enableProgressiveLoading?: boolean;
+  enableLazyImages?: boolean;
+  enableServiceWorker?: boolean;
+
+  // UI features
+  enableDarkMode?: boolean;
+  enableAnimations?: boolean;
+  enableNewUI?: boolean;
+
+  // Development features
+  enableDebugMode?: boolean;
+  enablePerformanceMonitoring?: boolean;
+
+  // Custom feature flags
+  [key: string]: boolean | undefined;
+}
+
 /**
  * Environment Context
  */
@@ -52,9 +78,7 @@ export function EnvironmentProvider({
   ipAddress,
 }: EnvironmentProviderProps) {
   const [config, setConfig] = useState<EnvironmentConfig | null>(null);
-  const [clientFlags, setClientFlags] = useState<Record<FeatureFlag, boolean>>(
-    {} as Record<FeatureFlag, boolean>,
-  );
+  const [clientFlags, setClientFlags] = useState<ClientFlags>({});
 
   useEffect(() => {
     // Load initial configuration

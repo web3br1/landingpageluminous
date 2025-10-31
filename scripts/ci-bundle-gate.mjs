@@ -8,6 +8,7 @@
  */
 
 import { execSync } from 'child_process'
+import { formatBytes } from '../lib/utils/formatters.mjs'
 import { existsSync, readFileSync } from 'fs'
 import { join } from 'path'
 
@@ -44,12 +45,6 @@ function log(color, message) {
   console.log(`${color}${message}${colors.reset}`)
 }
 
-function formatBytes(bytes) {
-  const sizes = ['Bytes', 'KB', 'MB', 'GB']
-  if (bytes === 0) return '0 Bytes'
-  const i = Math.floor(Math.log(bytes) / Math.log(1024))
-  return parseFloat((bytes / Math.pow(1024, i)).toFixed(2)) + ' ' + sizes[i]
-}
 
 // Verificar pré-requisitos
 function checkPrerequisites() {

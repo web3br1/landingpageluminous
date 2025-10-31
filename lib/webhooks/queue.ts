@@ -261,7 +261,7 @@ export class WebhookQueueManager {
    * Get all queue statistics
    */
   getAllStats() {
-    const stats: Record<string, any> = {};
+    const stats: Record<string, unknown> = {};
 
     for (const [name, queue] of this.queues) {
       stats[name] = queue.getStats();

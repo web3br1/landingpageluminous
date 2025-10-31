@@ -57,7 +57,7 @@ class PreloadManager {
 
     // Add priority hint for browsers that support it
     if ("fetchPriority" in link && resource.priority) {
-      (link as any).fetchPriority = resource.priority;
+      (link as unknown).fetchPriority = resource.priority;
     }
 
     // Add importance hint (deprecated but still supported)
@@ -198,48 +198,7 @@ export const defaultPreloadConfig: PreloadConfig = {
   ],
 };
 
-// React component to manage preloading
-interface PreloadHintsProps {
-  config?: Partial<PreloadConfig>;
-  enableFontPreloading?: boolean;
-  enableImagePreloading?: boolean;
-}
-
-export function PreloadHints({
-  config = defaultPreloadConfig,
-  enableFontPreloading = true,
-  enableImagePreloading = true,
-}: PreloadHintsProps) {
-  useEffect(() => {
-    // Merge with default config
-    const fullConfig: PreloadConfig = {
-      critical: [...defaultPreloadConfig.critical, ...(config.critical || [])],
-      high: [...defaultPreloadConfig.high, ...(config.high || [])],
-      medium: [...defaultPreloadConfig.medium, ...(config.medium || [])],
-      low: [...defaultPreloadConfig.low, ...(config.low || [])],
-    };
-
-    // Start preloading
-    preloadManager.preloadCritical(fullConfig);
-
-    // Fonts handled by next/font - no manual preloading needed
-
-    // Preload images if enabled
-    if (enableImagePreloading) {
-      preloadManager.preloadImage("/images/hero-illustration.webp", "100vw");
-    }
-
-    // Cleanup on unmount (useful for testing)
-    return () => {
-      // Don't actually clear in production, just for development
-      if (process.env.NODE_ENV === "development") {
-        preloadManager.clear();
-      }
-    };
-  }, [config, enableFontPreloading, enableImagePreloading]);
-
-  return null; // This component doesn't render anything
-}
+// First PreloadHints component removed - using simpler HTML head version below
 
 // Hook for dynamic preloading
 export function usePreload(
@@ -272,3 +231,38 @@ export function preloadOnInteraction(
   element.addEventListener("mouseenter", handleInteraction, { passive: true });
   element.addEventListener("focus", handleInteraction, { passive: true });
 }
+
+/**
+ * PreloadHints - Componente para hints de preload no HTML head usando Next.js Head
+ */
+import Head from 'next/head';
+
+export interface PreloadHintProps {
+  resources?: PreloadResource[];
+}
+
+function PreloadHints({ resources = [] }: PreloadHintProps) {
+  // Recursos críticos padrão para preload
+  const defaultResources: PreloadResource[] = [
+    { href: '/fonts/inter-var.woff2', as: 'font', crossOrigin: true },
+    { href: '/images/logo.webp', as: 'image' },
+  ];
+
+  const allResources = [...defaultResources, ...resources];
+
+  return (
+    <Head>
+      {allResources.map((resource, index) => (
+        <link
+          key={`${resource.href}-${index}`}
+          rel="preload"
+          href={resource.href}
+          as={resource.as}
+          crossOrigin={resource.crossOrigin ? 'anonymous' : undefined}
+        />
+      ))}
+    </Head>
+  );
+}
+
+export default PreloadHints;

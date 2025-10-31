@@ -22,11 +22,11 @@ export interface UseResilientFetchOptions extends Omit<FetchOptions, "signal"> {
   refetchOnWindowFocus?: boolean;
   refetchInterval?: number;
   retryOnError?: boolean;
-  onSuccess?: (data: any) => void;
+  onSuccess?: (data: unknown) => void;
   onError?: (error: NetworkError) => void;
 }
 
-export function useResilientFetch<T = any>(
+export function useResilientFetch<T = unknown>(
   url: string | null,
   options: UseResilientFetchOptions = {},
 ) {
@@ -219,7 +219,7 @@ export function useResilientFetch<T = any>(
 }
 
 // Error taxonomy mapping - ensures no "Unknown error"
-function mapErrorToKnownType(error: any): NetworkError {
+function mapErrorToKnownType(error: unknown): NetworkError {
   // Check for specific error patterns
   if (error instanceof Error) {
     const message = error.message.toLowerCase();
@@ -284,20 +284,21 @@ function mapErrorToKnownType(error: any): NetworkError {
   }
 
   // HTTP status-based classification (if we have status)
-  if (error.status) {
-    if (error.status >= 400 && error.status < 500) {
+  if ((error as any).status) {
+    const status = (error as any).status;
+    if (status >= 400 && status < 500) {
       return new NetworkError(
         NetworkErrorType.HTTP_CLIENT_ERROR,
-        error.message || `Client error: ${error.status}`,
-        error.status,
+        (error as Error).message || `Client error: ${status}`,
+        status,
         false,
       );
     }
-    if (error.status >= 500) {
+    if (status >= 500) {
       return new NetworkError(
         NetworkErrorType.HTTP_SERVER_ERROR,
-        error.message || `Server error: ${error.status}`,
-        error.status,
+        (error as Error).message || `Server error: ${status}`,
+        status,
         true,
       );
     }
@@ -306,14 +307,14 @@ function mapErrorToKnownType(error: any): NetworkError {
   // Last resort - unknown but classified
   return new NetworkError(
     NetworkErrorType.UNKNOWN,
-    error?.message || "Unknown network error",
+    (error as Error)?.message || "Unknown network error",
     undefined,
     true,
   );
 }
 
 // Hook for mutations (POST/PUT/PATCH/DELETE)
-export function useResilientMutation<TData = any, TVariables = any>(
+export function useResilientMutation<TData = unknown, TVariables = unknown>(
   method: "POST" | "PUT" | "PATCH" | "DELETE",
   url: string,
   options: Omit<UseResilientFetchOptions, "method"> = {},

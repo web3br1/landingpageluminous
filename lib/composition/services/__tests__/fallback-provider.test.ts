@@ -4,7 +4,7 @@
 import { describe, it, expect, beforeEach } from "@jest/globals";
 
 import { FallbackProvider } from "../fallback-provider";
-import { Factory, Utils } from "../../test-helpers";
+import { Factory, Utils } from "../../../../tests/__shared__/lib/test-helpers";
 import { Result, isOk } from "@shared/core";
 
 // Helper function to safely extract values from Result

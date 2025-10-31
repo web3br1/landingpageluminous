@@ -1,0 +1,16 @@
+{
+  "quality-gate": {
+    "scriptId": "quality-gate",
+    "totalExecutions": 1,
+    "lastExecution": "2025-10-31T16:06:21.398Z",
+    "averageDuration": 1500,
+    "successRate": 1,
+    "contexts": {
+      "local": 1
+    },
+    "authorities": {
+      "system": 1
+    },
+    "bypasses": 0
+  }
+}

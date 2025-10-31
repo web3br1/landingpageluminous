@@ -1,7 +1,15 @@
-import Stripe from "stripe";
 import { Result } from "../../shared/core/Result";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+// Lazy load Stripe to reduce initial bundle size
+let stripeInstance: any = null;
+
+async function getStripeInstance() {
+  if (!stripeInstance) {
+    const { default: Stripe } = await import("stripe");
+    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  }
+  return stripeInstance;
+}
 
 export interface PaymentIntent {
   id: string;
@@ -28,6 +36,7 @@ export class StripePaymentService {
     metadata: Record<string, string> = {},
   ): Promise<Result<PaymentIntent, PaymentError>> {
     try {
+      const stripe = await getStripeInstance();
       const paymentIntent = await stripe.paymentIntents.create({
         amount: Math.round(amount * 100), // Stripe usa centavos
         currency,
@@ -65,6 +74,7 @@ export class StripePaymentService {
     paymentIntentId: string,
   ): Promise<Result<PaymentIntent, PaymentError>> {
     try {
+      const stripe = await getStripeInstance();
       const paymentIntent =
         await stripe.paymentIntents.retrieve(paymentIntentId);
 
@@ -92,6 +102,7 @@ export class StripePaymentService {
     couponId?: string,
   ): Promise<Result<SubscriptionData, PaymentError>> {
     try {
+      const stripe = await getStripeInstance();
       // Criar ou buscar customer
       let customer = await stripe.customers
         .list({
@@ -131,8 +142,9 @@ export class StripePaymentService {
         subscriptionId: subscription.id,
         planId,
         status: subscription.status as "active" | "canceled" | "incomplete",
-        currentPeriodEnd: (subscription as any).current_period_end || 0,
-        cancelAtPeriodEnd: (subscription as any).cancel_at_period_end || false,
+        currentPeriodEnd: (subscription as unknown).current_period_end || 0,
+        cancelAtPeriodEnd:
+          (subscription as unknown).cancel_at_period_end || false,
       });
     } catch (error) {
       return Result.err({
@@ -150,6 +162,7 @@ export class StripePaymentService {
     immediate = false,
   ): Promise<Result<boolean, PaymentError>> {
     try {
+      const stripe = await getStripeInstance();
       if (immediate) {
         await stripe.subscriptions.cancel(subscriptionId);
       } else {
@@ -173,6 +186,7 @@ export class StripePaymentService {
     subscriptionId: string,
   ): Promise<Result<SubscriptionData, PaymentError>> {
     try {
+      const stripe = await getStripeInstance();
       const subscription = await stripe.subscriptions.retrieve(subscriptionId);
 
       return Result.ok({
@@ -180,8 +194,9 @@ export class StripePaymentService {
         subscriptionId: subscription.id,
         planId: subscription.items.data[0].price.id,
         status: subscription.status as "active" | "canceled" | "incomplete",
-        currentPeriodEnd: (subscription as any).current_period_end || 0,
-        cancelAtPeriodEnd: (subscription as any).cancel_at_period_end || false,
+        currentPeriodEnd: (subscription as unknown).current_period_end || 0,
+        cancelAtPeriodEnd:
+          (subscription as unknown).cancel_at_period_end || false,
       });
     } catch (error) {
       return Result.err({
@@ -195,8 +210,9 @@ export class StripePaymentService {
   // Aplicar cupom
   async validateCoupon(
     couponCode: string,
-  ): Promise<Result<Stripe.Coupon, PaymentError>> {
+  ): Promise<Result<any, PaymentError>> { // Stripe.Coupon
     try {
+      const stripe = await getStripeInstance();
       const coupon = await stripe.coupons.retrieve(couponCode);
       return Result.ok(coupon);
     } catch (error) {

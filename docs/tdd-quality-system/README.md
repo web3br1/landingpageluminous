@@ -1,6 +1,6 @@
 # 🎯 TDD Quality System - Documentação Oficial
 
-> *Sistema inteligente e resiliente para análise de qualidade TDD que evolui com a maturidade do projeto.*
+> _Sistema inteligente e resiliente para análise de qualidade TDD que evolui com a maturidade do projeto._
 
 ---
 
@@ -59,45 +59,45 @@ O **TDD Quality System** foi criado para eliminar pontos cegos de qualidade, for
 
 ### 🧩 Componentes Principais
 
-| Componente | Responsabilidade | Status |
-|-----------|------------------|--------|
-| **Classifier** | Diagnóstico sempre-disponível | ✅ Core |
-| **Safe Tests** | Subset confiável de testes | ✅ M1+ |
-| **Engine** | Métricas reais completas | ✅ M2+ |
-| **Hybrid Metrics** | Scores contextuais | ✅ Inteligente |
-| **Cache** | Performance otimizada | ✅ LRU/TTL |
-| **Alerts** | Notificações proativas | ✅ Automáticas |
-| **CI/CD** | Integração nativa | ✅ Gates + Notificações |
-| **Dashboard** | Visualizações executivas | ✅ HTML Interativo |
-| **A/B Testing** | Validação experimental | ✅ Automática |
+| Componente         | Responsabilidade              | Status                  |
+| ------------------ | ----------------------------- | ----------------------- |
+| **Classifier**     | Diagnóstico sempre-disponível | ✅ Core                 |
+| **Safe Tests**     | Subset confiável de testes    | ✅ M1+                  |
+| **Engine**         | Métricas reais completas      | ✅ M2+                  |
+| **Hybrid Metrics** | Scores contextuais            | ✅ Inteligente          |
+| **Cache**          | Performance otimizada         | ✅ LRU/TTL              |
+| **Alerts**         | Notificações proativas        | ✅ Automáticas          |
+| **CI/CD**          | Integração nativa             | ✅ Gates + Notificações |
+| **Dashboard**      | Visualizações executivas      | ✅ HTML Interativo      |
+| **A/B Testing**    | Validação experimental        | ✅ Automática           |
 
 ---
 
 ## 🧭 Níveis de Maturidade (M0 → M3)
 
-| Nível | Cenário | Características | Ações Prioritárias |
-|-------|---------|----------------|-------------------|
+| Nível  | Cenário    | Características              | Ações Prioritárias       |
+| ------ | ---------- | ---------------------------- | ------------------------ |
 | **M0** | Caos Total | Classifier ativo, Engine off | Corrigir falhas críticas |
-| **M1** | Instável | Safe Tests + proxy | Melhorar estabilidade |
-| **M2** | Estável | Engine + híbrido | Expandir cobertura |
-| **M3** | Sólido | Métricas reais completas | Otimizar continuamente |
+| **M1** | Instável   | Safe Tests + proxy           | Melhorar estabilidade    |
+| **M2** | Estável    | Engine + híbrido             | Expandir cobertura       |
+| **M3** | Sólido     | Métricas reais completas     | Otimizar continuamente   |
 
 ### 📊 Como a Maturidade Afeta os Scores
 
 ```javascript
 // M0: Foco em correção básica
 weights = {
-  isolation: 0.25,    // Prioriza isolamento
-  coverage: 0.03,     // Cobertura mínima
-  structure: 0.20     // Estrutura básica
-}
+  isolation: 0.25, // Prioriza isolamento
+  coverage: 0.03, // Cobertura mínima
+  structure: 0.2, // Estrutura básica
+};
 
 // M3: Foco em excelência
 weights = {
-  coverage: 0.25,     // Cobertura máxima
-  isolation: 0.15,    // Isolamento mantido
-  performance: 0.15   // Performance crítica
-}
+  coverage: 0.25, // Cobertura máxima
+  isolation: 0.15, // Isolamento mantido
+  performance: 0.15, // Performance crítica
+};
 ```
 
 ---
@@ -193,50 +193,50 @@ name: TDD Quality Analysis
 
 on:
   pull_request:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   tdd-analysis:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
 
-    - name: Install dependencies
-      run: npm ci
+      - name: Install dependencies
+        run: npm ci
 
-    - name: Run TDD Quality Analysis
-      run: npm run tdd:analyze
+      - name: Run TDD Quality Analysis
+        run: npm run tdd:analyze
 
-    - name: Run PR Gate
-      run: npm run tdd:gate
+      - name: Run PR Gate
+        run: npm run tdd:gate
 
-    - name: Upload Reports
-      uses: actions/upload-artifact@v4
-      with:
-        name: tdd-reports
-        path: tmp/tdd-reports/
+      - name: Upload Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: tdd-reports
+          path: tmp/tdd-reports/
 
-    - name: Comment PR
-      if: always()
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const fs = require('fs')
-          const report = fs.readFileSync('tmp/tdd-reports/tdd-report.md', 'utf8')
+      - name: Comment PR
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs')
+            const report = fs.readFileSync('tmp/tdd-reports/tdd-report.md', 'utf8')
 
-          github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body: \`## 🎯 TDD Quality Analysis\n\n\${report}\`
-          })
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: \`## 🎯 TDD Quality Analysis\n\n\${report}\`
+            })
 ```
 
 ### Políticas de Merge
@@ -245,26 +245,26 @@ jobs:
 // Regras de aprovação automática
 const mergePolicies = {
   M0: {
-    maxCriticalIssues: 5,    // Permissivo em caos
-    minScore: 20,            // Score mínimo baixo
-    requireSafeTests: false   // Não requer subset
+    maxCriticalIssues: 5, // Permissivo em caos
+    minScore: 20, // Score mínimo baixo
+    requireSafeTests: false, // Não requer subset
   },
   M1: {
     maxCriticalIssues: 3,
     minScore: 40,
-    requireSafeTests: true    // Começa a exigir
+    requireSafeTests: true, // Começa a exigir
   },
   M2: {
     maxCriticalIssues: 1,
     minScore: 60,
-    requireSafeTests: true
+    requireSafeTests: true,
   },
   M3: {
     maxCriticalIssues: 0,
     minScore: 80,
-    requireSafeTests: true
-  }
-}
+    requireSafeTests: true,
+  },
+};
 ```
 
 ---
@@ -274,6 +274,7 @@ const mergePolicies = {
 ### Relatórios Automáticos
 
 #### 1. Executive Summary
+
 ```
 🎯 Score Final: 72.4/100
 📊 Maturidade: M2 (Estável)
@@ -283,13 +284,15 @@ const mergePolicies = {
 ```
 
 #### 2. Detailed Breakdown
-| Métrica | Peso | Score | Contribuição | Fonte |
-|---------|------|-------|--------------|-------|
-| Coverage | 18% | 85.2 | 15.3 | Hybrid |
-| Isolation | 18% | 78.1 | 14.1 | Classifier |
-| Performance | 12% | 92.0 | 11.0 | Engine |
+
+| Métrica     | Peso | Score | Contribuição | Fonte      |
+| ----------- | ---- | ----- | ------------ | ---------- |
+| Coverage    | 18%  | 85.2  | 15.3         | Hybrid     |
+| Isolation   | 18%  | 78.1  | 14.1         | Classifier |
+| Performance | 12%  | 92.0  | 11.0         | Engine     |
 
 #### 3. Cache Performance
+
 ```
 ✅ SRC: HIT
 ✅ TESTS: HIT
@@ -303,6 +306,7 @@ const mergePolicies = {
 ### Dashboard HTML
 
 O dashboard fornece visualizações interativas com:
+
 - Gráficos de tendência histórica
 - Distribuição de maturidade
 - Alertas ativos por categoria
@@ -316,28 +320,31 @@ O dashboard fornece visualizações interativas com:
 ### Experimentos Padrão
 
 #### Maturity Weights Optimization
+
 ```javascript
 // Testa diferentes pesos para maturidade
 variants: [
-  { name: 'Current', weights: { coverage: 0.15, isolation: 0.20 } },
-  { name: 'Coverage Focus', weights: { coverage: 0.25, isolation: 0.15 } },
-  { name: 'Stability Focus', weights: { coverage: 0.10, isolation: 0.25 } }
-]
+  { name: "Current", weights: { coverage: 0.15, isolation: 0.2 } },
+  { name: "Coverage Focus", weights: { coverage: 0.25, isolation: 0.15 } },
+  { name: "Stability Focus", weights: { coverage: 0.1, isolation: 0.25 } },
+];
 ```
 
 #### Cache TTL Optimization
+
 ```javascript
 // Testa diferentes TTLs de cache
 variants: [
-  { name: 'TTL 30min', config: { ttl: 1800000 } },
-  { name: 'TTL 60min', config: { ttl: 3600000 } },
-  { name: 'TTL 120min', config: { ttl: 7200000 } }
-]
+  { name: "TTL 30min", config: { ttl: 1800000 } },
+  { name: "TTL 60min", config: { ttl: 3600000 } },
+  { name: "TTL 120min", config: { ttl: 7200000 } },
+];
 ```
 
 ### Como Participar
 
 O sistema atribui automaticamente variantes baseadas em:
+
 - Branch do PR
 - Autor do commit
 - Timestamp arredondado
@@ -350,27 +357,30 @@ Resultados são analisados estatisticamente para determinar vencedores.
 
 ### RACI (Responsabilidades)
 
-| Papel | Responsabilidades |
-|-------|------------------|
-| **Dev** | Corrigir findings, executar local |
-| **Tech Lead** | Monitorar trends, coordenar correções |
-| **Platform Eng** | Manter CI/CD, cache, infraestrutura |
-| **Engineering Manager** | Definir políticas, acompanhar KPIs |
-| **Product Manager** | Usar insights para priorização |
+| Papel                   | Responsabilidades                     |
+| ----------------------- | ------------------------------------- |
+| **Dev**                 | Corrigir findings, executar local     |
+| **Tech Lead**           | Monitorar trends, coordenar correções |
+| **Platform Eng**        | Manter CI/CD, cache, infraestrutura   |
+| **Engineering Manager** | Definir políticas, acompanhar KPIs    |
+| **Product Manager**     | Usar insights para priorização        |
 
 ### Boas Práticas Culturais
 
 #### Para Desenvolvimento
+
 - Execute `npm run tdd:analyze` antes de push
 - Corrija alertas críticos imediatamente
 - Use o dashboard para acompanhar progresso pessoal
 
 #### Para Liderança Técnica
+
 - Revise alertas semanais em equipe
 - Transforme reincidentes em épicos técnicos
 - Use maturidade como indicador de saúde da codebase
 
 #### Para Gestão
+
 - Acompanhe evolução da maturidade mensal
 - Use score como proxy de qualidade técnica
 - Considere maturidade em decisões de arquitetura
@@ -388,16 +398,19 @@ Resultados são analisados estatisticamente para determinar vencedores.
 ## 📚 Referências Técnicas
 
 ### Arquitetura Detalhada
+
 - [🏗️ Arquitetura do Sistema](./architecture.md)
 - [🧩 Componentes Técnicos](./components.md)
 - [🔌 APIs e Interfaces](./api-reference.md)
 
 ### Desenvolvimento
+
 - [🚀 Guia de Contribuição](../CONTRIBUTING.md)
 - [🧪 Testes do Sistema](./testing.md)
 - [🔧 Troubleshooting](./troubleshooting.md)
 
 ### Operação
+
 - [⚙️ Configuração Avançada](./configuration.md)
 - [📊 Monitoramento](./monitoring.md)
 - [🔄 Manutenção](./maintenance.md)
@@ -424,4 +437,4 @@ Resultados são analisados estatisticamente para determinar vencedores.
 
 **🎯 TDD Quality System - Transformando qualidade em vantagem competitiva.**
 
-*Sistema que não apenas mede qualidade, mas a impulsiona continuamente.*
+_Sistema que não apenas mede qualidade, mas a impulsiona continuamente._

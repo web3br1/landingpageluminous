@@ -1,4 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  HTTP_STATUS,
+} from "../../../lib/architecture/api-handler";
 
 // Import the audit store from middleware (in a real app, this would be shared state)
 const scriptAuditStore = new Map<
@@ -10,9 +15,10 @@ const scriptAuditStore = new Map<
 export async function GET(request: NextRequest) {
   // Only allow in development
   if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json(
-      { error: "Script audit endpoint only available in development" },
-      { status: 403 },
+    return createErrorResponse(
+      "SCRIPT_AUDIT_NOT_ALLOWED_IN_PRODUCTION",
+      "Script audit endpoint only available in development",
+      { status: HTTP_STATUS.FORBIDDEN }
     );
   }
 
@@ -65,7 +71,7 @@ export async function GET(request: NextRequest) {
       limit,
     };
 
-    return NextResponse.json({
+    return createSuccessResponse({
       summary,
       scripts: limitedScripts,
       alerts:
@@ -78,9 +84,10 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("[Script Audit API Error]", error);
-    return NextResponse.json(
-      { error: "Failed to fetch script audit data" },
-      { status: 500 },
+    return createErrorResponse(
+      "SCRIPT_AUDIT_FETCH_FAILED",
+      "Failed to fetch script audit data",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }
@@ -88,23 +95,25 @@ export async function GET(request: NextRequest) {
 // Clear audit data
 export async function DELETE(request: NextRequest) {
   if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json(
-      { error: "Script audit endpoint only available in development" },
-      { status: 403 },
+    return createErrorResponse(
+      "SCRIPT_AUDIT_DELETE_NOT_ALLOWED_IN_PRODUCTION",
+      "Script audit endpoint only available in development",
+      { status: HTTP_STATUS.FORBIDDEN }
     );
   }
 
   try {
     scriptAuditStore.clear();
-    return NextResponse.json({
+    return createSuccessResponse({
       status: "ok",
       message: "Script audit data cleared",
     });
   } catch (error) {
     console.error("[Script Audit Clear Error]", error);
-    return NextResponse.json(
-      { error: "Failed to clear script audit data" },
-      { status: 500 },
+    return createErrorResponse(
+      "SCRIPT_AUDIT_CLEAR_FAILED",
+      "Failed to clear script audit data",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }
