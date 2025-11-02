@@ -9,7 +9,6 @@ import {
   selectors,
   actions,
 } from "./builder-reducer";
-import { BuilderState, VisualVariant } from "./types";
 import {
   experimentEngine,
   type Experiment,

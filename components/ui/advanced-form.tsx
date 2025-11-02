@@ -10,7 +10,6 @@ import { FadeUp } from "@/components/ui/fade-up-optimized";
 import { Section } from "@/app/(marketing)/components/ui/section";
 import { createPropValidator } from "../../lib/architecture/component-props";
 import { withComponentContext } from "../../lib/architecture/logger-pattern";
-import { SimpleErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
 
 // Cache for form validation schemas (performance optimization)
 const formSchemaCache = new Map<string, z.ZodSchema<any>>();

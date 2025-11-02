@@ -1,9 +1,6 @@
 "use client";
 
 import React from "react";
-import { THEMES } from "@/lib/theme/theme-utils";
-import { animationTokens } from "@/design-system/tokens/animations";
-import { ThemeRegistry } from "@/lib/theme/theme-registry";
 import { resolveTheme } from "@/lib/theme/personalization-engine";
 import styles from "./demo-controls.module.css";
 

@@ -4,7 +4,6 @@
 
 "use client";
 
-import React, { useState, useMemo, useCallback } from "react";
 import { z } from "zod";
 // SectionWrapper/SectionHeader removidos: renderer fornece <section> e headingId
 import { cn } from "@/lib/utils";

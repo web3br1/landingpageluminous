@@ -1,7 +1,6 @@
 "use client";
 
 import { logger } from "../../observability/logger";
-import { storageManager, AtomicStorage, PrivacyBehaviorStorage } from "./storage-manager";
 
 /**
  * Cross-Session Learning Persistence - Phase 3 Correction

@@ -1,5 +1,5 @@
 {
-  "buildCommand": "pnpm ci:quality-gate && pnpm build",
+  "buildCommand": "npm run quality:pipeline && npm run build",
   "devCommand": "pnpm dev",
   "installCommand": "pnpm install --frozen-lockfile",
   "framework": "nextjs",

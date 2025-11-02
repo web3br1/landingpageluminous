@@ -1,10 +1,8 @@
 // Test Helpers - Utilities for testing the composition system
 // Provides factories, mocks, and utilities for comprehensive testing
 
-import { vi, Mock } from "vitest";
-import { Result } from "@shared/core";
-import { AppError } from "@shared/errors";
-import { safeWindowAccess, safeDocumentAccess, safeNavigatorAccess } from '@/lib/utils/browser-api-helpers';
+import { Result, AppError } from "@/lib/core/result";
+
 import {
   IPageCompositionService,
   IContentMapper,

@@ -6,7 +6,6 @@
  */
 
 import { logger } from '../observability/logger';
-import { preloadStrategy } from './preload-strategy';
 import { componentCache } from './component-cache-manager';
 
 interface LazyLoadMetric {

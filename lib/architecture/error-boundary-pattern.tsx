@@ -6,7 +6,6 @@
  */
 
 import * as React from "react";
-import { z } from "zod";
 
 // ===== SIMPLE ERROR BOUNDARY =====
 

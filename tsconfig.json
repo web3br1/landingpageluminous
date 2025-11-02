@@ -1,25 +1,10 @@
 {
   "compilerOptions": {
-    "target": "es2022",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2022"
-    ],
-    "types": [
-      "@types/node"
-    ],
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "ES6"],
     "allowJs": true,
     "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "strict": false,
-    "noImplicitAny": false,
-    "strictNullChecks": false,
-    "strictFunctionTypes": false,
-    "strictBindCallApply": false,
-    "strictPropertyInitialization": false,
-    "noImplicitThis": false,
-    "alwaysStrict": false,
+    "strict": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
@@ -28,8 +13,6 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "incremental": true,
-    // "experimentalDecorators": true,  // Desabilitado - não necessário para React/Next
-    // "emitDecoratorMetadata": true,   // Desabilitado - não necessário para React/Next
     "plugins": [
       {
         "name": "next"
@@ -37,69 +20,13 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "@shared/*": [
-        "./shared/*"
-      ],
-      "@/components/*": [
-        "./components/*"
-      ],
-      "@/ui/*": [
-        "./components/ui/*"
-      ],
-      "@/onboarding/*": [
-        "./components/onboarding/*"
-      ],
-      "@/recommendations/*": [
-        "./components/recommendations/*"
-      ],
-      "@/app/*": [
-        "./app/*"
-      ],
-      "@/lib/*": [
-        "./lib/*"
-      ],
-      "@/styles/*": [
-        "./styles/*"
-      ],
-      "@/public/*": [
-        "./public/*"
-      ],
-      "@/domains/*": [
-        "./domains/*"
-      ]
-    },
-    "forceConsistentCasingInFileNames": true
+      "@/*": ["./*"],
+      "@/components/*": ["./components/*"],
+      "@/lib/*": ["./lib/*"],
+      "@/styles/*": ["./styles/*"],
+      "@/public/*": ["./public/*"]
+    }
   },
-  "include": [
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    "types/**/*.d.ts",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "**/*.spec.ts",
-    "**/*.spec.tsx",
-    "tests/**",
-    "coverage/**",
-    "tmp/**",
-    "lib/testing/**",
-    "vitest.config.ts",
-    "vitest.setup.ts",
-    "jest.config.cjs",
-    "jest.setup.js",
-    "cucumber.cjs",
-    "scripts/templates/**",
-    "features/**",
-    "test-results/**",
-    "qa-baseline/**",
-    "reports/**",
-    "playwright-report/**"
-  ]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

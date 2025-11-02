@@ -3,7 +3,6 @@
 // ===== EXPERIMENT CANVAS COMPONENT =====
 // Área de trabalho visual principal do experiment builder
 
-import React, { useRef, useState, useCallback, useEffect } from "react";
 import { CanvasProps, EditableElement, DragItem } from "./types";
 import { createEditableElement } from "./types";
 import { Button } from "@/components/ui/button";

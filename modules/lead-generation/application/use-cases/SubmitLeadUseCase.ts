@@ -5,7 +5,7 @@ import {
   LeadRepository,
   RepositoryError,
 } from "../../domain/ports/LeadRepository";
-import { Result, isOk, isErr } from "@/shared/core/Result";
+import { Result, isOk, isErr } from "@/lib/core/result";
 
 export interface SubmitLeadInput {
   name: string;
@@ -41,11 +41,11 @@ export class SubmitLeadUseCase {
       if (isErr(leadResult)) {
         return leadResult;
       }
-      const lead = leadResult.value;
+      const lead = leadResult.data;
 
       // 3. Check for duplicates
       const existingLead = await this.leadRepository.findByEmail(input.email);
-      if (isOk(existingLead) && existingLead.value) {
+      if (isOk(existingLead) && existingLead.data) {
         return Result.err({
           type: "DUPLICATE_ERROR",
           message: "Lead already exists",
@@ -63,7 +63,7 @@ export class SubmitLeadUseCase {
 
       // 5. Return business result
       return Result.ok({
-        lead: saveResult.value,
+        lead: saveResult.data,
         requiresImmediateFollowUp: lead.needsImmediateFollowUp(),
         isHighValue: lead.isHighValue(),
       });

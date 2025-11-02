@@ -2,7 +2,6 @@
 // Prevents performance degradation when components become too resource-intensive
 
 import { useEffect, useRef, useState } from "react";
-import { getPerformanceCircuitBreaker } from "./use-performance-circuit-breaker";
 
 // ===== TYPES =====
 

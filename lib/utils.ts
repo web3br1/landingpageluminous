@@ -17,10 +17,10 @@ export function cn(...inputs: ClassValue[]) {
     }
   });
 
-  // If there are important classes, they take precedence over everything
+  // If there are important classes, they take precedence over regular ones
   // Important classes override regular ones due to CSS specificity
   if (importantClasses.length > 0) {
-    return twMerge(importantClasses.join(" "));
+    return importantClasses.join(" ");
   }
 
   // Otherwise, merge regular classes normally
@@ -30,6 +30,7 @@ export function cn(...inputs: ClassValue[]) {
 /**
  * Validates if a string is a valid date format
  * Supports ISO 8601 date strings and common date formats
+ * Performs strict validation to ensure date components are valid
  */
 export function isValidDateString(dateStr: string): boolean {
   if (!dateStr || typeof dateStr !== "string") {
@@ -39,7 +40,25 @@ export function isValidDateString(dateStr: string): boolean {
   // Try ISO 8601 formats (YYYY-MM-DD, YYYY-MM-DDTHH:mm:ssZ, etc.)
   const iso8601Regex =
     /^(\d{4})-(\d{2})-(\d{2})(T(\d{2}):(\d{2}):(\d{2})(\.(\d{3}))?Z?)?$/;
-  if (iso8601Regex.test(dateStr)) {
+  const match = dateStr.match(iso8601Regex);
+
+  if (match) {
+    const year = parseInt(match[1], 10);
+    const month = parseInt(match[2], 10);
+    const day = parseInt(match[3], 10);
+
+    // Basic range checks
+    if (month < 1 || month > 12 || day < 1 || day > 31) {
+      return false;
+    }
+
+    // Month-specific day validation
+    const maxDaysInMonth = [31, (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0 ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month - 1];
+    if (day > maxDaysInMonth) {
+      return false;
+    }
+
+    // Additional validation with Date constructor for time components
     const date = new Date(dateStr);
     return date instanceof Date && !isNaN(date.getTime());
   }

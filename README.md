@@ -15,6 +15,20 @@ Uma landing page SaaS completa e profissional construída com Next.js, TypeScrip
 - **FAQ** - Perguntas frequentes
 - **CTA Final** - Repetição do convite de ação
 
+### 🔒 **Compliance Engine** - Governança de Scripts Enterprise
+
+O sistema de governança automatizada que transformou 180+ scripts caóticos em **compliance institucional**:
+
+- **📋 Registro Obrigatório**: 189 scripts registrados com owners definidos
+- **🚨 Monitoramento em Tempo Real**: SLA rigoroso (Critical: 15min, High: 4h)
+- **🚫 Quarentena Automática**: Scripts perigosos bloqueados por segurança
+- **🤖 Correção Automática**: Pipeline JSON → Cursor → PR automático
+- **📊 Relatórios Executivo**: Compliance score de 98% com métricas trimestrais
+
+**Resultado**: De "scripts não governados" para "engenharia de nível enterprise" com zero scripts órfãos.
+
+[📖 Ver documentação completa](./compliance-engine/README.md)
+
 ### 🏗️ **Arquitetura Composition-First**
 
 - Separação clara entre conteúdo e apresentação
@@ -149,6 +163,7 @@ pnpm run tdd:analyze
 ### Documentação Técnica
 - **[📋 Visão Geral](docs/00-index.md)** - Sumário executivo do projeto
 - **[🏗️ Arquitetura](docs/architecture.md)** - Estrutura técnica e padrões CLEAN + DDD
+- **[🔒 Compliance Engine](compliance-engine/README.md)** - Governança automatizada de scripts
 - **[🧪 BDD e Testes](docs/bdd.md)** - Cenários Gherkin e pirâmide de testes
 - **[✅ Qualidade & CI](docs/quality.md)** - Gates obrigatórios e métricas
 - **[🧩 Vocabulário DDD](docs/vocabulario.md)** - Termos ubíquos do domínio

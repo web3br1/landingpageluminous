@@ -6,7 +6,6 @@ import {
   heroConfiguration,
   heroVariants,
 } from "../content/hero-content";
-import type { ComposedHeroData, HeroContent } from "../types/hero.types";
 import { flags } from "@/lib/flags";
 
 // Server-safe experiment variant resolution

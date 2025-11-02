@@ -1,6 +1,5 @@
 "use client";
 
-import React, { createElement, useState, useEffect, ReactElement } from "react";
 
 // Lazy load framer-motion components
 const motionComponents = new Map<string, React.ComponentType<any>>();

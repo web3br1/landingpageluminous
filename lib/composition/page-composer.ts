@@ -2,7 +2,6 @@
 // Facade for the composition system using dependency injection
 
 import { getPageCompositionService, getSSRAdapter } from "./container";
-import { validatePageComposition } from "./composer-validation";
 import "./index"; // Initialize validators
 import { logger } from "@/lib/logger";
 import {
@@ -15,8 +14,8 @@ import {
   CompositionContext,
 } from "./ports";
 import type { CompositionOptions } from "./services/page-composition-service";
-import { Ok, Err } from "@/shared/core";
-import { timed } from "@/shared/observ";
+import { Result } from "@/lib/core/result";
+const { ok: Ok, err: Err } = Result;
 
 // Re-export types for backward compatibility
 export type { SectionConfig, PageComposition };

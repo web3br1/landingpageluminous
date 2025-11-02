@@ -3,7 +3,6 @@
  * Extracted from advanced-utils.ts to reduce file size
  */
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 /**
  * Hook for debounced values

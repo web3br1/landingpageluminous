@@ -1,4 +1,3 @@
-import type { ComponentType } from "react";
 import { lazy } from "react";
 import { PlaceholderSection } from "./placeholder-section";
 

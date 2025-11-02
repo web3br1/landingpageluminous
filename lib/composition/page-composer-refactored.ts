@@ -6,7 +6,6 @@
  */
 
 import { getPageCompositionService, getSSRAdapter } from "./container";
-import { validatePageComposition } from "./composer-validation";
 import { logger } from "@/lib/logger";
 import { PageComposition, PageType, SectionConfig } from "./ports";
 

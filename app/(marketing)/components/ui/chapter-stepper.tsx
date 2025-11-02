@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Check, Circle, Play } from "lucide-react";
+import { Check } from "lucide-react";
 import { useReducedMotion } from "@/lib/hooks/use-reduced-motion";
 
 interface Step {

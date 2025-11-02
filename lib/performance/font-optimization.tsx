@@ -214,7 +214,6 @@ export function useDynamicFont(
         // Dynamic import of additional fonts if needed
         if (fontName === "display") {
           // Load display font dynamically
-          const { Poppins } = await import("next/font/google");
           // Font loading logic here
         }
 

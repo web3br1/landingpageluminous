@@ -1,6 +1,5 @@
 // Phase 3 Telemetry - Minimal observability for critical issues
 
-import { timed } from "../shared/observ";
 
 // Telemetry events for Phase 3 fixes
 export const telemetry = {

@@ -4,7 +4,6 @@ import { SectionRegistry } from "../registry/section-registry";
 // ===== LOADING PRIORITIES =====
 export enum LoadingPriority {
   IMMEDIATE = 0, // Load immediately (critical sections)
-  HIGH = 1, // Load soon after (important sections)
   MEDIUM = 2, // Load on viewport (secondary sections)
   LOW = 3, // Load on user interaction (rarely used)
   DEFERRED = 4, // Load only when needed (very rarely used)

@@ -14,7 +14,6 @@ import {
 } from "@/lib/utils/browser-storage";
 import { createPropValidator } from "../../lib/architecture/component-props";
 import { withComponentContext } from "../../lib/architecture/logger-pattern";
-import { SimpleErrorBoundary, withErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
 
 // Cache for UX state calculations (performance optimization)
 const uxStateCache = new Map<string, { data: any; timestamp: number }>();

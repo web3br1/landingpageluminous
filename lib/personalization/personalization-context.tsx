@@ -14,7 +14,6 @@ import {
   PersonalizationRule,
   PersonalizedContent,
 } from "./types";
-import { validateEnvelopeStrict } from "@/lib/composition/composer-validation";
 import { analytics } from "@/lib/analytics-core";
 
 // Default user segments

@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useDirector } from "@/lib/animation/director-api";
 import { AnimationLayer } from "@/lib/animation/layers-model";
 import { cn } from "@/lib/utils";

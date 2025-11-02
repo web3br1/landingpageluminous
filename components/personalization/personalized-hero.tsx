@@ -4,7 +4,6 @@ import React from "react";
 import { useExperiment, useABContent } from "@/lib/hooks/use-feature-flags";
 import { usePersonalization } from "@/lib/personalization/personalization-context";
 import { PersonalizedCTA } from "../ui/personalized-cta";
-import { createPerformanceValidator } from "../../lib/architecture/component-props";
 import { withComponentContext } from "../../lib/architecture/logger-pattern";
 import { SimpleErrorBoundary } from "../../lib/architecture/error-boundary-pattern";
 

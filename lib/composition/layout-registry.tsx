@@ -1,7 +1,6 @@
 // Layout Registry System
 // Similar to Section Registry but for layouts - ensures consistent layout composition
 
-import React, { ReactNode } from "react";
 
 // Import provider components
 import { ThemeProvider } from "@/lib/theme/theme-context";

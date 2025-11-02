@@ -4,7 +4,6 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { formatBytes } from "@/lib/utils/formatters";
 import {
   lazyLoadingMetrics,
   LazyLoadSummary,

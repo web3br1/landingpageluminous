@@ -14,9 +14,6 @@ function LazyLoadingInitializer() {
     // Client-side lazy loading policy initialization
     const initializeLazyLoadingPolicies = async () => {
       try {
-        const { LazyLoadingPolicy } = await import(
-          "../lib/composition/performance/lazy-loading-policy"
-        );
         // Policies initialization removed - not available in current implementation
         console.log("[LazyLoading] Policies initialized successfully");
       } catch (error) {
@@ -67,7 +64,6 @@ import {
   DevelopmentOnly,
 } from "../lib/environment/environment-provider";
 import { DebugOverlay } from "../lib/dev-tools/visual-debugger";
-import { useCoreWebVitalsTracking } from "../lib/seo/seo-optimizer";
 
 // Performance Monitor Initialization Component - DISABLED temporarily due to SSR issues
 // function PerformanceMonitorInitializer() {

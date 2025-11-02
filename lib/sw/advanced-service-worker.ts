@@ -119,7 +119,7 @@ const CACHE_STRATEGIES: CacheStrategy[] = [
 ];
 
 // Performance monitoring
-let performanceMetrics: PerformanceMetrics = {
+const performanceMetrics: PerformanceMetrics = {
   lcp: 0,
   cls: 0,
   inp: 0,

@@ -3,7 +3,6 @@
  * Rota avançada com processamento assíncrono, retry logic e dead letter queues
  */
 
-import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import {
   createSuccessResponse,

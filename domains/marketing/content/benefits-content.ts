@@ -1,7 +1,6 @@
 // Content Layer - Benefits Section Content
 // Separated content from presentation - Single source of truth for benefits content
 
-import type { BenefitContent, BenefitsContent } from "../types/benefits.types";
 
 export const benefitsContentVariants: Record<string, BenefitsContent> = {
   default: {

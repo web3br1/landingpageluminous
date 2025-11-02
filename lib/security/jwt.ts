@@ -26,7 +26,6 @@ async function getJose() {
         ) => ({
           payload: { sub: "mock", exp: Date.now() / 1000 + 3600 },
         }),
-        importJWK: async (_jwk: unknown) => ({ type: "secret" }),
       } as any);
     } else {
       josePromise = import('jose');

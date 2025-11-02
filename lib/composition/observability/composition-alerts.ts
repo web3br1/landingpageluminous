@@ -1,6 +1,5 @@
 import { metrics } from "../../observability/metrics";
 import { logger } from "../../observability/logger";
-import type { PageType, SectionId } from "../ports";
 
 // ===== ALERT TYPES =====
 

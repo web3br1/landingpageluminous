@@ -33,7 +33,7 @@ import {
   IPageConfigurationProvider,
   PageConfigurationProvider,
 } from "./services/page-configuration-provider";
-import { Result } from "@/shared/core";
+import { Result } from "@/lib/core/result";
 
 // Observability imports
 import { logger } from "../observability/logger";

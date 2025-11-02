@@ -8,7 +8,6 @@
 import { logger } from "../observability/logger";
 import { smartThresholdManager, AdaptiveThresholds } from "./core/smart-threshold-manager";
 import { intelligentCacheManager } from "./core/intelligent-cache-manager";
-import { contextAwareLoader, LoadingResult } from "./core/context-aware-loader";
 import { performanceMonitor } from "./core/performance-monitor";
 
 /**

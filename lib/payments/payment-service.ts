@@ -1,10 +1,8 @@
-import { Result, isOk, isErr } from "../../shared/core/Result";
 import {
   StripePaymentService,
   PaymentIntent,
   SubscriptionData as StripeSubscription,
 } from "./stripe";
-import { PagBankService, PagBankOrder, PagBankSubscription } from "./pagbank";
 
 export type PaymentProvider = "stripe" | "pagbank";
 

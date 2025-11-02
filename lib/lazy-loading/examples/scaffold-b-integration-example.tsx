@@ -1,6 +1,5 @@
 "use client";
 
-import React, { Suspense } from "react";
 import { ProgressiveLoader, createLoaderConfig } from "../core/progressive-loader";
 
 /**

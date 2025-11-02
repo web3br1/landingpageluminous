@@ -2,7 +2,6 @@
  * Rate limiting API utilities for client-side integration
  */
 
-import { logger, withComponentContext, createTimedLogger } from "../architecture/logger-pattern";
 import { sha256Hash, hmacSha256 } from "../architecture/crypto-utils";
 
 interface RateLimitCheckRequest {

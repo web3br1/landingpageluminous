@@ -1,4 +1,3 @@
-import { Metadata } from "next";
 
 /**
  * Safe property access for rich snippets data

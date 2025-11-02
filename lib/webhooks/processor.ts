@@ -16,7 +16,6 @@ import {
   WebhookStatus,
   WEBHOOK_CONSTANTS,
 } from "./types";
-import { WebhookQueue, WebhookQueueManager } from "./queue";
 import { DeadLetterQueue } from "./dead-letter";
 
 /**

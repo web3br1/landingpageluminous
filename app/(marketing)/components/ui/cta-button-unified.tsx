@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { Slot } from "@radix-ui/react-slot";
 import { Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { z } from "zod";
@@ -16,7 +15,6 @@ import { useAnimations } from "@/lib/hooks/use-animations";
 import { useExperimentTracking } from "@/lib/experiments/hooks";
 import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { createPropValidator } from "../../../../lib/architecture/component-props";
-import { logger, withComponentContext } from "../../../../lib/architecture/logger-pattern";
 
 // Schema for CTA props validation
 const CTAPropsSchema = z.object({

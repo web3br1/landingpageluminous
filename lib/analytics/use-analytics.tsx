@@ -7,9 +7,8 @@ import {
   trackConversion,
 } from "./advanced-analytics";
 import { isHTMLElement, isHTMLInputElement, isHTMLFormElement } from "@/lib/utils/dom-type-guards";
-import { withComponentContext, createTimedLogger } from "@/lib/architecture/logger-pattern";
 import { usePerformanceMonitor } from "@/lib/performance/optimized-lazy-loading";
-import { AnalyticsEvent, PageComposition } from "@/shared/analytics-types";
+import { AnalyticsEvent, PageComposition } from "./types";
 
 interface UseAnalyticsOptions {
   trackPageViews?: boolean;

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, HelpCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
 import type { FaqSectionProps } from "@/domains/marketing";
 
 export function Faq({

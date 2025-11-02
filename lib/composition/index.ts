@@ -1,7 +1,6 @@
 // Composition System - Main Exports
 // Orchestration layer for page and section composition
 
-import { ComposerGuard } from "./composer-validation";
 
 // ComposerGuard initialization handled internally
 

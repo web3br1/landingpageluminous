@@ -1,8 +1,7 @@
 // Fallback Provider - Single Responsibility: Provide fallback content and compositions
 // Application Layer Service implementing IFallbackProvider
 
-import { Result, isOk } from "@/shared/core";
-import { AppError } from "@/shared/errors";
+import { Result, AppError, isOk } from "@/lib/core/result";
 import {
   IFallbackProvider,
   PageType,

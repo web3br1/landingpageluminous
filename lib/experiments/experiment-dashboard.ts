@@ -10,7 +10,6 @@ import {
   getAllExperimentMetrics,
   getExperimentMetrics,
 } from "../analytics/experiment-analytics";
-import type { Experiment, ExperimentMetrics } from "./types";
 
 export interface DashboardData {
   experiments: ExperimentStatus[];

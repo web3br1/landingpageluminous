@@ -3,7 +3,6 @@
 // ===== PERFORMANCE MONITORING SYSTEM =====
 // Sistema avançado de monitoramento de performance para design system
 
-import React, { forwardRef } from "react";
 import {
   safeWindowAccess,
   safeDocumentAccess,

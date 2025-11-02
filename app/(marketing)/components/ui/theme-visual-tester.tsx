@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import { useState, useEffect } from "react";
-import { useTheme, themeUtils } from "@/lib/theme/theme-context";
 import { COLORS } from "@/lib/theme/colors";
 import { CtaButton } from "./cta-button-unified";
 import { useAnimations } from "@/lib/hooks/use-animations";

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 import { flags, type Experiment } from "@/lib/flags";

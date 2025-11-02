@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { defaultSeo, jsonLd } from "../seo";
 import {
   generateCanonicalUrl,
   generateCanonicalMetadata,

@@ -122,7 +122,7 @@ export function OptimizedImage({
     onLoad?.();
   };
 
-  const handleError = (error: any) => {
+  const handleError = (error: ErrorEvent) => {
     setHasError(true);
     onError?.(error);
   };

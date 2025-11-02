@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useRef } from "react";
 import { cacheManager } from "./cache-manager";
-import { ImageCache } from "./image-optimization";
 import {
   safeWindowAccess,
   safeDocumentAccess,

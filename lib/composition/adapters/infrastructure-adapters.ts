@@ -1,9 +1,7 @@
 // Infrastructure Adapters - Implement ports with concrete dependencies
 // Infrastructure Layer: Concrete implementations of application ports
 
-import { Result } from "@/shared/core";
-import { AppError } from "@/shared/errors";
-import { timed } from "@/shared/observ";
+import { Result, AppError } from "@/lib/core/result";
 import type { PageType, PageMetadata, SectionId } from "../ports";
 import {
   IExperimentService,

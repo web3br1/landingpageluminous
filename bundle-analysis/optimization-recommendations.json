@@ -2,8 +2,8 @@
   {
     "category": "Bundle Size",
     "priority": "CRITICAL",
-    "description": "Bundle muito grande (1.86MB > 1.1MB)",
-    "impact": "Reduzir 39.99536413895456% do tamanho",
+    "description": "Bundle muito grande (1.87MB > 1.1MB)",
+    "impact": "Reduzir 40.44188449257298% do tamanho",
     "implementation": "Implementar code splitting urgente e tree shaking"
   },
   {

@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
 import { useAnalytics } from "@/lib/analytics/use-analytics";
 import { usePerformanceMonitor } from "@/lib/performance/optimized-lazy-loading";
 import { withComponentContext, createTimedLogger } from "@/lib/architecture/logger-pattern";

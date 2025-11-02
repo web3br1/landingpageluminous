@@ -1,7 +1,6 @@
 // API endpoint for monitoring reports
 // Provides insights on error patterns and performance issues
 
-import { NextRequest, NextResponse } from "next/server";
 import {
   createSuccessResponse,
   createErrorResponse,

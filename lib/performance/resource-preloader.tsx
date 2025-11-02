@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import { ImageCache, criticalImages } from "./image-optimization";
 import { cacheManager } from "./cache-manager";
 
 // Resource preloader for critical assets

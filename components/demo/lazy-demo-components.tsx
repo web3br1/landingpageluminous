@@ -2,7 +2,6 @@
 // Demo components often have heavy animations and are not critical for initial load
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 // Loading fallback for demo components
 const DemoLoadingFallback = () => (

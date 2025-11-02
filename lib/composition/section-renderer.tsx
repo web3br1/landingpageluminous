@@ -5,7 +5,6 @@
 
 "use client";
 
-import React, { Suspense, lazy, ComponentType } from "react";
 import { SectionId } from "./registry/section-registry";
 import { SectionErrorBoundary } from "../section-error-boundary";
 

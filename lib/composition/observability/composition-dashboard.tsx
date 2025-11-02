@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { compositionMetrics, CompositionMetrics } from "./composition-metrics";
 import { compositionAlerts, Alert, AlertSeverity } from "./composition-alerts";
 
 // ===== TYPES =====

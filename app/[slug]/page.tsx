@@ -1,10 +1,4 @@
-import { headers } from "next/headers";
-import { composePageFull } from "@/lib/composition/page-composer";
-import { getServerFlags } from "@/lib/flags/server-flags";
-import { FrozenFlagsProvider } from "@/lib/flags/context";
-import { PageRenderer } from "@/lib/composition/page-renderer";
 import type { Metadata } from "next";
-import { notFound, redirect } from "next/navigation";
 
 export const revalidate = 3600;
 

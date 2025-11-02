@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useEffect, useCallback } from "react";
 
 interface CWVMetrics {
   lcp: number;

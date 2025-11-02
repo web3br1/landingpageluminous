@@ -1,16 +1,72 @@
 [
   {
-    "timestamp": "2025-10-30T21:54:18.693Z",
-    "totalSize": 1950301,
+    "timestamp": "2025-11-01T01:00:03.957Z",
+    "totalSize": 112594,
     "totalChunks": 0,
     "buildTime": 0,
-    "estimatedGzippedSize": 585090
+    "estimatedGzippedSize": 33778
   },
   {
-    "timestamp": "2025-10-30T22:36:01.949Z",
-    "totalSize": 1950259,
+    "timestamp": "2025-11-01T01:02:05.774Z",
+    "totalSize": 112594,
     "totalChunks": 0,
     "buildTime": 0,
-    "estimatedGzippedSize": 585078
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T01:06:57.824Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T02:46:17.295Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T02:47:57.076Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T02:52:43.989Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T03:16:55.453Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T03:20:24.890Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-01T06:43:31.834Z",
+    "totalSize": 112594,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 33778
+  },
+  {
+    "timestamp": "2025-11-02T05:27:19.265Z",
+    "totalSize": 1959155,
+    "totalChunks": 0,
+    "buildTime": 0,
+    "estimatedGzippedSize": 587747
   }
 ]

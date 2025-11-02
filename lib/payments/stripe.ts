@@ -1,4 +1,4 @@
-import { Result } from "../../shared/core/Result";
+import { Result } from "@/lib/core/result";
 
 // Lazy load Stripe to reduce initial bundle size
 let stripeInstance: any = null;

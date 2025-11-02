@@ -2,7 +2,6 @@
 
 import React, { Suspense, useEffect, useState, useCallback } from "react";
 import { SectionId } from "../registry/section-registry";
-import { LoadingTrigger } from "./lazy-loading-policy";
 
 /**
  * Progressive Loading Stages - Fase 1 Foundation

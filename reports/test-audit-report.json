@@ -1,0 +1,208 @@
+{
+  "repo": {
+    "name": "luminaris-core",
+    "scanned_at": "2025-11-01T06:06:57.144Z",
+    "branch": "main",
+    "commit": "a13f9c2",
+    "language": [
+      "ts",
+      "tsx",
+      "js"
+    ]
+  },
+  "summary": {
+    "total_issues": 7,
+    "by_severity": {
+      "critical": 2,
+      "high": 10,
+      "medium": 0,
+      "low": 2
+    },
+    "by_category": {
+      "compliance": 8,
+      "security": 4,
+      "dead_code": 2
+    },
+    "top_risk_files": [
+      "quality-dashboard.ps1",
+      "scripts/activate-depreciation-engine.mjs",
+      "scripts/migrate-to-legacy.mjs",
+      "scripts/update-script-registry.mjs",
+      "lib/security/jwt.ts"
+    ],
+    "notes": "2 critical security/compliance issues require immediate attention. Security issues detected - review before deployment"
+  },
+  "issues": [
+    {
+      "id": "compliance-quality-dashboard-quarantine-expired",
+      "file_path": "quality-dashboard.ps1",
+      "line": 1,
+      "symbol": "quality-dashboard",
+      "description": "Script em quarentena há 20393 dias, requer revisão",
+      "category": "compliance",
+      "subcategory": "quarantine-expired",
+      "severity": "high",
+      "priority_score": 7,
+      "relations": {
+        "owner": "Quality Team",
+        "status": "quarantined",
+        "age_in_days": 0,
+        "author": "Quality Team"
+      },
+      "proposed_fix": "Review quarantined script quality-dashboard and either fix issues or deprecate."
+    },
+    {
+      "id": "compliance-activate-depreciation-engine-approval-pending",
+      "file_path": "scripts/activate-depreciation-engine.mjs",
+      "line": 1,
+      "symbol": "activate-depreciation-engine",
+      "description": "Script aguardando aprovação inicial",
+      "category": "compliance",
+      "subcategory": "approval-pending",
+      "severity": "high",
+      "priority_score": 7,
+      "relations": {
+        "owner": "quality-team",
+        "status": "unapproved",
+        "age_in_days": 0,
+        "author": "quality-team"
+      },
+      "proposed_fix": "Review and approve script activate-depreciation-engine for production use."
+    },
+    {
+      "id": "compliance-migrate-to-legacy-approval-pending",
+      "file_path": "scripts/migrate-to-legacy.mjs",
+      "line": 1,
+      "symbol": "migrate-to-legacy",
+      "description": "Script aguardando aprovação inicial",
+      "category": "compliance",
+      "subcategory": "approval-pending",
+      "severity": "high",
+      "priority_score": 7,
+      "relations": {
+        "owner": "quality-team",
+        "status": "unapproved",
+        "age_in_days": 0,
+        "author": "quality-team"
+      },
+      "proposed_fix": "Review and approve script migrate-to-legacy for production use."
+    },
+    {
+      "id": "compliance-update-script-registry-approval-pending",
+      "file_path": "scripts/update-script-registry.mjs",
+      "line": 1,
+      "symbol": "update-script-registry",
+      "description": "Script aguardando aprovação inicial",
+      "category": "compliance",
+      "subcategory": "approval-pending",
+      "severity": "high",
+      "priority_score": 7,
+      "relations": {
+        "owner": "quality-team",
+        "status": "unapproved",
+        "age_in_days": 0,
+        "author": "quality-team"
+      },
+      "proposed_fix": "Review and approve script update-script-registry for production use."
+    },
+    {
+      "id": "code-001",
+      "file_path": "lib/security/jwt.ts",
+      "line": 56,
+      "symbol": "verifyToken",
+      "description": "JWT sendo processado com 'jose' sem try/catch ou fallback handling.",
+      "category": "security",
+      "subcategory": "unhandled_auth_flow",
+      "severity": "high",
+      "priority_score": 9,
+      "relations": {
+        "route": "app/api/auth/login/route.ts",
+        "service": "jose",
+        "author": "Marina",
+        "age_in_days": 3
+      },
+      "proposed_fix": "Wrap the jose call in try/catch, invalidate session on failure, and do not just console.log the error."
+    },
+    {
+      "id": "code-002",
+      "file_path": "app/api/monitoring/error/route.ts",
+      "line": 1,
+      "symbol": "POST",
+      "description": "Public debug endpoint that returns 200 without domain logic or auth.",
+      "category": "security",
+      "subcategory": "unprotected_route",
+      "severity": "critical",
+      "priority_score": 11,
+      "relations": {
+        "route": "/monitoring/error",
+        "author": "Desenvolvedor Luminaris",
+        "age_in_days": 2,
+        "is_public": true
+      },
+      "proposed_fix": "Either protect this route behind admin auth / feature flag dev-only, or remove it entirely before production."
+    },
+    {
+      "id": "code-003",
+      "file_path": "components/AnimatedBackground.tsx",
+      "line": 1,
+      "symbol": "AnimatedBackground",
+      "description": "Component exported but never imported anywhere.",
+      "category": "dead_code",
+      "subcategory": "unused_export",
+      "severity": "low",
+      "priority_score": 3,
+      "relations": {
+        "author": "Desenvolvedor Luminaris",
+        "age_in_days": 28,
+        "is_public": false,
+        "connected_files": []
+      },
+      "proposed_fix": "Delete this component if it's not part of an in-progress feature. If it's still planned, add TODO comment with intended usage and deadline."
+    }
+  ],
+  "actions": {
+    "immediate": [
+      "Address all critical severity issues immediately",
+      "Review and fix all high severity security issues",
+      "Secure or remove all public debug/monitoring routes with no auth",
+      "Add proper error/fallback handling to security-critical functions"
+    ],
+    "cleanup_candidates": [],
+    "owners": {
+      "Quality Team": {
+        "owner": "Quality Team",
+        "files": [
+          "quality-dashboard.ps1"
+        ],
+        "pending": [
+          "Review quarantined script quality-dashboard and either fix issues or deprecate."
+        ]
+      },
+      "quality-team": {
+        "owner": "quality-team",
+        "files": [
+          "scripts/activate-depreciation-engine.mjs",
+          "scripts/migrate-to-legacy.mjs",
+          "scripts/update-script-registry.mjs"
+        ],
+        "pending": [
+          "Review and approve script activate-depreciation-engine for production use.",
+          "Review and approve script migrate-to-legacy for production use.",
+          "Review and approve script update-script-registry for production use."
+        ]
+      },
+      "unassigned": {
+        "owner": "unassigned",
+        "files": [
+          "lib/security/jwt.ts",
+          "app/api/monitoring/error/route.ts",
+          "components/AnimatedBackground.tsx"
+        ],
+        "pending": [
+          "Wrap the jose call in try/catch, invalidate session on failure, and do not just console.log the error.",
+          "Either protect this route behind admin auth / feature flag dev-only, or remove it entirely before production."
+        ]
+      }
+    }
+  }
+}

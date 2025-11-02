@@ -1,7 +1,7 @@
 // Email Service - Basic email sending for Stripe webhooks
 // Temporary implementation until full email system is ready
 
-import { Result } from "../../shared/core/Result";
+import { Result } from "@/lib/core/result";
 import { edgeCache as cache } from "../cache/edge-cache";
 
 export interface EmailMessage {

@@ -2,7 +2,7 @@
 import { Checkout } from "../../domain/entities/Checkout";
 import { PaymentMethod } from "../../domain/value-objects/PaymentMethod";
 import { CheckoutRepository } from "../../domain/ports/CheckoutRepository";
-import { Result, isOk, isErr } from "@/shared/core/Result";
+import { Result, isOk, isErr } from "@/lib/core/result";
 
 export interface ProcessCheckoutInput {
   leadId: string;
@@ -36,7 +36,7 @@ export class ProcessCheckoutUseCase {
       if (isErr(checkoutResult)) {
         return checkoutResult;
       }
-      const savedCheckout = checkoutResult.value;
+      const savedCheckout = checkoutResult.data;
 
       // Process payment and finalize
       return await this.processPaymentAndFinalize(savedCheckout);
@@ -58,8 +58,8 @@ export class ProcessCheckoutUseCase {
     const existingCheckout = await this.checkoutRepository.findByLeadId(
       input.leadId,
     );
-    if (isOk(existingCheckout) && existingCheckout.value.length > 0) {
-      const activeCheckout = existingCheckout.value.find((c) =>
+    if (isOk(existingCheckout) && existingCheckout.data.length > 0) {
+      const activeCheckout = existingCheckout.data.find((c) =>
         c.canBeProcessed(),
       );
       if (activeCheckout) {
@@ -81,7 +81,7 @@ export class ProcessCheckoutUseCase {
     if (isErr(checkoutResult)) {
       return checkoutResult;
     }
-    const checkout = checkoutResult.value;
+    const checkout = checkoutResult.data;
 
     // 4. Persist checkout
     const saveResult = await this.checkoutRepository.save(checkout);
@@ -92,7 +92,7 @@ export class ProcessCheckoutUseCase {
       });
     }
 
-    return Result.ok(saveResult.value);
+    return Result.ok(saveResult.data);
   }
 
   private async processPaymentAndFinalize(
@@ -129,8 +129,8 @@ export class ProcessCheckoutUseCase {
     );
 
     return Result.ok({
-      checkout: updateResult.value,
-      paymentUrl: paymentResult.value.paymentUrl,
+      checkout: updateResult.data,
+      paymentUrl: paymentResult.data.paymentUrl,
       estimatedCompletion,
     });
   }

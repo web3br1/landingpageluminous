@@ -1,4 +1,3 @@
-import { getSSRAdapter } from "../composition/container";
 
 // ===== METRIC TYPES =====
 

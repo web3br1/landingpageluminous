@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { AlertTriangle, TrendingUp, Zap, Bug, RefreshCw } from "lucide-react";
 import { Button } from "@/app/(marketing)/components/ui/button";
 import { useResilientFetch } from "@/lib/network/use-resilient-fetch";

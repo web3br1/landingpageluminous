@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, ExternalLink, Star, TrendingUp } from "lucide-react";
 import {
   ProductRecommendation,
   recommendationEngine,

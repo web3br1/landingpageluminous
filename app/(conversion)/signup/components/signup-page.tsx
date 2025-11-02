@@ -8,21 +8,7 @@ import {
   Building,
   Target,
   CheckCircle,
-  ArrowRight,
-  ArrowLeft,
-  Eye,
-  EyeOff,
-  Info,
-  Loader2,
-  Mail,
-  Phone,
-  MapPin,
-  Zap,
 } from "lucide-react";
-import { Section } from "@/components/ui/section";
-import { CTA } from "@/components/ui/cta-button-unified";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 interface SignupData {
   // Step 1: Profile
@@ -92,56 +78,10 @@ const steps = [
   },
 ];
 
-const challenges = [
-  "Análise manual de dados leva muito tempo",
-  "Relatórios desatualizados ou incorretos",
-  "Dificuldade em tomar decisões rápidas",
-  "Falta de previsibilidade nos resultados",
-  "Dados espalhados em várias ferramentas",
-  "Sem insights acionáveis dos dados",
-  "Relatórios complexos demais para stakeholders",
-  "Custos altos com ferramentas de BI",
-];
-
-const industries = [
-  "Varejo e E-commerce",
-  "Serviços (salão, clínica, consultoria)",
-  "Indústria e Manufatura",
-  "Tecnologia e Software",
-  "Financeiro e Contábil",
-  "Saúde e Bem-estar",
-  "Educação",
-  "Outros",
-];
-
-const roles = [
-  "CEO / Fundador",
-  "Diretor / COO",
-  "Gerente de Vendas",
-  "Gerente Financeiro",
-  "Analista de Dados",
-  "Gerente de Operações",
-  "Consultor",
-  "Outro",
-];
-
-const discoveryChannels = [
-  "Google / Busca",
-  "Redes Sociais",
-  "Indicação",
-  "LinkedIn",
-  "Blog / Artigo",
-  "Evento / Webinar",
-  "Parceiro",
-  "Outro",
-];
-
 export function SignupPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState<SignupData>(initialData);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string | undefined }>(
     {},
   );
@@ -259,14 +199,6 @@ export function SignupPage() {
     }
   };
 
-  const handleChallengeToggle = (challenge: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      challenges: prev.challenges.includes(challenge)
-        ? prev.challenges.filter((c) => c !== challenge)
-        : [...prev.challenges, challenge],
-    }));
-  };
 
   const handleSubmit = async () => {
     if (!validateStep(4)) return;
@@ -286,7 +218,6 @@ export function SignupPage() {
     console.log("Signup completed:", formData);
   };
 
-  const progressPercentage = ((currentStep - 1) / (steps.length - 1)) * 100;
 
   // Função auxiliar para renderizar step 1
   const renderStep1 = () => (

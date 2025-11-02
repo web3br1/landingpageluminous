@@ -1,6 +1,5 @@
 "use client";
 
-import React, { JSX } from "react";
 import {
   useExperiment,
   getVariantContent,

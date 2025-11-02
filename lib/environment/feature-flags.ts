@@ -8,7 +8,6 @@ import {
   Environment,
   FeatureFlag,
 } from "./environment-manager";
-import { logger } from "../observability/logger";
 import { getEnhancedLogger } from "../observability/log-aggregator";
 
 /**

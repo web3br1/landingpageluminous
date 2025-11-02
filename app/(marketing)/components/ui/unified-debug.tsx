@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { flags, type Experiment } from "@/lib/flags";
-import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 import { DEBUG_CONFIG } from "@/lib/hooks/scroll-config";
 
 interface UnifiedDebugProps {
