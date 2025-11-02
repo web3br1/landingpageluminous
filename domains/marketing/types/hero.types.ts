@@ -24,6 +24,9 @@ export interface HeroContent {
     experimentId?: string;
     variant?: string;
     section: "hero";
+    sectionId?: string;
+    eventCategory?: string;
+    eventAction?: string;
   };
 }
 

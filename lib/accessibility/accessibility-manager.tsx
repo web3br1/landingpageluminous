@@ -8,6 +8,7 @@ import React, {
   ReactNode,
 } from "react";
 import Image from "next/image";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 import { getSSRAdapter } from "../composition/container";
 
 // ===== ACCESSIBILITY CONTEXT =====
@@ -148,8 +149,8 @@ export function AccessibilityProvider({
   // Focus management
   const focusElement = (selector: string) => {
     if (ssrAdapter.isClientContext()) {
-      const element = document.querySelector(selector) as HTMLElement;
-      if (element) {
+      const element = document.querySelector(selector);
+      if (isHTMLElement(element)) {
         element.focus();
         // Ensure element is visible
         element.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -167,22 +168,22 @@ export function AccessibilityProvider({
     const focusableElements = container.querySelectorAll(
       'a[href], button, textarea, input[type="text"], input[type="radio"], input[type="checkbox"], select',
     );
-    const firstElement = focusableElements[0] as HTMLElement;
-    const lastElement = focusableElements[
-      focusableElements.length - 1
-    ] as HTMLElement;
+    const firstElement = isHTMLElement(focusableElements[0]) ? focusableElements[0] : null;
+    const lastElement = isHTMLElement(focusableElements[focusableElements.length - 1])
+      ? focusableElements[focusableElements.length - 1]
+      : null;
 
     const handleTabKey = (e: KeyboardEvent) => {
       if (e.key !== "Tab") return;
 
       if (e.shiftKey) {
-        if (document.activeElement === firstElement) {
-          lastElement.focus();
+        if (document.activeElement === firstElement && lastElement) {
+          (lastElement as HTMLElement).focus();
           e.preventDefault();
         }
       } else {
-        if (document.activeElement === lastElement) {
-          firstElement.focus();
+        if (document.activeElement === lastElement && firstElement) {
+          (firstElement as HTMLElement).focus();
           e.preventDefault();
         }
       }
@@ -573,7 +574,7 @@ export function AccessibleField({
             "aria-describedby": ariaDescribedBy || undefined,
             "aria-invalid": error ? "true" : undefined,
             required,
-          } as any,
+          } as unknown,
         )}
       </div>
 

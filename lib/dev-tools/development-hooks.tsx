@@ -37,8 +37,8 @@ interface ComponentDebugInfo {
 
 export function useComponentDebugger(
   componentName: string,
-  props?: Record<string, any>,
-  state?: Record<string, any>,
+  props?: Record<string, unknown>,
+  state?: Record<string, unknown>,
 ) {
   const isDev = useDevelopmentMode();
   const [debugInfo, setDebugInfo] = useState<ComponentDebugInfo>({
@@ -98,7 +98,7 @@ export function useComponentDebugger(
 
   // Track effect runs
   const trackEffect = useCallback(
-    (effectName: string, deps?: any[]) => {
+    (effectName: string, deps?: unknown[]) => {
       if (!isDev) return;
 
       setDebugInfo((prev) => ({
@@ -283,7 +283,7 @@ export function usePerformanceMonitor(
 interface ErrorBoundaryState {
   hasError: boolean;
   error: Error | null;
-  errorInfo: any;
+  errorInfo: unknown;
   errorId: string;
 }
 
@@ -311,7 +311,7 @@ export class DebugErrorBoundary extends React.Component<
     };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: unknown) {
     const isDev = process.env.NODE_ENV === "development";
 
     // Log error with full context
@@ -623,7 +623,7 @@ export function useCompositionDebugger(pageType: string) {
   });
 
   const trackComposition = useCallback(
-    (sections: any[], renderTime: number) => {
+    (sections: unknown[], renderTime: number) => {
       if (!isDev) return;
 
       setCompositionData({

@@ -6,6 +6,84 @@ import { logger } from "@/lib/logger";
 
 // ===== ANALYTICS LOGGING HELPERS =====
 
+export interface AnalyticsMetadata {
+  // User interaction details
+  elementId?: string;
+  elementType?: string;
+  elementText?: string;
+  position?: { x: number; y: number };
+  // Form interaction details
+  formId?: string;
+  fieldName?: string;
+  fieldValue?: string;
+  validationErrors?: string[];
+  // Navigation details
+  targetUrl?: string;
+  navigationType?: "link" | "button" | "form" | "programmatic";
+  // Performance details
+  loadTime?: number;
+  responseTime?: number;
+  errorCode?: string | number;
+  // Business context
+  productId?: string;
+  categoryId?: string;
+  searchQuery?: string;
+  filterApplied?: string[];
+  // Custom metadata
+  [key: string]: unknown;
+}
+
+// ===== ANALYTICS API RESPONSE TYPES =====
+
+export interface AnalyticsApiRequest {
+  events: Array<{
+    eventType: string;
+    eventCategory?: string;
+    eventAction?: string;
+    eventLabel?: string;
+    eventValue?: number;
+    userId?: string;
+    sessionId?: string;
+    timestamp: number;
+    pagePath?: string;
+    componentName?: string;
+    experimentId?: string;
+    experimentVariant?: string;
+    funnelStep?: number;
+    conversionType?: string;
+    conversionValue?: number;
+    scrollDepth?: number;
+    timeOnPage?: number;
+    userAgent?: string;
+    url?: string;
+    referrer?: string;
+    metadata?: AnalyticsMetadata;
+  }>;
+  sessionId: string;
+  userId?: string;
+  timestamp: number;
+}
+
+export interface AnalyticsApiResponse {
+  success: boolean;
+  processedEvents: number;
+  errors?: Array<{
+    eventIndex: number;
+    error: string;
+    code?: string;
+  }>;
+  requestId: string;
+  processingTime: number;
+  timestamp: number;
+}
+
+export interface AnalyticsBatchResponse extends AnalyticsApiResponse {
+  batchId: string;
+  totalEvents: number;
+  queuedEvents: number;
+  failedEvents: number;
+}
+
 interface AnalyticsLogContext {
   eventType: string;
   eventCategory?: string;
@@ -26,7 +104,7 @@ interface AnalyticsLogContext {
   userAgent?: string;
   url?: string;
   referrer?: string;
-  metadata?: Record<string, any>;
+  metadata?: AnalyticsMetadata;
   traceId?: string;
 }
 
@@ -166,7 +244,7 @@ interface UserEvent {
   value?: number;
   timestamp: number;
   element?: ElementInfo;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 interface Conversion {
@@ -176,7 +254,7 @@ interface Conversion {
   timestamp: number;
   source?: string;
   campaign?: string;
-  metadata?: Record<string, any>;
+  metadata?: AnalyticsMetadata;
 }
 
 interface DeviceInfo {
@@ -281,6 +359,11 @@ class AdvancedAnalyticsEngine {
     if (typeof window !== "undefined") {
       this.initializeAnalytics();
     }
+  }
+
+  // Public flush method for external calls
+  async flush(): Promise<void> {
+    await this.flushEvents();
   }
 
   static getInstance(): AdvancedAnalyticsEngine {
@@ -558,7 +641,7 @@ class AdvancedAnalyticsEngine {
     action: string,
     label?: string,
     value?: number,
-    context?: Record<string, any>,
+    context?: Record<string, unknown>,
   ): Promise<void> {
     if (!this.currentJourney) return;
 
@@ -591,7 +674,7 @@ class AdvancedAnalyticsEngine {
     type: string,
     value?: number,
     currency: string = "BRL",
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ): Promise<void> {
     if (!this.currentJourney) return;
 

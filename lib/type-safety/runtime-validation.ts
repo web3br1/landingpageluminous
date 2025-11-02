@@ -363,7 +363,7 @@ export function validateWithConfig<T>(
 
 const validationCache = new Map<
   string,
-  { schema: z.ZodSchema<any>; result: any }
+  { schema: z.ZodSchema<unknown>; result: unknown }
 >();
 
 export function cachedValidation<T>(

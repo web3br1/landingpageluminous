@@ -33,7 +33,7 @@ interface UseBackendRateLimitingReturn {
   checkLimit: () => Promise<boolean>;
   reportUsage: (
     success?: boolean,
-    metadata?: Record<string, any>,
+    metadata?: Record<string, unknown>,
   ) => Promise<void>;
   reset: () => void;
   canAttempt: boolean;
@@ -156,7 +156,7 @@ export function useBackendRateLimiting(
   const reportUsage = useCallback(
     async (
       success: boolean = true,
-      metadata?: Record<string, any>,
+      metadata?: Record<string, unknown>,
     ): Promise<void> => {
       try {
         const identifier = getUserIdentifier();

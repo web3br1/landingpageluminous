@@ -2,7 +2,6 @@
 // Components with heavy dependencies or complex animations
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 // Loading fallback for UI components
 const UIComponentFallback = ({ componentName }: { componentName?: string }) => (

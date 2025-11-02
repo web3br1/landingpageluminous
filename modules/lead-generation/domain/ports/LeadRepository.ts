@@ -1,6 +1,6 @@
 // Port - Interface para persistência
 import { Lead } from "../entities/Lead";
-import { Result } from "@/shared/core/Result";
+import { Result } from "@/lib/core/result";
 
 export interface LeadRepository {
   save(lead: Lead): Promise<Result<Lead, RepositoryError>>;

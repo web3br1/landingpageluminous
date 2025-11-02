@@ -47,21 +47,27 @@ export class Lead {
   }
 
   // Getters (não setters - entities são imutáveis)
+
   getId() {
     return this.id;
   }
+
   getName() {
     return this.name;
   }
+
   getEmail() {
     return this.email;
   }
+
   getPhone() {
     return this.phone;
   }
+
   getSegment() {
     return this.segment;
   }
+
   getRevenue() {
     return this.revenue;
   }

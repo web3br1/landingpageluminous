@@ -1,0 +1,274 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Audit Intent Classification Schema",
+  "description": "Schema for audit findings with intelligent intent-based classification",
+  "type": "object",
+  "properties": {
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the audit was performed"
+    },
+    "summary": {
+      "type": "object",
+      "properties": {
+        "total_findings": { "type": "integer", "minimum": 0 },
+        "critical_issues": { "type": "integer", "minimum": 0 },
+        "high_issues": { "type": "integer", "minimum": 0 },
+        "medium_issues": { "type": "integer", "minimum": 0 },
+        "low_issues": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["total_findings", "critical_issues", "high_issues", "medium_issues", "low_issues"]
+    },
+    "findings": {
+      "type": "object",
+      "properties": {
+        "env": {
+          "type": "object",
+          "properties": {
+            "unused": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EnvFinding"
+              }
+            },
+            "leakedToClient": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/EnvFinding"
+              }
+            }
+          }
+        },
+        "code": {
+          "type": "object",
+          "properties": {
+            "unusedExports": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CodeFinding"
+              }
+            },
+            "unusedImports": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/CodeFinding"
+              }
+            }
+          }
+        },
+        "integrations": {
+          "type": "object",
+          "properties": {
+            "declaredNotUsed": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/IntegrationFinding"
+              }
+            },
+            "missingErrorHandling": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ErrorHandlingFinding"
+              }
+            },
+            "forbiddenLayerUsage": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/LayerFinding"
+              }
+            }
+          }
+        },
+        "routes": {
+          "type": "object",
+          "properties": {
+            "inactiveEndpoints": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RouteFinding"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["timestamp", "summary", "findings"],
+  "definitions": {
+    "ContextSignals": {
+      "type": "object",
+      "properties": {
+        "lastModified": { "type": ["string", "null"], "format": "date-time" },
+        "ageInDays": { "type": ["integer", "null"], "minimum": 0 },
+        "hasTodoWip": { "type": "boolean" },
+        "hasFeatureFlag": { "type": "boolean" },
+        "intendedForRelease": { "type": "boolean" },
+        "hasTests": { "type": "boolean" },
+        "hasTestMentions": { "type": "boolean" },
+        "isInRegistry": { "type": "boolean" },
+        "isExposedExternally": { "type": "boolean" },
+        "generatesCost": { "type": "boolean" },
+        "generatesRisk": { "type": "boolean" },
+        "isDevOnly": { "type": "boolean" },
+        "hasRealLogic": { "type": "boolean" },
+        "hasSecurityCheck": { "type": "boolean" },
+        "hasLogging": { "type": "boolean" },
+        "fileSize": { "type": "integer", "minimum": 0 },
+        "lineCount": { "type": "integer", "minimum": 0 }
+      },
+      "required": ["hasTodoWip", "hasFeatureFlag", "hasTests", "hasTestMentions", "isInRegistry", "isExposedExternally", "generatesCost", "generatesRisk", "fileSize", "lineCount"]
+    },
+    "BaseFinding": {
+      "type": "object",
+      "properties": {
+        "intent": {
+          "type": "string",
+          "enum": ["EM_ANDAMENTO", "CONGELADO", "OBSOLETO"],
+          "description": "Intelligent intent-based classification"
+        },
+        "owner": { "type": "string" },
+        "signals": { "$ref": "#/definitions/ContextSignals" },
+        "categories": { "$ref": "#/definitions/Categories" },
+        "severity": {
+          "type": "string",
+          "enum": ["CRITICAL", "HIGH", "MEDIUM", "LOW"]
+        },
+        "severity_compound": { "$ref": "#/definitions/CompoundSeverity" },
+        "recommendation": { "type": "string" }
+      },
+      "required": ["intent", "owner", "signals", "severity", "recommendation"]
+    },
+    "EnvFinding": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseFinding" },
+        {
+          "type": "object",
+          "properties": {
+            "variable": { "type": "string" },
+            "sourceFile": { "type": "string" }
+          },
+          "required": ["variable", "sourceFile"]
+        }
+      ]
+    },
+    "CodeFinding": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseFinding" },
+        {
+          "type": "object",
+          "properties": {
+            "symbol": { "type": "string" },
+            "files": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "type": { "type": "string" }
+          },
+          "required": ["symbol", "files", "type"]
+        }
+      ]
+    },
+    "IntegrationFinding": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseFinding" },
+        {
+          "type": "object",
+          "properties": {
+            "name": { "type": "string" },
+            "package": { "type": "string" },
+            "env_vars": {
+              "type": "array",
+              "items": { "type": "string" }
+            },
+            "configFile": { "type": "string" }
+          },
+          "required": ["name", "package", "env_vars", "configFile"]
+        }
+      ]
+    },
+    "ErrorHandlingFinding": {
+      "type": "object",
+      "properties": {
+        "file": { "type": "string" },
+        "line": { "type": "integer", "minimum": 1 },
+        "call": { "type": "string" },
+        "integration": { "type": "string" },
+        "severity": { "type": "string", "enum": ["HIGH"] }
+      },
+      "required": ["file", "line", "call", "integration", "severity"]
+    },
+    "LayerFinding": {
+      "type": "object",
+      "properties": {
+        "integration": { "type": "string" },
+        "file": { "type": "string" },
+        "layer": { "type": "string" },
+        "severity": { "type": "string", "enum": ["CRITICAL"] }
+      },
+      "required": ["integration", "file", "layer", "severity"]
+    },
+    "RouteFinding": {
+      "allOf": [
+        { "$ref": "#/definitions/BaseFinding" },
+        {
+          "type": "object",
+          "properties": {
+            "route": { "type": "string" },
+            "file": { "type": "string" }
+          },
+          "required": ["route", "file"]
+        }
+      ]
+    },
+    "Categories": {
+      "type": "object",
+      "properties": {
+        "family": { "type": "string" },
+        "origins": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "areas": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "impacts": {
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "relationships": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "target_id": { "type": "string" },
+              "type": { "type": "string", "enum": ["depends_on", "causes", "relates_to", "blocks", "enables"] },
+              "strength": { "type": "number", "minimum": 0, "maximum": 1 },
+              "description": { "type": "string" }
+            },
+            "required": ["target_id", "type", "strength"]
+          }
+        }
+      },
+      "required": ["family", "origins", "areas", "impacts", "relationships"]
+    },
+    "CompoundSeverity": {
+      "type": "object",
+      "properties": {
+        "base": { "type": "number", "minimum": 0, "maximum": 1 },
+        "compound": { "type": "number", "minimum": 0, "maximum": 1 },
+        "factors": {
+          "type": "object",
+          "properties": {
+            "impact": { "type": "number", "minimum": 0 },
+            "probability": { "type": "number", "minimum": 0 },
+            "interconnection": { "type": "number", "minimum": 0, "maximum": 0.5 }
+          },
+          "required": ["impact", "probability", "interconnection"]
+        }
+      },
+      "required": ["base", "compound", "factors"]
+    }
+  }
+}

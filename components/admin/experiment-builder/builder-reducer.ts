@@ -1,7 +1,7 @@
 // ===== VISUAL EXPERIMENT BUILDER REDUCER =====
 // State management para o Visual Experiment Builder
 
-import { BuilderState, BuilderAction, VisualVariant } from "./types";
+import { BuilderState, BuilderAction, VisualVariant, EditableElement, BuilderMode, ViewMode } from "./types";
 
 // Estado inicial
 export const initialBuilderState: BuilderState = {
@@ -232,7 +232,7 @@ export const selectors = {
     return state.variants.find((v) => v.id === state.selectedVariantId) || null;
   },
 
-  getSelectedElement: (state: BuilderState): any => {
+  getSelectedElement: (state: BuilderState): unknown => {
     const variant = selectors.getSelectedVariant(state);
     if (!variant || !state.selectedElementId) return null;
 
@@ -268,7 +268,7 @@ export const selectors = {
 
 // Action creators para facilitar uso
 export const actions = {
-  setExperiment: (experiment: Partial<any>) => ({
+  setExperiment: (experiment: Partial<unknown>) => ({
     type: "SET_EXPERIMENT" as const,
     payload: experiment,
   }),
@@ -298,12 +298,12 @@ export const actions = {
     payload: elementId,
   }),
 
-  updateElement: (variantId: string, elementId: string, updates: any) => ({
+  updateElement: (variantId: string, elementId: string, updates: unknown) => ({
     type: "UPDATE_ELEMENT" as const,
     payload: { variantId, elementId, updates },
   }),
 
-  addElement: (variantId: string, element: any) => ({
+  addElement: (variantId: string, element: EditableElement) => ({
     type: "ADD_ELEMENT" as const,
     payload: { variantId, element },
   }),
@@ -313,12 +313,12 @@ export const actions = {
     payload: { variantId, elementId },
   }),
 
-  setMode: (mode: any) => ({
+  setMode: (mode: BuilderMode) => ({
     type: "SET_MODE" as const,
     payload: mode,
   }),
 
-  setViewMode: (viewMode: any) => ({
+  setViewMode: (viewMode: ViewMode) => ({
     type: "SET_VIEW_MODE" as const,
     payload: viewMode,
   }),

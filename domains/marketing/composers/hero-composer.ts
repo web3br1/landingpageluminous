@@ -6,7 +6,6 @@ import {
   heroConfiguration,
   heroVariants,
 } from "../content/hero-content";
-import type { ComposedHeroData, HeroContent } from "../types/hero.types";
 import { flags } from "@/lib/flags";
 
 // Server-safe experiment variant resolution
@@ -29,7 +28,7 @@ const useAnalytics = () => ({
   trackSectionView: (_section: string, _data?: AnalyticsData) => {},
 });
 
-export function composeHeroContent(): ComposedHeroData {
+export async function composeHeroContent(): Promise<ComposedHeroData> {
   try {
     // Get experiment variant (fallback to default)
     const experimentId = heroConfiguration.experimentId || "hero_headline_test";

@@ -5,7 +5,7 @@ import { verticalsConfiguration } from "../content/verticals-content";
 import type { ComposedVerticalsData } from "../types/verticals.types";
 import { createVariantComposer } from "./_base";
 
-export const composeVerticalsContent: () => ComposedVerticalsData =
+export const composeVerticalsContent: () => Promise<ComposedVerticalsData> =
   createVariantComposer("verticals", {
     defaultVariant: verticalsConfiguration.defaultVariant,
     variants: verticalsConfiguration.variants as any,

@@ -137,7 +137,7 @@ export function MLDashboard() {
 
 // Overview Tab Component
 function OverviewTab() {
-  const [summary, setSummary] = useState<any>(null);
+  const [summary, setSummary] = useState<unknown>(null);
 
   useEffect(() => {
     const analyticsSummary = predictiveAnalytics.getAnalyticsSummary();
@@ -165,13 +165,13 @@ function OverviewTab() {
             <div className="flex justify-between">
               <span>Total Users:</span>
               <span className="font-medium">
-                {summary.analytics.totalUsers}
+                {((summary as any).analytics as any).totalUsers}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Conversion Rate:</span>
               <span className="font-medium">
-                {(summary.analytics.conversionRate * 100).toFixed(1)}%
+                {(((summary as any).analytics as any).conversionRate * 100).toFixed(1)}%
               </span>
             </div>
           </div>
@@ -184,13 +184,13 @@ function OverviewTab() {
             <div className="flex justify-between">
               <span>Total Clusters:</span>
               <span className="font-medium">
-                {summary.clustering.totalClusters}
+                {(summary as any).clustering.totalClusters}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Avg Size:</span>
               <span className="font-medium">
-                {summary.clustering.avgClusterSize}
+                {(summary as any).clustering.avgClusterSize}
               </span>
             </div>
           </div>
@@ -202,12 +202,12 @@ function OverviewTab() {
           <div className="space-y-2">
             <div className="flex justify-between">
               <span>Total Items:</span>
-              <span className="font-medium">{summary.content.totalItems}</span>
+              <span className="font-medium">{(summary as any).content.totalItems}</span>
             </div>
             <div className="flex justify-between">
               <span>Avg Conv Rate:</span>
               <span className="font-medium">
-                {(summary.content.avgConversionRate * 100).toFixed(1)}%
+                {((summary as any).content.avgConversionRate * 100).toFixed(1)}%
               </span>
             </div>
           </div>
@@ -220,16 +220,16 @@ function OverviewTab() {
             <div className="flex justify-between">
               <span>Status:</span>
               <span
-                className={`font-medium ${summary.optimization ? "text-green-600" : "text-red-600"}`}
+                className={`font-medium ${(summary as any).optimization ? "text-green-600" : "text-red-600"}`}
               >
-                {summary.optimization ? "Active" : "No Data"}
+                {(summary as any).optimization ? "Active" : "No Data"}
               </span>
             </div>
             <div className="flex justify-between">
               <span>Confidence:</span>
               <span className="font-medium">
-                {summary.optimization
-                  ? (summary.optimization.confidence * 100).toFixed(1) + "%"
+                {(summary as any).optimization
+                  ? (((summary as any).optimization as any).confidence * 100).toFixed(1) + "%"
                   : "N/A"}
               </span>
             </div>
@@ -242,8 +242,8 @@ function OverviewTab() {
 
 // Clustering Tab Component
 function ClusteringTab() {
-  const [clusters, setClusters] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [clusters, setClusters] = useState<unknown[]>([]);
+  const [stats, setStats] = useState<unknown>(null);
 
   useEffect(() => {
     const clusterData = userClustering.getClusterStats();
@@ -261,16 +261,16 @@ function ClusteringTab() {
             <div className="space-y-2">
               <div className="flex justify-between">
                 <span>Total Clusters:</span>
-                <span className="font-medium">{stats.totalClusters}</span>
+                <span className="font-medium">{(stats as any).totalClusters}</span>
               </div>
               <div className="flex justify-between">
                 <span>Average Size:</span>
-                <span className="font-medium">{stats.avgClusterSize}</span>
+                <span className="font-medium">{(stats as any).avgClusterSize}</span>
               </div>
               <div className="flex justify-between">
                 <span>Largest Cluster:</span>
                 <span className="font-medium">
-                  {stats.largestCluster?.size || 0} users
+                  {(stats as any).largestCluster?.size || 0} users
                 </span>
               </div>
             </div>
@@ -309,7 +309,7 @@ function ClusteringTab() {
 
 // Recommendations Tab Component
 function RecommendationsTab() {
-  const [recommendations, setRecommendations] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<unknown[]>([]);
   const [userId, setUserId] = useState("user_0");
 
   const getRecommendations = useCallback(() => {
@@ -347,17 +347,17 @@ function RecommendationsTab() {
               <div key={index} className="border rounded p-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <div className="font-medium">Content: {rec.contentId}</div>
+                    <div className="font-medium">Content: {(rec as any).contentId}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      Reason: {rec.reason}
+                      Reason: {(rec as any).reason}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-lg font-semibold text-green-600">
-                      {rec.score.toFixed(2)}
+                      {(rec as any).score.toFixed(2)}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {(rec.confidence * 100).toFixed(1)}% confidence
+                      {((rec as any).confidence * 100).toFixed(1)}% confidence
                     </div>
                   </div>
                 </div>
@@ -396,8 +396,8 @@ function RecommendationsTab() {
 
 // Optimization Tab Component
 function OptimizationTab() {
-  const [insights, setInsights] = useState<any>(null);
-  const [optimizations, setOptimizations] = useState<any[]>([]);
+  const [insights, setInsights] = useState<unknown>(null);
+  const [optimizations, setOptimizations] = useState<unknown[]>([]);
 
   useEffect(() => {
     const contentInsights = optimizationUtils.getInsights();
@@ -419,13 +419,13 @@ function OptimizationTab() {
             <h3 className="text-lg font-semibold mb-2">
               Top Performing Content
             </h3>
-            {insights.topPerforming
+            {(insights as any).topPerforming
               ?.slice(0, 3)
-              .map((item: any, index: number) => (
+              .map((item: unknown, index: number) => (
                 <div key={index} className="mb-2">
-                  <div className="font-medium">{item.contentId}</div>
+                  <div className="font-medium">{(item as any).contentId}</div>
                   <div className="text-sm text-gray-600 dark:text-gray-400">
-                    {(item.performance.conversionRate * 100).toFixed(1)}%
+                    {((item as any).performance.conversionRate * 100).toFixed(1)}%
                     conversion
                   </div>
                 </div>
@@ -434,16 +434,16 @@ function OptimizationTab() {
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Content Insights</h3>
-            {insights.segmentBreakdown &&
-              Object.entries(insights.segmentBreakdown)
+            {(insights as any).segmentBreakdown &&
+              Object.entries((insights as any).segmentBreakdown)
                 .slice(0, 3)
-                .map(([segment, data]: [string, any]) => (
+                .map(([segment, data]: [string, unknown]) => (
                   <div key={segment} className="mb-2">
                     <div className="font-medium capitalize">
                       {segment.replace("_", " ")}
                     </div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {(data.conversionRate * 100).toFixed(1)}% conversion
+                      {((data as any).conversionRate * 100).toFixed(1)}% conversion
                     </div>
                   </div>
                 ))}
@@ -451,14 +451,14 @@ function OptimizationTab() {
 
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Device Performance</h3>
-            {insights.deviceBreakdown &&
-              Object.entries(insights.deviceBreakdown)
+            {(insights as any).deviceBreakdown &&
+              Object.entries((insights as any).deviceBreakdown)
                 .slice(0, 3)
-                .map(([device, data]: [string, any]) => (
+                .map(([device, data]: [string, unknown]) => (
                   <div key={device} className="mb-2">
                     <div className="font-medium capitalize">{device}</div>
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {(data.conversionRate * 100).toFixed(1)}% conversion
+                      {((data as any).conversionRate * 100).toFixed(1)}% conversion
                     </div>
                   </div>
                 ))}
@@ -475,39 +475,39 @@ function OptimizationTab() {
             <div key={index} className="border rounded p-4">
               <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h4 className="font-medium">{opt.contentId}</h4>
+                  <h4 className="font-medium">{(opt as any).contentId}</h4>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Expected improvement: +{opt.expectedImprovement.toFixed(1)}%
+                    Expected improvement: +{(opt as any).expectedImprovement.toFixed(1)}%
                   </p>
                 </div>
                 <span
                   className={`px-2 py-1 rounded text-xs ${
-                    opt.priority === "high"
+                    (opt as any).priority === "high"
                       ? "bg-red-100 text-red-800"
-                      : opt.priority === "medium"
+                      : (opt as any).priority === "medium"
                         ? "bg-yellow-100 text-yellow-800"
                         : "bg-green-100 text-green-800"
                   }`}
                 >
-                  {opt.priority} priority
+                  {(opt as any).priority} priority
                 </span>
               </div>
 
               <div className="space-y-2">
-                {opt.recommendedChanges.map(
-                  (change: any, changeIndex: number) => (
+                {(opt as any).recommendedChanges.map(
+                  (change: unknown, changeIndex: number) => (
                     <div
                       key={changeIndex}
                       className="bg-gray-50 dark:bg-gray-700 p-3 rounded"
                     >
                       <div className="font-medium">
-                        {change.type.replace("_", " ")}
+                        {(change as any).type.replace("_", " ")}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {change.recommendedValue}
+                        {(change as any).recommendedValue}
                       </div>
                       <div className="text-sm text-green-600">
-                        +{change.impact}% expected improvement
+                        +{(change as any).impact}% expected improvement
                       </div>
                     </div>
                   ),
@@ -523,8 +523,8 @@ function OptimizationTab() {
 
 // Revenue Tab Component
 function RevenueTab() {
-  const [analytics, setAnalytics] = useState<any>(null);
-  const [optimization, setOptimization] = useState<any>(null);
+  const [analytics, setAnalytics] = useState<unknown>(null);
+  const [optimization, setOptimization] = useState<unknown>(null);
 
   useEffect(() => {
     const revenueAnalytics = revenueOptimizer.getRevenueAnalytics();
@@ -541,7 +541,7 @@ function RevenueTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Revenue</h3>
             <div className="text-2xl font-bold text-green-600">
-              ${analytics.totalRevenue?.toLocaleString() || 0}
+              ${(analytics as any).totalRevenue?.toLocaleString() || 0}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Total revenue
@@ -551,7 +551,7 @@ function RevenueTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Avg Price</h3>
             <div className="text-2xl font-bold text-blue-600">
-              ${analytics.avgPrice?.toFixed(2) || 0}
+              ${(analytics as any).avgPrice?.toFixed(2) || 0}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Average price
@@ -561,7 +561,7 @@ function RevenueTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Conversion</h3>
             <div className="text-2xl font-bold text-purple-600">
-              {(analytics.avgConversionRate * 100)?.toFixed(1) || 0}%
+              {((analytics as any).avgConversionRate * 100)?.toFixed(1) || 0}%
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Conversion rate
@@ -571,11 +571,11 @@ function RevenueTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Top Segment</h3>
             <div className="text-lg font-bold text-orange-600">
-              {analytics.topSegments?.[0]?.segment || "None"}
+              {(analytics as any).topSegments?.[0]?.segment || "None"}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
-              {analytics.topSegments?.[0]
-                ? `${analytics.topSegments[0].share.toFixed(1)}% share`
+              {(analytics as any).topSegments?.[0]
+                ? `${(analytics as any).topSegments[0].share.toFixed(1)}% share`
                 : ""}
             </div>
           </div>
@@ -589,7 +589,7 @@ function RevenueTab() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-                ${optimization.currentRevenue?.toLocaleString() || 0}
+                ${(optimization as any).currentRevenue?.toLocaleString() || 0}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Current Revenue
@@ -598,7 +598,7 @@ function RevenueTab() {
 
             <div className="text-center">
               <div className="text-2xl font-bold text-green-600">
-                ${optimization.optimalRevenue?.toLocaleString() || 0}
+                ${(optimization as any).optimalRevenue?.toLocaleString() || 0}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Optimal Revenue
@@ -607,7 +607,7 @@ function RevenueTab() {
 
             <div className="text-center">
               <div className="text-2xl font-bold text-blue-600">
-                +${optimization.revenueIncrease?.toLocaleString() || 0}
+                +${(optimization as any).revenueIncrease?.toLocaleString() || 0}
               </div>
               <div className="text-sm text-gray-600 dark:text-gray-400">
                 Revenue Increase
@@ -617,24 +617,24 @@ function RevenueTab() {
 
           <div className="space-y-4">
             <h4 className="font-medium">Price Recommendations</h4>
-            {optimization.priceRecommendations?.map(
-              (rec: any, index: number) => (
+            {(optimization as any).priceRecommendations?.map(
+              (rec: unknown, index: number) => (
                 <div key={index} className="border rounded p-3">
                   <div className="flex justify-between items-center">
                     <div>
                       <div className="font-medium capitalize">
-                        {rec.segment}
+                        {(rec as any).segment}
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        ${rec.currentPrice} → ${rec.recommendedPrice}
+                        ${(rec as any).currentPrice} → ${(rec as any).recommendedPrice}
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-semibold text-green-600">
-                        +{rec.expectedRevenueIncrease.toFixed(1)}%
+                        +{(rec as any).expectedRevenueIncrease.toFixed(1)}%
                       </div>
                       <div className="text-sm text-gray-600 dark:text-gray-400">
-                        {(rec.confidence * 100).toFixed(1)}% confidence
+                        {((rec as any).confidence * 100).toFixed(1)}% confidence
                       </div>
                     </div>
                   </div>
@@ -650,8 +650,8 @@ function RevenueTab() {
 
 // Predictions Tab Component
 function PredictionsTab() {
-  const [predictions, setPredictions] = useState<any[]>([]);
-  const [summary, setSummary] = useState<any>(null);
+  const [predictions, setPredictions] = useState<unknown[]>([]);
+  const [summary, setSummary] = useState<unknown>(null);
 
   useEffect(() => {
     const businessPredictions = predictiveAnalytics.predictBusinessMetrics(30);
@@ -668,7 +668,7 @@ function PredictionsTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Users</h3>
             <div className="text-2xl font-bold text-blue-600">
-              {summary.totalUsers}
+              {(summary as any).totalUsers}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Total tracked
@@ -678,7 +678,7 @@ function PredictionsTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Active Users</h3>
             <div className="text-2xl font-bold text-green-600">
-              {summary.activeUsers}
+              {(summary as any).activeUsers}
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Low churn risk
@@ -688,7 +688,7 @@ function PredictionsTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Conversion</h3>
             <div className="text-2xl font-bold text-purple-600">
-              {(summary.conversionRate * 100).toFixed(1)}%
+              {((summary as any).conversionRate * 100).toFixed(1)}%
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Average rate
@@ -698,7 +698,7 @@ function PredictionsTab() {
           <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold mb-2">Churn Risk</h3>
             <div className="text-2xl font-bold text-red-600">
-              {(summary.avgChurnRisk * 100).toFixed(1)}%
+              {((summary as any).avgChurnRisk * 100).toFixed(1)}%
             </div>
             <div className="text-sm text-gray-600 dark:text-gray-400">
               Average risk
@@ -719,18 +719,18 @@ function PredictionsTab() {
                 <div className="flex justify-between items-center mb-2">
                   <div className="flex items-center gap-2">
                     <span className="capitalize font-medium">
-                      {prediction.metric}
+                      {(prediction as any).metric}
                     </span>
                     <span
                       className={`px-2 py-1 rounded text-xs ${
-                        prediction.trend === "increasing"
+                        (prediction as any).trend === "increasing"
                           ? "bg-green-100 text-green-800"
-                          : prediction.trend === "decreasing"
+                          : (prediction as any).trend === "decreasing"
                             ? "bg-red-100 text-red-800"
                             : "bg-gray-100 text-gray-800"
                       }`}
                     >
-                      {prediction.trend}
+                      {(prediction as any).trend}
                     </span>
                   </div>
                   <div className="text-right">
@@ -738,8 +738,8 @@ function PredictionsTab() {
                       Current
                     </div>
                     <div className="font-medium">
-                      {prediction.metric === "revenue" ? "$" : ""}
-                      {prediction.currentValue.toLocaleString()}
+                      {(prediction as any).metric === "revenue" ? "$" : ""}
+                      {(prediction as any).currentValue.toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -747,23 +747,23 @@ function PredictionsTab() {
                 <div className="flex justify-between items-center">
                   <div>
                     <div className="text-sm text-gray-600 dark:text-gray-400 mb-1">
-                      Predicted in {prediction.timeframe} days
+                      Predicted in {(prediction as any).timeframe} days
                     </div>
                     <div className="font-semibold">
-                      {prediction.metric === "revenue" ? "$" : ""}
-                      {prediction.predictedValue.toLocaleString()}
+                      {(prediction as any).metric === "revenue" ? "$" : ""}
+                      {(prediction as any).predictedValue.toLocaleString()}
                     </div>
                   </div>
                   <div className="text-right">
                     <div className="text-sm text-gray-600 dark:text-gray-400">
-                      {(prediction.confidence * 100).toFixed(1)}% confidence
+                      {((prediction as any).confidence * 100).toFixed(1)}% confidence
                     </div>
                   </div>
                 </div>
 
                 <div className="mt-2">
                   <div className="text-xs text-gray-500 dark:text-gray-400">
-                    Factors: {prediction.factors.join(", ")}
+                    Factors: {(prediction as any).factors.join(", ")}
                   </div>
                 </div>
               </div>
@@ -776,11 +776,11 @@ function PredictionsTab() {
         )}
       </div>
 
-      {summary?.topRiskFactors && summary.topRiskFactors.length > 0 && (
+      {(summary as any)?.topRiskFactors && (summary as any).topRiskFactors.length > 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-6">
           <h3 className="text-lg font-semibold mb-4">Top Churn Risk Factors</h3>
           <div className="flex flex-wrap gap-2">
-            {summary.topRiskFactors.map((factor: string, index: number) => (
+            {(summary as any).topRiskFactors.map((factor: string, index: number) => (
               <span
                 key={index}
                 className="px-3 py-1 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded-full text-sm"

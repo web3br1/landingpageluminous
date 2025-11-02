@@ -21,7 +21,7 @@ import { Section } from "@/components/ui/section";
 import { CTA } from "@/components/ui/cta-button-unified";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FadeUp } from "@/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface Feature {
   id: string;
@@ -220,7 +220,7 @@ export function FeaturesPage() {
       <div className="container mx-auto px-4 py-12">
         {/* Hero Section */}
         <Section className="text-center mb-16">
-          <FadeUp>
+          <FadeUp duration="normal" lazy={false}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -404,7 +404,7 @@ export function FeaturesPage() {
 
         {/* Use Cases Section */}
         <Section className="mb-16">
-          <FadeUp>
+          <FadeUp duration="normal" lazy={false}>
             <div className="text-center mb-12">
               <h2 className="text-3xl font-bold mb-4">
                 Feito para seu segmento
@@ -468,7 +468,7 @@ export function FeaturesPage() {
 
         {/* CTA Section */}
         <Section className="text-center">
-          <FadeUp>
+          <FadeUp duration="normal" lazy={false}>
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}

@@ -1,10 +1,26 @@
 import { Metadata } from "next";
-import { defaultSeo, jsonLd } from "../seo";
 import {
   generateCanonicalUrl,
   generateCanonicalMetadata,
 } from "./canonical-urls";
 import { DuplicateContentDetector } from "./duplicate-content";
+
+/**
+ * Safe metadata property access with type guards
+ */
+function safeMetadataAccess<T>(
+  metadata: unknown,
+  property: string,
+  fallback: T,
+): T {
+  if (!metadata || typeof metadata !== 'object') return fallback;
+  const obj = metadata as Record<string, unknown>;
+  return (obj[property] as T) ?? fallback;
+}
+
+function safeMetadataSpread(metadata: unknown): Record<string, unknown> {
+  return metadata && typeof metadata === 'object' ? metadata as Record<string, unknown> : {};
+}
 
 /**
  * Configuration for dynamic meta generation
@@ -78,7 +94,7 @@ export function generatePageMetadata(config: PageMetaConfig): Metadata {
 
   // Update Open Graph metadata
   if (finalMetadata.openGraph) {
-    (finalMetadata.openGraph as any) = {
+    (finalMetadata.openGraph as unknown) = {
       ...finalMetadata.openGraph,
       type,
       title: title || finalMetadata.openGraph.title,
@@ -102,7 +118,8 @@ export function generatePageMetadata(config: PageMetaConfig): Metadata {
       type === "article" &&
       (publishedTime || modifiedTime || author || section)
     ) {
-      (finalMetadata.openGraph as any).article = {
+      const openGraph = safeMetadataSpread(finalMetadata.openGraph);
+      openGraph.article = {
         ...(publishedTime && { publishedTime }),
         ...(modifiedTime && { modifiedTime }),
         ...(author && { author }),
@@ -139,7 +156,7 @@ export function generatePageMetadata(config: PageMetaConfig): Metadata {
   // Update robots directives
   if (finalMetadata.robots) {
     finalMetadata.robots = {
-      ...((finalMetadata.robots as any) || {}),
+      ...(typeof finalMetadata.robots === 'object' && finalMetadata.robots ? finalMetadata.robots : {}),
       index: !noindex,
       follow: !nofollow,
     };
@@ -148,7 +165,7 @@ export function generatePageMetadata(config: PageMetaConfig): Metadata {
   // Add structured data for specific content types
   if (type === "article" && (author || publishedTime)) {
     finalMetadata.other = {
-      ...((finalMetadata as any).other || {}),
+      ...(finalMetadata.other || {}),
       "article:author": author,
       ...(publishedTime && { "article:published_time": publishedTime }),
       ...(modifiedTime && { "article:modified_time": modifiedTime }),
@@ -304,15 +321,25 @@ export const pageMetaPresets = {
 export function generatePresetMetadata(
   preset: keyof typeof pageMetaPresets,
   overrides: Partial<PageMetaConfig> = {},
-  data?: any,
+  data?: unknown,
 ): Metadata {
   let presetConfig: PageMetaConfig;
 
   // Handle presets that require data
-  if ((preset === "article" || preset === "product") && data) {
-    presetConfig = (pageMetaPresets[preset] as any)(data);
+  const presetFn = safeMetadataAccess(pageMetaPresets, preset, null);
+  if (presetFn && typeof presetFn === 'function') {
+    if ((preset === "article" || preset === "product") && data) {
+      presetConfig = presetFn(data);
+    } else {
+      presetConfig = presetFn();
+    }
   } else {
-    presetConfig = (pageMetaPresets[preset] as any)();
+    // Fallback for invalid preset
+    presetConfig = {
+      title: "DataFlow BI",
+      description: "Business Intelligence Platform",
+      type: "website",
+    };
   }
 
   const finalConfig = { ...presetConfig, ...overrides };
@@ -335,7 +362,7 @@ export function generateABTestMetadata(
   // Add experiment data to metadata for tracking
   if (experimentData) {
     metadata.other = {
-      ...((metadata as any).other || {}),
+      ...(metadata.other || {}),
       "data-experiment": experimentData.experimentId,
       "data-variant": experimentData.variantId,
     };
@@ -375,7 +402,7 @@ export function generatePaginatedMetadata(
 
   // Add pagination meta tags
   metadata.other = {
-    ...((metadata as any).other || {}),
+    ...safeMetadataSpread(safeMetadataAccess(metadata, 'other', null)),
     "pagination-page": page.toString(),
     "pagination-total": totalPages.toString(),
   };
@@ -451,7 +478,7 @@ export function validateMetadata(metadata: Metadata): {
     if (!metadata.openGraph.description) {
       warnings.push("Open Graph description is missing");
     }
-    const ogImages = (metadata.openGraph as any).images;
+    const ogImages = safeMetadataAccess(metadata.openGraph, 'images', []);
     if (!ogImages || (Array.isArray(ogImages) && ogImages.length === 0)) {
       warnings.push("Open Graph images are missing");
     }
@@ -467,7 +494,7 @@ export function validateMetadata(metadata: Metadata): {
     if (!metadata.twitter.description) {
       warnings.push("Twitter description is missing");
     }
-    const twitterImages = (metadata.twitter as any).images;
+    const twitterImages = safeMetadataAccess(metadata.twitter, 'images', []);
     if (
       !twitterImages ||
       (Array.isArray(twitterImages) && twitterImages.length === 0)

@@ -434,7 +434,7 @@ export class EnvironmentManager {
 
     // Other configuration overrides
     if (process.env.LOG_LEVEL) {
-      config.logLevel = process.env.LOG_LEVEL as any;
+      config.logLevel = process.env.LOG_LEVEL as unknown;
     }
 
     if (process.env.ENABLE_METRICS) {

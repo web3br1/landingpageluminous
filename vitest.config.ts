@@ -23,6 +23,10 @@ export default defineConfig({
     // Setup files
     setupFiles: ["./vitest.setup.ts"],
 
+    // Limitar escopo apenas ao projeto atual
+    include: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+    exclude: ["**/node_modules/**", "**/Downloads/**"],
+
     // Globais para reduzir imports
     globals: true,
 
@@ -33,44 +37,14 @@ export default defineConfig({
       },
     },
 
-    // ===== LOTES DE TESTES VITEST ORGANIZADOS =====
-    // Estratégia: dividir por tipo e prioridade para execução otimizada
+    // Estrutura organizada de testes
     include: [
-      // Lote 1: UNIT - Testes unitários básicos (mais rápidos)
-      "tests/unit/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 2: COMPONENTS - Testes de componentes React
-      "tests/components/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 3: LIB - Testes de utilitários e bibliotecas
-      "tests/lib/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 4: DOM - Testes de manipulação DOM
-      "tests/dom/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 5: INTEGRATION - Testes de integração
-      "tests/integration/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 6: UTILS - Testes de utilitários avançados
-      "tests/utils/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 7: BROWSER - Testes específicos de browser
-      "tests/browser-compatibility/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 8: SSR - Testes server-side (mais lentos)
-      "tests/ssr/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 9: A11Y - Testes de acessibilidade (mais lentos)
-      "tests/a11y/**/*.{test,spec}.{ts,tsx}",
-
-      // Lote 10: HYDRATION - Testes de hidratação (críticos)
-      "tests/hydration*.{test,spec}.{ts,tsx}",
-
-      // Fallback para arquivos não organizados
-      "tests/**/*.{test,spec}.{ts,tsx}",
-      "tests/**/*.test.{ts,tsx}",
-      "tests/**/*.spec.{ts,tsx}",
+      "tests/unit/**/*.test.{ts,tsx}",
+      "tests/integration/**/*.test.{ts,tsx}",
+      "tests/utils/**/*.test.{ts,tsx}",
+      "tests/components/**/*.test.{ts,tsx}",
     ],
+
 
     // Timeout otimizado para testes mais rápidos
     testTimeout: 15000, // Reduzido de 30s para 15s
@@ -83,32 +57,21 @@ export default defineConfig({
     // Testes específicos podem sobrescrever o timeout global
     // Performance e acessibilidade têm timeouts maiores por padrão
 
-    // ===== ESTRATÉGIA DE EXCLUSÃO POR LOTE =====
-    // Exclusões específicas para evitar conflitos entre frameworks e otimizar performance
+    // Exclusões para isolamento por tipo de teste
     exclude: [
-      // Excluir todos os testes E2E/Playwright (executados separadamente)
-      "tests/**/e2e/**",
-      "tests/**/*e2e*.spec.ts",
-      "tests/**/visual-regression*.spec.ts",
-      "tests/favicon.test.ts",
-      "tests/landing-extra-e2e.spec.ts",
-      "tests/landing-page-e2e.spec.ts",
-      "tests/load-performance.spec.ts",
-      "tests/webpack-errors.test.ts",
-      "tests/performance/core-web-vitals.test.ts",
-      "tests/performance/performance-monitoring.spec.ts",
-      "tests/performance-example.spec.ts",
+      // E2E tests (Playwright)
+      "**/*.e2e.{ts,tsx}",
+      "**/e2e/**",
+      "**/*.spec.ts",  // Playwright usa .spec.ts
+      "**/*.spec.tsx", // Playwright usa .spec.tsx
 
-      // Excluir testes Playwright que usam sintaxe diferente (test.describe)
-      "tests/hydration.test.ts",
-      "tests/ssr.test.ts",
-      "tests/a11y/accessibility-testing.spec.ts",
-      "tests/a11y/landing-a11y.test.tsx",
-
-      // Otimização: excluir testes muito lentos ou complexos durante desenvolvimento
-      // Estes podem ser executados em CI ou quando necessário
-      "tests/browser-compatibility/**", // Muito lentos para desenvolvimento
-      "tests/memory-leaks/**", // Requerem setup especial
+      // Arquivos de configuração e build
+      "**/*.config.*",
+      "**/*.d.ts",
+      "coverage/**",
+      "dist/**",
+      ".next/**",
+      "node_modules/**",
     ],
 
     // Mapeamento de módulos - aliases para resolver imports @/
@@ -198,7 +161,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname),
       "@/*": path.resolve(__dirname, "./*"),
-      "@shared": path.resolve(__dirname, "./shared"),
       "@/components/*": path.resolve(__dirname, "./components/*"),
       "@/ui/*": path.resolve(__dirname, "./components/ui/*"),
       "@/onboarding/*": path.resolve(__dirname, "./components/onboarding/*"),

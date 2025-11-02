@@ -10,7 +10,7 @@ import {
   Settings as SettingsIcon,
 } from "lucide-react";
 import { ConsentState } from "./cookie-banner";
-import { ConsentManager, CookieCategory } from "@/lib/privacy/consent-manager";
+import { ConsentManager } from "@/lib/privacy/consent-manager";
 
 interface CookiePreferencesModalProps {
   isOpen: boolean;
@@ -146,7 +146,7 @@ export function CookiePreferencesModal({
                         <IconComponent className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                         <div className="flex-1">
                           <h4 className="font-medium text-gray-900 dark:text-white">
-                            {category.title}
+                            {category.name}
                           </h4>
                           <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                             {category.description}
@@ -158,7 +158,7 @@ export function CookiePreferencesModal({
                         <button
                           onClick={() => toggleCategoryDetails(category.id)}
                           className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 rounded"
-                          aria-label={`Ver detalhes de ${category.title}`}
+                          aria-label={`Ver detalhes de ${category.name}`}
                         >
                           <Info className="w-4 h-4" />
                         </button>
@@ -167,7 +167,7 @@ export function CookiePreferencesModal({
                           <input
                             type="checkbox"
                             checked={consent[category.id]}
-                            onChange={() => handleToggleCategory(category.id)}
+                            onChange={() => handleToggleCategory(category.id as "analytics" | "marketing" | "functional")}
                             className="sr-only peer"
                           />
                           <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>

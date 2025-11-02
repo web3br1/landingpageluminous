@@ -21,7 +21,7 @@ interface NetworkErrorBoundaryProps {
   onRetry?: (retryCount: number) => void;
   maxRetries?: number;
   resetOnPropsChange?: boolean;
-  resetKeys?: any[];
+  resetKeys?: unknown[];
 }
 
 const DEFAULT_MAX_RETRIES = 3;

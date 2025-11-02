@@ -14,7 +14,7 @@ import { ReactNode, ComponentType } from "react";
 // Wrapper que funciona tanto com LazyMotion quanto sem
 interface OptimizedMotionProps extends MotionProps {
   children: ReactNode;
-  as?: ComponentType<any>;
+  as?: ComponentType<unknown>;
   lazy?: boolean;
   className?: string;
 }
@@ -37,15 +37,16 @@ export function OptimizedMotion({
     ? getLazyMotionComponent(as)
     : getMotionComponent(as);
 
-  return <MotionComponent {...props}>{children}</MotionComponent>;
+  const Component = MotionComponent as React.ComponentType<any>;
+  return <Component {...props}>{children}</Component>;
 }
 
 // Função auxiliar para escolher componente lazy
-function getLazyMotionComponent(as?: ComponentType<any>) {
+function getLazyMotionComponent(as?: ComponentType<unknown>) {
   if (!as) return m.div;
 
   // Mapeamento de componentes LazyMotion (m.*)
-  const lazyComponents: Record<string, any> = {
+  const lazyComponents: Record<string, unknown> = {
     div: m.div,
     span: m.span,
     p: m.p,
@@ -76,11 +77,11 @@ function getLazyMotionComponent(as?: ComponentType<any>) {
 }
 
 // Função auxiliar para escolher componente motion normal
-function getMotionComponent(as?: ComponentType<any>) {
+function getMotionComponent(as?: ComponentType<unknown>) {
   if (!as) return motion.div;
 
   // Mapeamento de componentes motion.*
-  const motionComponents: Record<string, any> = {
+  const motionComponents: Record<string, unknown> = {
     div: motion.div,
     span: motion.span,
     p: motion.p,

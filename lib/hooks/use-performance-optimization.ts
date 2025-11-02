@@ -113,8 +113,8 @@ export function usePerformanceOptimization(
         );
 
         // Send to monitoring if available
-        if (typeof window !== "undefined" && (window as any).gtag) {
-          (window as any).gtag("event", "performance_budget_exceeded", {
+        if (typeof window !== "undefined" && (window as unknown).gtag) {
+          (window as unknown).gtag("event", "performance_budget_exceeded", {
             metric,
             value,
             budget,

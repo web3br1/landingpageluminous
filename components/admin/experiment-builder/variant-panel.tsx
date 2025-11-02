@@ -8,7 +8,6 @@ import { VariantPanelProps } from "./types";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 // Using HTML input range for now - can be replaced with shadcn/ui slider later
 import {
@@ -41,16 +40,17 @@ export function VariantPanel({
     onVariantUpdate(variantId, { name });
   };
 
-  const duplicateVariant = (variant: any) => {
+  const duplicateVariant = (variant: unknown) => {
+    const v = variant as any;
     const newVariant = {
-      ...variant,
+      ...v,
       id: `variant_${Date.now()}`,
-      name: `${variant.name} (Cópia)`,
-      weight: Math.max(10, Math.floor(variant.weight / 2)), // Divide o peso
+      name: `${v.name} (Cópia)`,
+      weight: Math.max(10, Math.floor(v.weight / 2)), // Divide o peso
     };
 
     // Ajustar pesos das outras variantes
-    const otherVariants = variants.filter((v) => v.id !== variant.id);
+    const otherVariants = variants.filter((v) => v.id !== v.id);
     const totalOtherWeight = otherVariants.reduce(
       (sum, v) => sum + v.weight,
       0,
@@ -67,10 +67,11 @@ export function VariantPanel({
     // TODO: Implementar atualização da variante recém-criada
   };
 
-  const getTrafficPercentage = (variant: any) => {
+  const getTrafficPercentage = (variant: unknown) => {
+    const v = variant as any;
     const totalWeight = variants.reduce((sum, v) => sum + v.weight, 0);
     return totalWeight > 0
-      ? Math.round((variant.weight / totalWeight) * 100)
+      ? Math.round((v.weight / totalWeight) * 100)
       : 0;
   };
 

@@ -10,7 +10,7 @@ import { withCompositionValidation } from "@/lib/composition/composer-validation
  * @param options Configuration options for demo composition
  * @returns Composed demo content ready for UI consumption
  */
-export function composeDemoContent(
+export async function composeDemoContent(
   options: {
     variant?: "default" | "video-only" | "interactive-tour";
     experimentId?: string;
@@ -21,7 +21,7 @@ export function composeDemoContent(
     includeTestimonial?: boolean;
   } = {},
 ) {
-  return withCompositionValidation(() => {
+  return await withCompositionValidation(async () => {
     const {
       variant = "default",
       userSegment = "smb",

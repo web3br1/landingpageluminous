@@ -1,7 +1,7 @@
 import { analytics } from "./analytics-core";
 
 // Import cookies for client-side storage - only on client
-let Cookies: any = null;
+let Cookies: unknown = null;
 if (typeof window !== "undefined") {
   try {
     Cookies = require("js-cookie");
@@ -247,7 +247,7 @@ export const flags = {
 
   // Obter valor de feature flag
   getFeature: (featureName: string, fallback: boolean = false): boolean => {
-    return (FEATURES as any)[featureName] ?? fallback;
+    return (FEATURES as unknown)[featureName] ?? fallback;
   },
 
   // Método genérico para obter qualquer flag
@@ -259,7 +259,7 @@ export const flags = {
 
     // Verificar se é uma feature
     if (key in flags.features) {
-      return (flags.features as any)[key] as T;
+      return (flags.features as unknown)[key] as T;
     }
 
     return fallback;

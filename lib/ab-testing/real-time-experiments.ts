@@ -1,6 +1,38 @@
 // Real-Time A/B Testing for Themes
 // Implements live experimentation with analytics and progressive rollout
 
+export interface ExperimentCustomTokens {
+  // Color tokens
+  colors?: {
+    primary?: string;
+    secondary?: string;
+    accent?: string;
+    background?: string;
+    text?: string;
+  };
+  // Typography tokens
+  typography?: {
+    fontFamily?: string;
+    fontSize?: string | number;
+    fontWeight?: string | number;
+    lineHeight?: string | number;
+  };
+  // Spacing tokens
+  spacing?: {
+    padding?: string | number;
+    margin?: string | number;
+    gap?: string | number;
+  };
+  // Animation tokens
+  animations?: {
+    duration?: string | number;
+    easing?: string;
+    delay?: string | number;
+  };
+  // Custom tokens for specific experiments
+  [key: string]: unknown;
+}
+
 export interface ExperimentConfig {
   id: string;
   name: string;
@@ -12,7 +44,7 @@ export interface ExperimentConfig {
       name: string;
       themeId: string;
       weight: number; // Percentage (0-100)
-      customTokens?: Record<string, any>;
+      customTokens?: ExperimentCustomTokens;
     };
   };
   targeting: {
@@ -249,7 +281,7 @@ export function assignRealTimeExperiment(
   variant: string;
   themeId: string;
   experimentId: string;
-  customTokens?: Record<string, any>;
+  customTokens?: Record<string, unknown>;
   shouldTrack: boolean;
 } {
   // Validate inputs
@@ -365,6 +397,9 @@ function matchesTargeting(
   return true;
 }
 
+// Import centralized hash function
+import { fnv1aHash } from "@/lib/architecture/crypto-utils";
+
 // Optimized hash function with caching for better performance
 const hashCache = new Map<string, number>();
 const MAX_CACHE_SIZE = 1000;
@@ -375,18 +410,8 @@ function hashString(str: string): number {
     return hashCache.get(str)!;
   }
 
-  // FNV-1a hash (faster and better distribution than djb2)
-  let hash = 2166136261; // FNV offset basis
-
-  for (let i = 0; i < str.length; i++) {
-    const char = str.charCodeAt(i);
-    hash ^= char;
-    hash *= 16777619; // FNV prime
-    hash = hash >>> 0; // Convert to unsigned 32-bit
-  }
-
-  // Ensure positive number for consistent bucketing
-  const positiveHash = hash >>> 0;
+  // Use centralized FNV-1a hash
+  const hash = fnv1aHash(str);
 
   // Cache the result (with LRU-like eviction)
   if (hashCache.size >= MAX_CACHE_SIZE) {
@@ -396,9 +421,9 @@ function hashString(str: string): number {
       hashCache.delete(firstKey);
     }
   }
-  hashCache.set(str, positiveHash);
+  hashCache.set(str, hash);
 
-  return positiveHash;
+  return hash;
 }
 
 // Track experiment events with input validation and circuit breaker

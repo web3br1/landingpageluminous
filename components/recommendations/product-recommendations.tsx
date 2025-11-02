@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, X, ExternalLink, Star, TrendingUp } from "lucide-react";
 import {
   ProductRecommendation,
   recommendationEngine,
@@ -41,7 +40,7 @@ export function ProductRecommendations({
   const userContext: UserContext = useMemo(
     () => ({
       segments: activeSegments,
-      profile: (userProfile as any) || {},
+      profile: (userProfile as unknown) || {},
       behavior:
         typeof window !== "undefined"
           ? {
@@ -383,7 +382,7 @@ export function useProductRecommendations(context?: Partial<UserContext>) {
   const userContext: UserContext = useMemo(
     () => ({
       segments: activeSegments,
-      profile: (userProfile as any) || {},
+      profile: (userProfile as unknown) || {},
       behavior:
         typeof window !== "undefined"
           ? {

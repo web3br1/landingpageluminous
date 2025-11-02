@@ -5,8 +5,7 @@
 const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX";
 
-// Consentimento LGPD
-const CONSENT_STORAGE_KEY = "dataflow-consent";
+// Consentimento LGPD - agora gerenciado pelo ConsentManager
 
 // Tipos para propriedades customizadas do window
 interface WindowExtensions {
@@ -16,8 +15,8 @@ interface WindowExtensions {
   dataLayer?: unknown[];
 
   plausible?: (
-    _event: string,
-    _props?: { props?: Record<string, unknown> },
+    event: string,
+    props?: { props?: Record<string, unknown> },
   ) => void;
 }
 
@@ -29,9 +28,9 @@ interface AnalyticsProperties {
 import type { ConsentState } from "@/components/cookie-banner";
 export type { ConsentState };
 
-// Funções de consentimento - delegar para ConsentManager
+// Funções de consentimento - usar ConsentManager centralizado com cache
 export const consent = {
-  get: (): ConsentState => {
+  get: async (): Promise<ConsentState> => {
     // Import dinâmico para evitar dependências circulares
     if (typeof window === "undefined") {
       return {
@@ -43,35 +42,43 @@ export const consent = {
     }
 
     try {
-      // Tentar usar ConsentManager se disponível
-      const { ConsentManager } = require("@/lib/privacy/consent-manager");
-      return ConsentManager.getConsent();
-    } catch {
-      // Fallback para implementação antiga
-      const stored = localStorage.getItem(CONSENT_STORAGE_KEY);
-      return stored
-        ? JSON.parse(stored)
-        : {
-            essential: true,
-            analytics: false,
-            marketing: false,
-            functional: false,
-          };
+      // Sempre usar ConsentManager para consistência e cache
+      const { ConsentManager } = await import("@/lib/privacy/consent-manager");
+      const consentData = ConsentManager.getConsent();
+      return {
+        essential: true,
+        ...consentData,
+      };
+    } catch (error) {
+      console.warn("Failed to load ConsentManager, using defaults:", error);
+      return {
+        essential: true,
+        analytics: false,
+        marketing: false,
+        functional: false,
+      };
     }
   },
 
-  set: (consent: ConsentState) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem(CONSENT_STORAGE_KEY, JSON.stringify(consent));
+  set: async (consentData: ConsentState) => {
+    try {
+      const { ConsentManager } = await import("@/lib/privacy/consent-manager");
+      // Remove essential before saving (ConsentManager adds it back)
+      const { essential, ...nonEssential } = consentData;
+      ConsentManager.setConsent(nonEssential, "api");
+    } catch (error) {
+      console.warn("Failed to save consent via ConsentManager:", error);
     }
   },
 
-  hasAnalytics: (): boolean => {
-    return consent.get().analytics;
+  hasAnalytics: async (): Promise<boolean> => {
+    const consentData = await consent.get();
+    return consentData.analytics;
   },
 
-  hasMarketing: (): boolean => {
-    return consent.get().marketing;
+  hasMarketing: async (): Promise<boolean> => {
+    const consentData = await consent.get();
+    return consentData.marketing;
   },
 };
 

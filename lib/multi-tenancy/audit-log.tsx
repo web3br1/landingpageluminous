@@ -29,7 +29,7 @@ export interface AuditEvent {
   resourceType: string;
   resourceId: string;
   action: string;
-  details: Record<string, any>;
+  details: Record<string, unknown>;
   ipAddress?: string;
   userAgent?: string;
   timestamp: Date;
@@ -45,7 +45,7 @@ export function useAuditLog() {
     resourceType: string,
     resourceId: string,
     action: string,
-    details: Record<string, any> = {},
+    details: Record<string, unknown> = {},
   ) => {
     if (!currentTenant) {
       console.warn("Cannot log audit event: no tenant context");
@@ -76,8 +76,8 @@ export function useAuditLog() {
       storeAuditEventLocally(event);
 
       // Send to analytics service if available
-      if (typeof window !== "undefined" && (window as any).analytics) {
-        (window as any).analytics.track("audit_event", {
+      if (typeof window !== "undefined" && (window as unknown).analytics) {
+        (window as unknown).analytics.track("audit_event", {
           ...event,
           timestamp: event.timestamp.toISOString(),
         });
@@ -178,9 +178,9 @@ export function AuditLogViewer() {
 
     try {
       const auditLog = JSON.parse(localStorage.getItem("audit_log") || "[]");
-      const parsedEvents = auditLog.map((event: any) => ({
+      const parsedEvents = auditLog.map((event: unknown) => ({
         ...event,
-        timestamp: new Date(event.timestamp),
+        timestamp: new Date((event as any).timestamp),
       }));
       setEvents(parsedEvents.reverse()); // Most recent first
     } catch (error) {

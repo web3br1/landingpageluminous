@@ -1,13 +1,43 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { compositionMetrics, CompositionMetrics } from "./composition-metrics";
 import { compositionAlerts, Alert, AlertSeverity } from "./composition-alerts";
+
+// ===== TYPES =====
+
+export interface CompositionDashboardMetrics {
+  // Performance metrics
+  totalCompositions?: number;
+  avgCompositionTime?: number;
+  maxCompositionTime?: number;
+  compositionErrors?: number;
+
+  // Cache metrics
+  cacheHits?: number;
+  cacheMisses?: number;
+  cacheHitRate?: number;
+
+  // Memory metrics
+  memoryUsage?: number;
+  garbageCollections?: number;
+
+  // Error metrics
+  errorRate?: number;
+  lastError?: string;
+  errorCount?: number;
+
+  // Timing metrics
+  lastUpdate?: number;
+  uptime?: number;
+
+  // Custom metrics
+  [key: string]: unknown;
+}
 
 // ===== DASHBOARD COMPONENT =====
 
 export function CompositionObservabilityDashboard() {
-  const [metrics, setMetrics] = useState<Record<string, any>>({});
+  const [metrics, setMetrics] = useState<CompositionDashboardMetrics>({});
   const [alerts, setAlerts] = useState<Alert[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -15,7 +45,7 @@ export function CompositionObservabilityDashboard() {
     const updateData = () => {
       // Get current metrics
       const currentMetrics =
-        (compositionMetrics as any).getCurrentMetrics?.() || {};
+        (compositionMetrics as any)?.getCurrentMetrics?.() || {};
 
       // Get active alerts
       const activeAlerts = compositionAlerts.getActiveAlerts();
@@ -78,25 +108,25 @@ export function CompositionObservabilityDashboard() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <MetricCard
             title="Composições Totais"
-            value={metrics.pageCompositionStarted || 0}
+            value={(metrics.pageCompositionStarted as number) || 0}
             icon="📄"
             color="blue"
           />
           <MetricCard
             title="Composições Concluídas"
-            value={metrics.pageCompositionCompleted || 0}
+            value={(metrics.pageCompositionCompleted as number) || 0}
             icon="✅"
             color="green"
           />
           <MetricCard
             title="Erros de Composição"
-            value={metrics.pageCompositionErrors || 0}
+            value={(metrics.pageCompositionErrors as number) || 0}
             icon="❌"
             color="red"
           />
           <MetricCard
             title="Seções Processadas"
-            value={metrics.sectionProcessingStarted || 0}
+            value={(metrics.sectionProcessingStarted as number) || 0}
             icon="🔧"
             color="purple"
           />
@@ -242,7 +272,7 @@ function HealthCard({
 
 // ===== UTILITY FUNCTIONS =====
 
-function getSuccessRate(metrics: Record<string, any>): number {
+function getSuccessRate(metrics: Record<string, unknown>): number {
   const total = metrics.pageCompositionStarted || 0;
   const successful = metrics.pageCompositionCompleted || 0;
 
@@ -250,7 +280,7 @@ function getSuccessRate(metrics: Record<string, any>): number {
   return Math.round((successful / total) * 100);
 }
 
-function getAverageLatency(metrics: Record<string, any>): number {
+function getAverageLatency(metrics: Record<string, unknown>): number {
   // This would need to be calculated from histogram data
   // For now, return a placeholder
   return 1200; // ms

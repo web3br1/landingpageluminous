@@ -43,7 +43,6 @@ export function LazyLoadingDashboard({
       : "0.0";
 
   const formatTime = (ms: number) => `${ms.toFixed(1)}ms`;
-  const formatBytes = (kb: number) => `${kb}KB`;
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6">

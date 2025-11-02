@@ -2,7 +2,7 @@
 // Manages service instantiation and dependency injection
 
 import { PageCompositionService } from "./services/page-composition-service";
-import { ContentMapper } from "./services/content-mapper";
+import { ContentMapperService } from "./services/content-mapper";
 import { FallbackProvider } from "./services/fallback-provider";
 import { SSRAdapter } from "./services/ssr-adapter";
 import { createFallbackComposition } from "./page-composer";
@@ -33,7 +33,7 @@ import {
   IPageConfigurationProvider,
   PageConfigurationProvider,
 } from "./services/page-configuration-provider";
-import { Result } from "@/shared/core";
+import { Result } from "@/lib/core/result";
 
 // Observability imports
 import { logger } from "../observability/logger";
@@ -119,22 +119,12 @@ class CompositionContainer {
       const errorTracker = this.services.get("IErrorTracker") as IErrorTracker;
 
       const fallbackProvider = new FallbackProvider();
-      const contentMapper = new ContentMapper(
-        experimentService,
-        performanceMonitor,
-        errorTracker,
-      );
+      const contentMapper = ContentMapperService.getInstance();
 
       // Initialize configuration provider
       const configProvider = new PageConfigurationProvider();
 
-      const pageCompositionService = new PageCompositionService(
-        contentMapper,
-        fallbackProvider,
-        performanceMonitor,
-        errorTracker,
-        configProvider,
-      );
+      const pageCompositionService = PageCompositionService.getInstance();
 
       this.services.set("IFallbackProvider", fallbackProvider);
       this.services.set("IContentMapper", contentMapper);

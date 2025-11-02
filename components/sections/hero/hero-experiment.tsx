@@ -82,7 +82,21 @@ export function HeroExperiment({
       <ContentExperiment
         experimentId="hero_headline_test"
         defaultContent={defaultHeroContent}
-        render={(experimentContent, variantId) => (
+        render={(experimentContent, variantId) => {
+          const content = experimentContent as {
+            headline?: string;
+            subheadline?: string;
+            primaryCta?: string;
+            secondaryCta?: string;
+            badge?: string;
+            metrics?: Array<{
+              label: string;
+              value: string;
+              description?: string;
+            }>;
+          };
+
+          return (
           <section
             id={id || "hero"}
             data-section="hero"
@@ -123,10 +137,10 @@ export function HeroExperiment({
                     id={headingId}
                     className="text-[clamp(2.5rem,5vw,4rem)] font-display font-bold text-foreground"
                   >
-                    {experimentContent.headline}
+                    {content.headline}
                   </h1>
                   <p className="text-[clamp(1.125rem,2.5vw,1.25rem)] text-muted-foreground max-w-xl">
-                    {experimentContent.subheadline}
+                    {content.subheadline}
                   </p>
                 </div>
 
@@ -150,7 +164,7 @@ export function HeroExperiment({
                 <div className="flex flex-col sm:flex-row gap-4">
                   <AccessibleButton
                     onClick={handlePrimaryCta}
-                    aria-label={`Clique para ${experimentContent.primaryCta}`}
+                    aria-label={`Clique para ${content.primaryCta}`}
                     data-tracking="primary-cta"
                     variant="primary"
                     size="lg"
@@ -160,12 +174,12 @@ export function HeroExperiment({
                         "hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200",
                     )}
                   >
-                    {experimentContent.primaryCta}
+                    {content.primaryCta}
                   </AccessibleButton>
 
                   <AccessibleButton
                     onClick={handleSecondaryCta}
-                    aria-label={`Clique para ${experimentContent.secondaryCta}`}
+                    aria-label={`Clique para ${content.secondaryCta}`}
                     data-tracking="secondary-cta"
                     variant="outline"
                     size="lg"
@@ -175,7 +189,7 @@ export function HeroExperiment({
                         "hover:bg-accent hover:text-accent-foreground transition-all duration-200",
                     )}
                   >
-                    {experimentContent.secondaryCta}
+                    {content.secondaryCta}
                   </AccessibleButton>
                 </div>
               </div>
@@ -202,7 +216,8 @@ export function HeroExperiment({
               </div>
             )}
           </section>
-        )}
+          );
+        }}
       />
     </ExperimentWrapper>
   );

@@ -4,7 +4,6 @@
 
 "use client";
 
-import Image from "next/image";
 // SectionWrapper/SectionHeader removidos: renderer fornece <section> e headingId
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";

@@ -24,8 +24,8 @@ export interface ExperimentVariant {
   name: string;
   description: string;
   themeOverrides?: Partial<import("./theme-registry").ThemePack["tokens"]>;
-  componentOverrides?: Record<string, any>;
-  contentOverrides?: Record<string, any>;
+  componentOverrides?: Record<string, unknown>;
+  contentOverrides?: Record<string, unknown>;
 }
 
 export interface ExperimentMetric {
@@ -145,7 +145,7 @@ export const ANALYTICS_EVENTS = {
 export function assignExperimentVariant(
   experimentId: string,
   userId?: string,
-  attributes?: Record<string, any>,
+  attributes?: Record<string, unknown>,
 ): "A" | "B" | null {
   const experiment = ACTIVE_EXPERIMENTS[experimentId];
   if (!experiment || experiment.status !== "running") {
@@ -168,7 +168,10 @@ export function assignExperimentVariant(
 }
 
 // Track analytics events
-export function trackExperimentEvent(event: string, data: Record<string, any>) {
+export function trackExperimentEvent(
+  event: string,
+  data: Record<string, unknown>,
+) {
   if (typeof window === "undefined") return;
 
   // Implementation would integrate with analytics provider
@@ -209,7 +212,7 @@ export function trackPerformanceMetric(
 export function trackConversion(
   action: string,
   value?: number,
-  context?: Record<string, any>,
+  context?: Record<string, unknown>,
 ) {
   trackExperimentEvent(ANALYTICS_EVENTS.CTA_CLICK, {
     action,
@@ -219,7 +222,10 @@ export function trackConversion(
 }
 
 // Track scroll depth
-export function trackScrollDepth(depth: number, context?: Record<string, any>) {
+export function trackScrollDepth(
+  depth: number,
+  context?: Record<string, unknown>,
+) {
   trackExperimentEvent(ANALYTICS_EVENTS.SCROLL_DEPTH, {
     depth,
     ...context,
@@ -333,7 +339,7 @@ export interface ThemeGovernance {
 export function getGovernanceReport(): ThemeGovernance[] {
   const { THEME_REGISTRY } = require("./theme-registry");
 
-  return Object.values(THEME_REGISTRY).map((theme: any) => ({
+  return Object.values(THEME_REGISTRY).map((theme: unknown) => ({
     themeId: theme.id,
     status: "active" as const,
     performance: {
@@ -369,32 +375,70 @@ function getSessionId(): string {
   return sessionId;
 }
 
-// Consent management utilities
+// Consent management utilities - usar ConsentManager centralizado
 export function hasConsent(type: string): boolean {
-  // Simple consent check - in real app, use proper consent management
-  if (typeof window === "undefined") return false;
-
-  const consent = localStorage.getItem("consent");
-  if (!consent) return false;
-
   try {
-    const data = JSON.parse(consent);
-    return data[type] === true;
-  } catch {
-    return false;
+    // Import dinâmico para evitar dependências circulares
+    const { ConsentManager } = require("@/lib/privacy/consent-manager");
+
+    // Mapear tipos de string para as categorias do ConsentManager
+    const categoryMap: Record<string, keyof import("@/lib/privacy/consent-manager").ConsentState> = {
+      analytics: "analytics",
+      marketing: "marketing",
+      functional: "functional",
+      essential: "essential",
+    };
+
+    const category = categoryMap[type];
+    if (!category) return false;
+
+    return ConsentManager.hasConsent(category);
+  } catch (error) {
+    console.warn("Failed to check consent via ConsentManager, using fallback:", error);
+    // Fallback simples para não quebrar funcionalidade
+    if (typeof window === "undefined") return false;
+    try {
+      const consent = localStorage.getItem("consent");
+      if (!consent) return false;
+      const data = JSON.parse(consent);
+      return data[type] === true;
+    } catch {
+      return false;
+    }
   }
 }
 
 export function setConsent(type: string, granted: boolean): void {
-  if (typeof window === "undefined") return;
-
   try {
-    const existing = localStorage.getItem("consent") || "{}";
-    const data = JSON.parse(existing);
-    data[type] = granted;
-    localStorage.setItem("consent", JSON.stringify(data));
+    // Import dinâmico para evitar dependências circulares
+    const { ConsentManager } = require("@/lib/privacy/consent-manager");
+
+    // Mapear tipos de string para as categorias do ConsentManager
+    const categoryMap: Record<string, keyof import("@/lib/privacy/consent-manager").ConsentState> = {
+      analytics: "analytics",
+      marketing: "marketing",
+      functional: "functional",
+      essential: "essential",
+    };
+
+    const category = categoryMap[type];
+    if (!category) return;
+
+    const currentConsent = ConsentManager.getConsent();
+    currentConsent[category] = granted;
+    ConsentManager.setConsent(currentConsent, "api");
   } catch (error) {
-    console.warn("Failed to set consent:", error);
+    console.warn("Failed to set consent via ConsentManager, using fallback:", error);
+    // Fallback simples para não quebrar funcionalidade
+    if (typeof window === "undefined") return;
+    try {
+      const existing = localStorage.getItem("consent") || "{}";
+      const data = JSON.parse(existing);
+      data[type] = granted;
+      localStorage.setItem("consent", JSON.stringify(data));
+    } catch (fallbackError) {
+      console.warn("Fallback consent setting also failed:", fallbackError);
+    }
   }
 }
 
@@ -412,8 +456,8 @@ export function createAnonymousId(identifier: string): string {
 }
 
 export function anonymizeContext(
-  context: Record<string, any>,
-): Record<string, any> {
+  context: Record<string, unknown>,
+): Record<string, unknown> {
   const anonymized = { ...context };
 
   // Remove or hash PII fields
@@ -429,7 +473,7 @@ export function anonymizeContext(
 }
 
 // Security validation for experiment data
-export function validateExperimentData(data: Record<string, any>): boolean {
+export function validateExperimentData(data: Record<string, unknown>): boolean {
   // Basic validation to prevent malicious experiment data
   const allowedKeys = [
     "experimentId",

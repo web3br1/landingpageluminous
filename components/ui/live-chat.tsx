@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { z } from "zod";
+import { createPropValidator } from "@/lib/architecture/component-props";
 import {
   MessageSquare,
   X,
@@ -16,6 +18,26 @@ import { usePersonalization } from "@/lib/personalization/personalization-contex
 import { whatsappIntegration } from "@/lib/whatsapp/integration";
 import { useResilientMutation } from "@/lib/network/use-resilient-fetch";
 import { useUnifiedEvents } from "@/lib/hooks/use-unified-events";
+
+// Interface for chatbot response
+interface ChatbotResponse {
+  message: string;
+  type?: string;
+  metadata?: Record<string, unknown>;
+  quick_replies?: Array<{
+    text: string;
+    value: string;
+  }>;
+}
+
+// Type guard for safe narrowing
+function isChatbotResponse(data: unknown): data is ChatbotResponse {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    typeof (data as any).message === 'string'
+  );
+}
 import { useComponentCircuitBreaker } from "@/lib/hooks/use-component-circuit-breaker";
 
 interface Message {
@@ -24,7 +46,7 @@ interface Message {
   sender: "user" | "bot";
   timestamp: Date;
   type?: "text" | "quick_reply" | "product_card";
-  metadata?: any;
+  metadata?: unknown;
 }
 
 interface ChatState {
@@ -35,7 +57,21 @@ interface ChatState {
   unreadCount: number;
 }
 
-export function LiveChat() {
+// Schema for LiveChat props validation
+const LiveChatPropsSchema = z.object({
+  // Component doesn't have explicit props, but we validate internal state
+  // Add any future props here
+});
+
+export interface LiveChatProps extends z.infer<typeof LiveChatPropsSchema> {}
+
+// Create prop validator for LiveChat component
+const liveChatPropValidator = createPropValidator(LiveChatPropsSchema, "LiveChat", {
+  logErrors: true,
+  throwOnError: false,
+});
+
+export function LiveChat(props: LiveChatProps = {}) {
   const [chatState, setChatState] = useState<ChatState>({
     isOpen: false,
     isMinimized: false,
@@ -145,14 +181,19 @@ export function LiveChat() {
 
   const { mutate: sendChatMessage, loading: sendingMessage } =
     useResilientMutation("POST", "/api/chatbot", {
-      onSuccess: (botResponse: any) => {
+      onSuccess: (botResponse: unknown) => {
+        if (!isChatbotResponse(botResponse)) {
+          console.error("Invalid chatbot response format", botResponse);
+          return;
+        }
+        const response = botResponse;
         const botMessage: Message = {
           id: `bot-${Date.now()}`,
-          content: botResponse.message,
+          content: response.message,
           sender: "bot",
           timestamp: new Date(),
-          type: botResponse.type || "text",
-          metadata: botResponse.metadata,
+          type: (response.type as "text" | "quick_reply" | "product_card") || "text",
+          metadata: response.metadata,
         };
 
         setChatState((prev) => ({
@@ -397,16 +438,18 @@ Como você chegou até aqui?`,
 
                         {/* Quick Replies */}
                         {message.type === "quick_reply" &&
-                          message.metadata?.quick_replies && (
+                          message.metadata &&
+                          isChatbotResponse(message.metadata) &&
+                          message.metadata.quick_replies && (
                             <div className="mt-3 space-y-2">
                               {message.metadata.quick_replies.map(
-                                (reply: string, index: number) => (
+                                (reply: { text: string; value: string }, index: number) => (
                                   <button
                                     key={index}
-                                    onClick={() => sendMessage(reply)}
+                                    onClick={() => sendMessage(reply.value)}
                                     className="block w-full text-left text-xs bg-white/20 hover:bg-white/30 rounded px-3 py-1 transition-colors"
                                   >
-                                    {reply}
+                                    {reply.text}
                                   </button>
                                 ),
                               )}

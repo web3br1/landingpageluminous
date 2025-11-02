@@ -10,7 +10,7 @@ import {
   SubmitLeadInput,
 } from "../../application/use-cases/SubmitLeadUseCase";
 import { LocalStorageLeadRepository } from "../repositories/LocalStorageLeadRepository";
-import { Result, isOk, isErr } from "../../../../shared/core/Result";
+import { Result, isOk, isErr } from "@/lib/core/result";
 
 // DTO para comunicação com React Hook Form
 const leadFormSchema = z.object({
@@ -77,8 +77,8 @@ export function ReactLeadFormAdapter({
       if (isOk(result)) {
         // Sucesso - lógica de apresentação
         reset();
-        const data = result.value as {
-          lead: any;
+        const data = result.data as {
+          lead: unknown;
           requiresImmediateFollowUp: boolean;
           isHighValue: boolean;
         };

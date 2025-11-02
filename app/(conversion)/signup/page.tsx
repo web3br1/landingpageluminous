@@ -8,9 +8,7 @@ export const revalidate = 3600;
 // Generate metadata dynamically from composition
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const composition = await composePageFull("signup", undefined, {
-      flags: {},
-    });
+    const composition = await composePageFull("signup", undefined);
 
     if (!composition?.metadata) {
       return {
@@ -29,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: "website",
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Signup - Error Fallback",
       description: "Signup page - error occurred",
@@ -41,16 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Signup() {
   try {
     // Compose page content asynchronously with signup form data
-    const composition = await composePageFull("signup", undefined, {
-      flags: {},
-    });
+    const composition = await composePageFull("signup", undefined);
 
     if (!composition) {
       return <div>Error: No composition available</div>;
     }
 
     return <PageRenderer composition={composition} pageType="signup" />;
-  } catch (error) {
+  } catch {
     return <div>Error: Failed to render signup page</div>;
   }
 }

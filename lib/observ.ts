@@ -1,6 +1,5 @@
 // Phase 3 Telemetry - Minimal observability for critical issues
 
-import { timed } from "../shared/observ";
 
 // Telemetry events for Phase 3 fixes
 export const telemetry = {
@@ -16,10 +15,10 @@ export const telemetry = {
   },
 
   // Envelope contract violations
-  sectionEnvelopeMissing: (sectionId: string, error?: any) => {
+  sectionEnvelopeMissing: (sectionId: string, error?: unknown) => {
     console.error("[TELEMETRY] section_envelope_missing", {
       sectionId,
-      error: error?.message || error,
+      error: (error as Error)?.message || error,
       timestamp: Date.now(),
       phase: 3,
       issue: "envelope_contract_violation",

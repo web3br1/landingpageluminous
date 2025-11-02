@@ -322,7 +322,7 @@ export class WhatsAppIntegration {
   async testAPIConnection(): Promise<{
     success: boolean;
     error?: string;
-    details?: any;
+    details?: unknown;
   }> {
     if (!this.isBusinessAPIConfigured()) {
       return {

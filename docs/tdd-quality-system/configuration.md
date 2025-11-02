@@ -25,13 +25,13 @@
 // tools/tdd/config/defaults.js
 export const tddConfig = {
   // Versão do sistema
-  version: '1.0.0',
+  version: "1.0.0",
 
   // Ambiente de execução
   environment: {
-    ci: process.env.CI === 'true',
+    ci: process.env.CI === "true",
     local: !process.env.CI,
-    github: process.env.GITHUB_ACTIONS === 'true'
+    github: process.env.GITHUB_ACTIONS === "true",
   },
 
   // Thresholds globais
@@ -39,17 +39,25 @@ export const tddConfig = {
     minScoreForMerge: 60,
     maxCriticalIssues: 3,
     maxAnalysisTime: 120000, // 2 minutos
-    minCacheHitRate: 0.7     // 70%
+    minCacheHitRate: 0.7, // 70%
   },
 
   // Configurações de maturidade
   maturity: {
-    M0: { /* Caos Total */ },
-    M1: { /* Instável */ },
-    M2: { /* Estável */ },
-    M3: { /* Sólido */ }
-  }
-}
+    M0: {
+      /* Caos Total */
+    },
+    M1: {
+      /* Instável */
+    },
+    M2: {
+      /* Estável */
+    },
+    M3: {
+      /* Sólido */
+    },
+  },
+};
 ```
 
 ### Configuração por Projeto
@@ -58,14 +66,14 @@ export const tddConfig = {
 // tools/tdd/config/project.js
 export const projectConfig = {
   // Contexto específico do projeto
-  domain: 'landing-page', // saas, fintech, healthcare, etc.
+  domain: "landing-page", // saas, fintech, healthcare, etc.
 
   // Características técnicas
   tech: {
-    framework: 'nextjs',
-    testing: 'vitest',
-    language: 'typescript',
-    styling: 'tailwind'
+    framework: "nextjs",
+    testing: "vitest",
+    language: "typescript",
+    styling: "tailwind",
   },
 
   // Expectativas de qualidade
@@ -73,16 +81,16 @@ export const projectConfig = {
     minCoverage: 80,
     maxComplexity: 10,
     requireTypes: true,
-    requireTests: true
+    requireTests: true,
   },
 
   // Políticas específicas
   policies: {
     allowPartialCoverage: true,
     prioritizeCriticalPath: true,
-    experimentalFeatures: false
-  }
-}
+    experimentalFeatures: false,
+  },
+};
 ```
 
 ---
@@ -95,40 +103,40 @@ export const projectConfig = {
 M0_thresholds = {
   // Permissivo para permitir recuperação
   score: {
-    minMerge: 20,      // Score mínimo muito baixo
-    target: 40,        // Meta realista
-    excellent: 60      // Excelente para M0
+    minMerge: 20, // Score mínimo muito baixo
+    target: 40, // Meta realista
+    excellent: 60, // Excelente para M0
   },
 
   issues: {
-    maxCritical: 5,    // Permite mais críticos
-    maxWarnings: 20,   // Avisos liberais
-    maxInfo: 50        // Infos liberais
+    maxCritical: 5, // Permite mais críticos
+    maxWarnings: 20, // Avisos liberais
+    maxInfo: 50, // Infos liberais
   },
 
   metrics: {
     coverage: {
-      min: 0,          // Sem mínimo
-      target: 30,      // Meta baixa
-      weight: 0.03     // Peso mínimo
+      min: 0, // Sem mínimo
+      target: 30, // Meta baixa
+      weight: 0.03, // Peso mínimo
     },
     isolation: {
       min: 0,
       target: 50,
-      weight: 0.25     // Prioriza isolamento
+      weight: 0.25, // Prioriza isolamento
     },
     performance: {
       maxTime: 300000, // 5 minutos
-      weight: 0.05     // Peso mínimo
-    }
+      weight: 0.05, // Peso mínimo
+    },
   },
 
   execution: {
-    allowEngineFailure: true,    // Engine pode falhar
-    requireSafeTests: false,     // Não requer subset
-    useProxyCoverage: true       // Sempre usa proxy
-  }
-}
+    allowEngineFailure: true, // Engine pode falhar
+    requireSafeTests: false, // Não requer subset
+    useProxyCoverage: true, // Sempre usa proxy
+  },
+};
 ```
 
 ### M1 - Instável
@@ -137,40 +145,40 @@ M0_thresholds = {
 M1_thresholds = {
   // Começa a exigir qualidade básica
   score: {
-    minMerge: 40,      // Score mínimo razoável
-    target: 60,        // Meta desafiadora
-    excellent: 75
+    minMerge: 40, // Score mínimo razoável
+    target: 60, // Meta desafiadora
+    excellent: 75,
   },
 
   issues: {
-    maxCritical: 3,    // Reduz críticos
-    maxWarnings: 15,   // Avisos controlados
-    maxInfo: 30
+    maxCritical: 3, // Reduz críticos
+    maxWarnings: 15, // Avisos controlados
+    maxInfo: 30,
   },
 
   metrics: {
     coverage: {
-      min: 10,         // Mínimo básico
-      target: 50,      // Meta intermediária
-      weight: 0.10     // Peso aumentado
+      min: 10, // Mínimo básico
+      target: 50, // Meta intermediária
+      weight: 0.1, // Peso aumentado
     },
     isolation: {
       min: 30,
       target: 70,
-      weight: 0.22
+      weight: 0.22,
     },
     performance: {
       maxTime: 180000, // 3 minutos
-      weight: 0.08
-    }
+      weight: 0.08,
+    },
   },
 
   execution: {
-    allowEngineFailure: true,    // Ainda permite falha
-    requireSafeTests: true,      // Agora requer subset
-    useProxyCoverage: true
-  }
-}
+    allowEngineFailure: true, // Ainda permite falha
+    requireSafeTests: true, // Agora requer subset
+    useProxyCoverage: true,
+  },
+};
 ```
 
 ### M2 - Estável
@@ -179,40 +187,40 @@ M1_thresholds = {
 M2_thresholds = {
   // Qualidade consolidada
   score: {
-    minMerge: 60,      // Score profissional
-    target: 80,        // Meta alta
-    excellent: 90
+    minMerge: 60, // Score profissional
+    target: 80, // Meta alta
+    excellent: 90,
   },
 
   issues: {
-    maxCritical: 1,    // Só 1 crítico
-    maxWarnings: 10,   // Avisos limitados
-    maxInfo: 20
+    maxCritical: 1, // Só 1 crítico
+    maxWarnings: 10, // Avisos limitados
+    maxInfo: 20,
   },
 
   metrics: {
     coverage: {
-      min: 40,         // Cobertura significativa
-      target: 75,      // Meta alta
-      weight: 0.18     // Peso relevante
+      min: 40, // Cobertura significativa
+      target: 75, // Meta alta
+      weight: 0.18, // Peso relevante
     },
     isolation: {
       min: 60,
       target: 85,
-      weight: 0.18
+      weight: 0.18,
     },
     performance: {
       maxTime: 120000, // 2 minutos
-      weight: 0.12     // Performance importa
-    }
+      weight: 0.12, // Performance importa
+    },
   },
 
   execution: {
-    allowEngineFailure: false,   // Engine deve funcionar
-    requireSafeTests: true,      // Subset obrigatório
-    useProxyCoverage: false      // Prefere real
-  }
-}
+    allowEngineFailure: false, // Engine deve funcionar
+    requireSafeTests: true, // Subset obrigatório
+    useProxyCoverage: false, // Prefere real
+  },
+};
 ```
 
 ### M3 - Sólido
@@ -221,40 +229,40 @@ M2_thresholds = {
 M3_thresholds = {
   // Excelência técnica
   score: {
-    minMerge: 80,      // Score muito alto
-    target: 95,        // Meta excelente
-    excellent: 100
+    minMerge: 80, // Score muito alto
+    target: 95, // Meta excelente
+    excellent: 100,
   },
 
   issues: {
-    maxCritical: 0,    // Zero críticos
-    maxWarnings: 5,    // Avisos mínimos
-    maxInfo: 10
+    maxCritical: 0, // Zero críticos
+    maxWarnings: 5, // Avisos mínimos
+    maxInfo: 10,
   },
 
   metrics: {
     coverage: {
-      min: 70,         // Cobertura alta
-      target: 90,      // Meta muito alta
-      weight: 0.25     // Máximo peso
+      min: 70, // Cobertura alta
+      target: 90, // Meta muito alta
+      weight: 0.25, // Máximo peso
     },
     isolation: {
       min: 80,
       target: 95,
-      weight: 0.15
+      weight: 0.15,
     },
     performance: {
-      maxTime: 60000,  // 1 minuto
-      weight: 0.15     // Performance crítica
-    }
+      maxTime: 60000, // 1 minuto
+      weight: 0.15, // Performance crítica
+    },
   },
 
   execution: {
-    allowEngineFailure: false,   // Engine sempre funciona
-    requireSafeTests: true,      // Subset ainda necessário
-    useProxyCoverage: false      // Sempre real
-  }
-}
+    allowEngineFailure: false, // Engine sempre funciona
+    requireSafeTests: true, // Subset ainda necessário
+    useProxyCoverage: false, // Sempre real
+  },
+};
 ```
 
 ---
@@ -270,26 +278,26 @@ const prGates = {
     requireAnalysis: true,
     blockOnCritical: true,
     blockOnScoreBelowMin: true,
-    allowPartialCoverage: 'M1+', // Permite em M1+
-    notifyOnWarnings: true
+    allowPartialCoverage: "M1+", // Permite em M1+
+    notifyOnWarnings: true,
   },
 
   // Hotfix urgente
   hotfix: {
     requireAnalysis: true,
-    blockOnCritical: false,     // Não bloqueia críticos
+    blockOnCritical: false, // Não bloqueia críticos
     blockOnScoreBelowMin: false, // Permite score baixo
-    allowPartialCoverage: true,  // Sempre permite
-    notifyOnWarnings: false      // Não notifica avisos
+    allowPartialCoverage: true, // Sempre permite
+    notifyOnWarnings: false, // Não notifica avisos
   },
 
   // Feature flag
   featureFlag: {
-    requireAnalysis: false,     // Não requer análise
+    requireAnalysis: false, // Não requer análise
     blockOnCritical: false,
     blockOnScoreBelowMin: false,
     allowPartialCoverage: true,
-    notifyOnWarnings: false
+    notifyOnWarnings: false,
   },
 
   // Dependabot
@@ -298,9 +306,9 @@ const prGates = {
     blockOnCritical: true,
     blockOnScoreBelowMin: false, // Não bloqueia score
     allowPartialCoverage: true,
-    notifyOnWarnings: true
-  }
-}
+    notifyOnWarnings: true,
+  },
+};
 ```
 
 ### Estratégias de Notificação
@@ -310,28 +318,28 @@ const notificationStrategies = {
   // PR comments
   prComment: {
     enabled: true,
-    template: 'tdd-pr-comment.md',
+    template: "tdd-pr-comment.md",
     updateExisting: true,
-    includeDashboard: false
+    includeDashboard: false,
   },
 
   // Slack notifications
   slack: {
     enabled: true,
-    channels: ['#dev-quality', '#dev-team'],
+    channels: ["#dev-quality", "#dev-team"],
     onFailure: true,
     onRecovery: true,
-    includeScore: true
+    includeScore: true,
   },
 
   // Email reports
   email: {
     enabled: false, // Desabilitado por padrão
-    recipients: ['tech-leads@company.com'],
-    frequency: 'weekly',
-    includeTrends: true
-  }
-}
+    recipients: ["tech-leads@company.com"],
+    frequency: "weekly",
+    includeTrends: true,
+  },
+};
 ```
 
 ---
@@ -344,37 +352,37 @@ const notificationStrategies = {
 const cachePolicies = {
   // Por ambiente
   local: {
-    ttl: 3600000,     // 1 hora
-    maxEntries: 20,   // Máximo 20 entradas
-    strategy: 'lru'   // LRU por uso
+    ttl: 3600000, // 1 hora
+    maxEntries: 20, // Máximo 20 entradas
+    strategy: "lru", // LRU por uso
   },
 
   ci: {
-    ttl: 86400000,    // 24 horas
-    maxEntries: 10,   // Máximo 10 entradas
-    strategy: 'ttl'   // TTL simples
+    ttl: 86400000, // 24 horas
+    maxEntries: 10, // Máximo 10 entradas
+    strategy: "ttl", // TTL simples
   },
 
   // Por domínio
   domains: {
     src: {
-      priority: 'high',
-      invalidation: 'content-hash'
+      priority: "high",
+      invalidation: "content-hash",
     },
     tests: {
-      priority: 'high',
-      invalidation: 'content-hash'
+      priority: "high",
+      invalidation: "content-hash",
     },
     config: {
-      priority: 'medium',
-      invalidation: 'modified-time'
+      priority: "medium",
+      invalidation: "modified-time",
     },
     lockfile: {
-      priority: 'low',
-      invalidation: 'version-check'
-    }
-  }
-}
+      priority: "low",
+      invalidation: "version-check",
+    },
+  },
+};
 ```
 
 ### Estratégias de Invalidação
@@ -382,24 +390,24 @@ const cachePolicies = {
 ```javascript
 const invalidationStrategies = {
   // Hash do conteúdo
-  'content-hash': {
-    algorithm: 'sha256',
-    include: ['**/*.{ts,tsx,js,jsx,json}'],
-    exclude: ['node_modules/**', '.git/**']
+  "content-hash": {
+    algorithm: "sha256",
+    include: ["**/*.{ts,tsx,js,jsx,json}"],
+    exclude: ["node_modules/**", ".git/**"],
   },
 
   // Tempo de modificação
-  'modified-time': {
-    granularity: 'minute',
-    compare: 'newer-than-cache'
+  "modified-time": {
+    granularity: "minute",
+    compare: "newer-than-cache",
   },
 
   // Verificação de versão
-  'version-check': {
-    source: 'package.json',
-    field: 'version'
-  }
-}
+  "version-check": {
+    source: "package.json",
+    field: "version",
+  },
+};
 ```
 
 ---
@@ -413,48 +421,48 @@ const alertRules = {
   // Regressão de score
   scoreRegression: {
     enabled: true,
-    threshold: -10,   // Caiu 10 pontos
-    severity: 'high',
-    action: 'block-merge',
-    cooldown: 3600000 // 1 hora
+    threshold: -10, // Caiu 10 pontos
+    severity: "high",
+    action: "block-merge",
+    cooldown: 3600000, // 1 hora
   },
 
   // Issues recorrentes
   recurringIssues: {
     enabled: true,
-    threshold: 3,     // Mesmo issue 3+ vezes
-    severity: 'medium',
-    action: 'create-task',
-    lookback: 604800000 // 7 dias
+    threshold: 3, // Mesmo issue 3+ vezes
+    severity: "medium",
+    action: "create-task",
+    lookback: 604800000, // 7 dias
   },
 
   // Performance degradada
   performanceDegradation: {
     enabled: true,
-    threshold: 2,     // > 2 minutos
-    severity: 'low',
-    action: 'notify-team',
-    baseline: 'average-last-7-days'
+    threshold: 2, // > 2 minutos
+    severity: "low",
+    action: "notify-team",
+    baseline: "average-last-7-days",
   },
 
   // Cobertura reduzida
   coverageDrop: {
     enabled: true,
     threshold: -0.05, // Caiu 5%
-    severity: 'medium',
-    action: 'investigate',
-    ignoreSafeTests: true
+    severity: "medium",
+    action: "investigate",
+    ignoreSafeTests: true,
   },
 
   // Maturidade reduzida
   maturityRegression: {
     enabled: true,
-    threshold: -1,    // Caiu 1 nível
-    severity: 'high',
-    action: 'escalate-lead',
-    cooldown: 86400000 // 24 horas
-  }
-}
+    threshold: -1, // Caiu 1 nível
+    severity: "high",
+    action: "escalate-lead",
+    cooldown: 86400000, // 24 horas
+  },
+};
 ```
 
 ### Canais de Notificação
@@ -463,19 +471,19 @@ const alertRules = {
 const alertChannels = {
   github: {
     enabled: true,
-    template: 'alert-github.md',
-    updateComments: true
+    template: "alert-github.md",
+    updateComments: true,
   },
 
   slack: {
     enabled: true,
     webhook: process.env.SLACK_WEBHOOK_URL,
-    channel: '#alerts-quality',
+    channel: "#alerts-quality",
     templates: {
-      high: 'alert-slack-high.md',
-      medium: 'alert-slack-medium.md',
-      low: 'alert-slack-low.md'
-    }
+      high: "alert-slack-high.md",
+      medium: "alert-slack-medium.md",
+      low: "alert-slack-low.md",
+    },
   },
 
   email: {
@@ -483,13 +491,13 @@ const alertChannels = {
     smtp: {
       host: process.env.SMTP_HOST,
       port: 587,
-      secure: false
+      secure: false,
     },
     templates: {
-      weekly: 'alert-email-weekly.html'
-    }
-  }
-}
+      weekly: "alert-email-weekly.html",
+    },
+  },
+};
 ```
 
 ---
@@ -501,38 +509,38 @@ const alertChannels = {
 ```javascript
 const activeExperiments = {
   // Otimização de pesos de maturidade
-  'maturity-weights-optimization': {
-    id: 'mw-opt-2025',
+  "maturity-weights-optimization": {
+    id: "mw-opt-2025",
     variants: [
       {
-        name: 'conservative',
+        name: "conservative",
         config: { weights: { classifier: 0.8, engine: 0.2 } },
-        traffic: 0.5
+        traffic: 0.5,
       },
       {
-        name: 'aggressive',
+        name: "aggressive",
         config: { weights: { classifier: 0.6, engine: 0.4 } },
-        traffic: 0.5
-      }
+        traffic: 0.5,
+      },
     ],
-    metric: 'score_stability',
+    metric: "score_stability",
     duration: 1209600000, // 2 semanas
-    status: 'running'
+    status: "running",
   },
 
   // Otimização de cache TTL
-  'cache-ttl-optimization': {
-    id: 'cache-ttl-2025',
+  "cache-ttl-optimization": {
+    id: "cache-ttl-2025",
     variants: [
-      { name: '30min', config: { ttl: 1800000 }, traffic: 0.33 },
-      { name: '60min', config: { ttl: 3600000 }, traffic: 0.33 },
-      { name: '120min', config: { ttl: 7200000 }, traffic: 0.34 }
+      { name: "30min", config: { ttl: 1800000 }, traffic: 0.33 },
+      { name: "60min", config: { ttl: 3600000 }, traffic: 0.33 },
+      { name: "120min", config: { ttl: 7200000 }, traffic: 0.34 },
     ],
-    metric: 'cache_hit_rate',
+    metric: "cache_hit_rate",
     duration: 604800000, // 1 semana
-    status: 'running'
-  }
-}
+    status: "running",
+  },
+};
 ```
 
 ### Atribuição de Variantes
@@ -541,23 +549,23 @@ const activeExperiments = {
 const variantAssignment = {
   // Baseada na branch
   branchBased: {
-    'feature/*': 'experimental',
-    'bugfix/*': 'conservative',
-    'main': 'control'
+    "feature/*": "experimental",
+    "bugfix/*": "conservative",
+    main: "control",
   },
 
   // Baseada no usuário (hash consistente)
   userBased: {
-    algorithm: 'consistent-hash',
-    salt: 'tdd-experiment-salt-2025'
+    algorithm: "consistent-hash",
+    salt: "tdd-experiment-salt-2025",
   },
 
   // Baseada no tempo (janelas arredondadas)
   timeBased: {
     window: 3600000, // 1 hora
-    distribution: 'round-robin'
-  }
-}
+    distribution: "round-robin",
+  },
+};
 ```
 
 ---
@@ -686,13 +694,13 @@ tmp/
 ```javascript
 export const projectConfig = {
   // Configurações específicas do projeto Landing Page
-  domain: 'landing-page',
+  domain: "landing-page",
 
   tech: {
-    framework: 'nextjs',
-    testing: 'vitest',
-    language: 'typescript',
-    styling: 'tailwind'
+    framework: "nextjs",
+    testing: "vitest",
+    language: "typescript",
+    styling: "tailwind",
   },
 
   // Thresholds ajustados para o contexto
@@ -700,23 +708,23 @@ export const projectConfig = {
     M0: {
       score: { minMerge: 25 }, // Mais permissivo devido ao contexto
       metrics: {
-        coverage: { weight: 0.05 } // Cobertura menos crítica
-      }
+        coverage: { weight: 0.05 }, // Cobertura menos crítica
+      },
     },
     M1: {
       score: { minMerge: 50 },
       metrics: {
-        coverage: { weight: 0.15 }
-      }
+        coverage: { weight: 0.15 },
+      },
     },
     M2: {
       score: { minMerge: 70 }, // Mais exigente
       metrics: {
-        coverage: { weight: 0.25 }
-      }
-    }
-  }
-}
+        coverage: { weight: 0.25 },
+      },
+    },
+  },
+};
 ```
 
 ---
@@ -750,15 +758,15 @@ npm run tdd:simulate-config
 const rollbackConfig = {
   enabled: true,
   trigger: {
-    scoreDrop: 15,      // Caiu 15 pontos
-    errorRate: 0.5      // 50% de erros
+    scoreDrop: 15, // Caiu 15 pontos
+    errorRate: 0.5, // 50% de erros
   },
   action: {
     revert: true,
-    notify: ['tech-leads', 'dev-team'],
-    quarantine: 3600000 // 1 hora em quarentena
-  }
-}
+    notify: ["tech-leads", "dev-team"],
+    quarantine: 3600000, // 1 hora em quarentena
+  },
+};
 ```
 
 ---

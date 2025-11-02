@@ -5,31 +5,16 @@ import Script from "next/script";
 import { defaultSeo, jsonLd, stringifyForScript } from "@/lib/seo";
 import { ConsentBanner } from "@/app/(marketing)/components/ui/consent-banner";
 import { LayoutComposer } from "@/lib/composition/layout-composer";
-import {
-  CriticalOptimization,
-  preloadCriticalComponents,
-} from "@/lib/performance/critical-optimization";
 import { SkipLink } from "@/lib/a11y/touch-target-optimization";
-import { usePerformanceOptimization } from "@/lib/performance/use-performance-optimization";
-// import { MotionProvider } from "@/lib/providers/motion-provider"
-// import { ThemeProvider } from "@/lib/theme/theme-context"
-// import { PlausibleProvider } from "@/lib/analytics"
 import "@/styles/globals.css";
 
-// Preload critical components on module load
-preloadCriticalComponents();
+// Preload critical components and sections on module load
+// preloadCriticalComponents();
+// preloadCriticalSections();
 
 // Client component for performance optimization
 function PerformanceOptimizationWrapper() {
-  usePerformanceOptimization({
-    enableCacheMonitoring: true,
-    enableResourcePreloading: true,
-    enablePerformanceTracking: true,
-    cacheStrategy: "balanced",
-    preloadCritical: true,
-    trackInteractions: true,
-  });
-
+  // Temporarily simplified for build stability
   return null;
 }
 
@@ -80,10 +65,12 @@ function UXOrchestratorWrapperClient({
     <>
       {children}
       <UXOrchestrator
+        debugMode={false}
         config={{
           enableChat: true,
           enableOnboarding: true,
           enableRecommendations: true,
+          autoShowRecommendations: false,
           chatDelay: 15000, // 15 segundos
           onboardingDelay: 5000, // 5 segundos
           recommendationsDelay: 20000, // 20 segundos
@@ -141,35 +128,33 @@ export default function MarketingLayout({
         />
       )}
 
-      <CriticalOptimization>
-        {/* Skip links for accessibility */}
-        <SkipLink href="#main-content">Pular para conteúdo principal</SkipLink>
-        <SkipLink href="#hero">Pular para início</SkipLink>
-        <SkipLink href="#benefits">Pular para benefícios</SkipLink>
-        <SkipLink href="#features">Pular para funcionalidades</SkipLink>
-        <SkipLink href="#pricing">Pular para preços</SkipLink>
-        <SkipLink href="#footer">Pular para rodapé</SkipLink>
+      {/* Skip links for accessibility */}
+      <SkipLink href="#main-content">Pular para conteúdo principal</SkipLink>
+      <SkipLink href="#hero">Pular para início</SkipLink>
+      <SkipLink href="#benefits">Pular para benefícios</SkipLink>
+      <SkipLink href="#features">Pular para funcionalidades</SkipLink>
+      <SkipLink href="#pricing">Pular para preços</SkipLink>
+      <SkipLink href="#footer">Pular para rodapé</SkipLink>
 
-        {/* Performance optimization wrapper */}
-        <PerformanceOptimizationWrapper />
+      {/* Performance optimization wrapper */}
+      <PerformanceOptimizationWrapper />
 
-        {/* ✅ Providers essenciais para UX pública (lacuna #1 corrigida) */}
-        <UXOrchestratorWrapper>
-          <MarketingContentWrapper>
-            {debugBypassComposer ? (
-              <div>
-                {children}
-                <ConsentBanner />
-              </div>
-            ) : (
-              <LayoutComposer layoutId="marketing" className={""}>
-                {children}
-                <ConsentBanner />
-              </LayoutComposer>
-            )}
-          </MarketingContentWrapper>
-        </UXOrchestratorWrapper>
-      </CriticalOptimization>
+      {/* ✅ Providers essenciais para UX pública */}
+      <UXOrchestratorWrapper>
+        <MarketingContentWrapper>
+          {debugBypassComposer ? (
+            <div>
+              {children}
+              <ConsentBanner />
+            </div>
+          ) : (
+            <LayoutComposer layoutId="marketing" className={""}>
+              {children}
+              <ConsentBanner />
+            </LayoutComposer>
+          )}
+        </MarketingContentWrapper>
+      </UXOrchestratorWrapper>
     </>
   );
 }

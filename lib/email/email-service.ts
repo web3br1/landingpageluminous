@@ -1,14 +1,14 @@
 // Email Service - Basic email sending for Stripe webhooks
 // Temporary implementation until full email system is ready
 
-import { Result } from "../../shared/core/Result";
+import { Result } from "@/lib/core/result";
 import { edgeCache as cache } from "../cache/edge-cache";
 
 export interface EmailMessage {
   to: string;
   subject: string;
   template: string;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
   sentAt?: number;
   status: "pending" | "sent" | "failed";
 }
@@ -30,7 +30,7 @@ export class EmailService {
     to: string,
     subject: string,
     template: string,
-    data: Record<string, any> = {},
+    data: Record<string, unknown> = {},
   ): Promise<Result<boolean, Error>> {
     try {
       const email: EmailMessage = {
@@ -75,41 +75,41 @@ export class EmailService {
 
   async sendPaymentConfirmationEmail(
     email: string,
-    invoiceData: any,
+    invoiceData: unknown,
   ): Promise<Result<boolean, Error>> {
     return this.sendEmail(
       email,
       "Confirmação de Pagamento",
       "payment-confirmation",
       {
-        amount: invoiceData.amount,
-        currency: invoiceData.currency,
-        invoiceId: invoiceData.id,
-        downloadUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/invoice/${invoiceData.id}`,
+        amount: (invoiceData as any).amount,
+        currency: (invoiceData as any).currency,
+        invoiceId: (invoiceData as any).id,
+        downloadUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/invoice/${(invoiceData as any).id}`,
       },
     );
   }
 
   async sendReceiptEmail(
     email: string,
-    invoiceData: any,
+    invoiceData: unknown,
   ): Promise<Result<boolean, Error>> {
     return this.sendEmail(email, "Recibo de Pagamento", "receipt", {
-      amount: invoiceData.amount,
-      currency: invoiceData.currency,
-      invoiceId: invoiceData.id,
-      downloadUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/receipt/${invoiceData.id}`,
+      amount: (invoiceData as any).amount,
+      currency: (invoiceData as any).currency,
+      invoiceId: (invoiceData as any).id,
+      downloadUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/receipt/${(invoiceData as any).id}`,
     });
   }
 
   async sendPaymentFailedEmail(
     email: string,
-    invoiceData: any,
+    invoiceData: unknown,
   ): Promise<Result<boolean, Error>> {
     return this.sendEmail(email, "Falha no Pagamento", "payment-failed", {
-      amount: invoiceData.amount,
-      currency: invoiceData.currency,
-      invoiceId: invoiceData.id,
+      amount: (invoiceData as any).amount,
+      currency: (invoiceData as any).currency,
+      invoiceId: (invoiceData as any).id,
       retryUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/billing`,
       supportEmail: "suporte@empresa.com",
     });
@@ -117,16 +117,16 @@ export class EmailService {
 
   async sendSubscriptionCancelledEmail(
     email: string,
-    subscriptionData: any,
+    subscriptionData: unknown,
   ): Promise<Result<boolean, Error>> {
     return this.sendEmail(
       email,
       "Confirmação de Cancelamento",
       "subscription-cancelled",
       {
-        subscriptionId: subscriptionData.id,
+        subscriptionId: (subscriptionData as any).id,
         cancelledAt: new Date(
-          subscriptionData.canceled_at * 1000,
+          (subscriptionData as any).canceled_at * 1000,
         ).toLocaleDateString("pt-BR"),
         reactivateUrl: `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/billing`,
       },

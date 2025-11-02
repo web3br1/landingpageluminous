@@ -18,6 +18,7 @@ export const heroContentVariants: Record<string, HeroContent> = {
     ],
     tracking: {
       section: "hero",
+      sectionId: "hero",
     },
   },
 
@@ -35,6 +36,7 @@ export const heroContentVariants: Record<string, HeroContent> = {
     ],
     tracking: {
       section: "hero",
+      sectionId: "hero",
     },
   },
 
@@ -52,6 +54,7 @@ export const heroContentVariants: Record<string, HeroContent> = {
     ],
     tracking: {
       section: "hero",
+      sectionId: "hero",
     },
   },
 
@@ -69,6 +72,7 @@ export const heroContentVariants: Record<string, HeroContent> = {
     ],
     tracking: {
       section: "hero",
+      sectionId: "hero",
     },
   },
 
@@ -86,6 +90,7 @@ export const heroContentVariants: Record<string, HeroContent> = {
     ],
     tracking: {
       section: "hero",
+      sectionId: "hero",
     },
   },
 } as const;

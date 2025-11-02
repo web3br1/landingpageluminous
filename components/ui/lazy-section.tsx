@@ -141,10 +141,9 @@ export function LazySection({
     >
       {isVisible ? (
         <SectionRenderer
-          section={section}
-          index={index}
-          onSectionError={handleError}
-          onSectionLoad={handleLoad}
+          sectionId={section.id}
+          data={(section.content as unknown as Record<string, unknown>) || {}}
+          className=""
         />
       ) : (
         fallback || (

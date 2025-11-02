@@ -1,7 +1,7 @@
 // Billing Service - Basic billing status management for Stripe webhooks
 // Temporary implementation until full billing system is ready
 
-import { Result, isOk } from "../../shared/core/Result";
+import { Result, isOk } from "@/lib/core/result";
 import { edgeCache as cache } from "../cache/edge-cache";
 
 export interface BillingRecord {

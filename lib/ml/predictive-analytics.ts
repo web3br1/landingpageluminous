@@ -17,7 +17,7 @@ export interface BehaviorEvent {
   contentId?: string;
   timestamp: number;
   value?: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 export interface ConversionPrediction {

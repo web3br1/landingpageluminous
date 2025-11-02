@@ -23,13 +23,13 @@ interface LogBasedAlertRule {
       | "less_than"
       | "contains"
       | "regex";
-    value: any;
+    value: unknown;
   }[];
   severity: "low" | "medium" | "high" | "critical";
   cooldownMinutes: number;
   enabled: boolean;
   channels: ("email" | "slack" | "webhook" | "log")[];
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }
 
 interface AlertInstance {
@@ -37,7 +37,7 @@ interface AlertInstance {
   ruleId: string;
   triggeredAt: Date;
   resolvedAt?: Date;
-  event: any;
+  event: unknown;
   severity: string;
   message: string;
   traceId?: string;
@@ -153,7 +153,7 @@ class LogBasedAlertEngine {
     });
   }
 
-  processLogEntry(logEntry: any): void {
+  processLogEntry(logEntry: unknown): void {
     const eventType = logEntry.event;
 
     if (!eventType) return;
@@ -186,7 +186,7 @@ class LogBasedAlertEngine {
 
   private evaluateConditions(
     conditions: LogBasedAlertRule["conditions"],
-    logEntry: any,
+    logEntry: unknown,
   ): boolean {
     return conditions.every((condition) => {
       const fieldValue = logEntry[condition.field];
@@ -216,7 +216,7 @@ class LogBasedAlertEngine {
     });
   }
 
-  private triggerAlert(rule: LogBasedAlertRule, event: any): void {
+  private triggerAlert(rule: LogBasedAlertRule, event: unknown): void {
     const alertId = `${rule.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
     const alert: AlertInstance = {
@@ -226,7 +226,7 @@ class LogBasedAlertEngine {
       event,
       severity: rule.severity,
       message: `${rule.name}: ${rule.description}`,
-      traceId: event.traceId,
+      traceId: (event as any).traceId,
     };
 
     this.activeAlerts.set(alertId, alert);
@@ -241,7 +241,7 @@ class LogBasedAlertEngine {
       severity: rule.severity,
       eventType: rule.eventType,
       eventData: event,
-      traceId: event.traceId,
+      traceId: (event as any).traceId,
     });
 
     // Send to configured channels
@@ -346,7 +346,7 @@ export function integrateAlertsWithLogger(): void {
 }
 
 // Function to manually process a log entry for alerts
-export function processLogForAlerts(logEntry: any): void {
+export function processLogForAlerts(logEntry: unknown): void {
   logBasedAlertEngine.processLogEntry(logEntry);
 }
 
@@ -400,7 +400,7 @@ export interface ActiveAlert {
   message: string;
   value: number;
   threshold: number;
-  metadata: Record<string, any>;
+  metadata: Record<string, unknown>;
 }
 
 /**
@@ -511,7 +511,7 @@ export class SmartAlertManager {
   private activeAlerts: Map<string, ActiveAlert> = new Map();
   private lastTriggered: Map<string, number> = new Map();
   private anomalyDetector: AnomalyDetector;
-  private monitoringSystem: any;
+  private monitoringSystem: unknown;
 
   constructor() {
     this.anomalyDetector = new AnomalyDetector();
@@ -646,7 +646,7 @@ export class SmartAlertManager {
    * Evaluate all rules against current metrics
    */
   async evaluateRules(): Promise<void> {
-    const monitoringReport = this.monitoringSystem.getMonitoringReport();
+    const monitoringReport = (this.monitoringSystem as any).getMonitoringReport();
     const now = Date.now();
 
     for (const [ruleId, rule] of this.rules) {
@@ -683,7 +683,7 @@ export class SmartAlertManager {
    */
   private async evaluateRule(
     rule: AlertRule,
-    monitoringData: any,
+    monitoringData: unknown,
   ): Promise<boolean> {
     // For now, use mock data - in production this would query real metrics
     let currentValue: number;

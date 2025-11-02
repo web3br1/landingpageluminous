@@ -1,6 +1,5 @@
 import { metrics } from "../../observability/metrics";
 import { logger } from "../../observability/logger";
-import type { PageType, SectionId } from "../ports";
 
 // ===== ALERT TYPES =====
 
@@ -28,7 +27,7 @@ export interface Alert {
   severity: AlertSeverity;
   title: string;
   description: string;
-  context: Record<string, any>;
+  context: Record<string, unknown>;
   timestamp: number;
   resolved: boolean;
   resolvedAt?: number;
@@ -44,7 +43,7 @@ export interface Alert {
 export class CompositionAlertManager {
   private static instance: CompositionAlertManager | null = null;
   private activeAlerts: Map<string, Alert> = new Map();
-  private alertThresholds: Map<AlertType, any> = new Map();
+  private alertThresholds: Map<AlertType, unknown> = new Map();
   private checkInterval: NodeJS.Timeout | null = null;
 
   constructor() {
@@ -136,9 +135,16 @@ export class CompositionAlertManager {
 
   private async checkThreshold(
     alertType: AlertType,
-    config: any,
+    config: unknown,
   ): Promise<void> {
-    const { metric, threshold, operator, window, minOccurrences } = config;
+    const configData = config as {
+      metric: string;
+      threshold: number;
+      operator: string;
+      window: number;
+      minOccurrences: number;
+    };
+    const { metric, threshold, operator, window, minOccurrences } = configData;
 
     // Get recent metric values within the time window
     const metricValues = metrics.getMetricValues(metric);
@@ -184,9 +190,9 @@ export class CompositionAlertManager {
 
   public raiseAlert(
     alertType: AlertType,
-    config: any,
+    config: unknown,
     actualValue: number,
-    metricValues: any[],
+    metricValues: unknown[],
   ): void {
     const alertId = `${alertType}_${Date.now()}`;
 
@@ -215,18 +221,18 @@ export class CompositionAlertManager {
         config,
       ),
       context: {
-        metric: config.metric,
-        threshold: config.threshold,
+        metric: (config as any).metric,
+        threshold: (config as any).threshold,
         actualValue,
-        timeWindow: config.window,
+        timeWindow: (config as any).window,
         occurrences: metricValues.length,
       },
       timestamp: Date.now(),
       resolved: false,
       threshold: {
-        metric: config.metric,
-        value: config.threshold,
-        operator: config.operator,
+        metric: (config as any).metric,
+        value: (config as any).threshold,
+        operator: (config as any).operator,
       },
     };
 
@@ -383,10 +389,17 @@ export class CompositionAlertManager {
   private getDescriptionForAlertType(
     alertType: AlertType,
     actualValue: number,
-    config: any,
+    config: unknown,
   ): string {
-    const threshold = config.threshold;
-    const metric = config.metric;
+    const configData = config as {
+      metric: string;
+      threshold: number;
+      operator: string;
+      window: number;
+      minOccurrences: number;
+    };
+    const threshold = configData.threshold;
+    const metric = configData.metric;
 
     switch (alertType) {
       case AlertType.PERFORMANCE_DEGRADATION:
@@ -404,7 +417,7 @@ export class CompositionAlertManager {
       case AlertType.CACHE_MISSES_HIGH:
         return `Cache miss rate (${(actualValue * 100).toFixed(1)}%) too high`;
       default:
-        return `Alert triggered for ${metric}: ${actualValue} ${config.operator} ${threshold}`;
+        return `Alert triggered for ${metric}: ${actualValue} ${(configData as any).operator} ${threshold}`;
     }
   }
 
@@ -437,10 +450,10 @@ export class CompositionAlertManager {
     );
   }
 
-  updateThreshold(alertType: AlertType, newConfig: Partial<any>): void {
+  updateThreshold(alertType: AlertType, newConfig: Partial<unknown>): void {
     const existing = this.alertThresholds.get(alertType);
-    if (existing) {
-      this.alertThresholds.set(alertType, { ...existing, ...newConfig });
+    if (existing && typeof existing === 'object' && existing !== null) {
+      this.alertThresholds.set(alertType, { ...existing, ...(newConfig as Record<string, unknown>) });
     }
   }
 

@@ -1,0 +1,204 @@
+{
+  "title": "Relatório Executivo: Governança de Integrações e Código",
+  "date": "31/10/2025",
+  "executive_summary": {
+    "overview": "Auditoria identificou 23 pontos de atenção na governança técnica.",
+    "critical_findings": [
+      "2 problemas críticos identificados",
+      "12 problemas de alta severidade"
+    ],
+    "business_impact": "ALTO: Problemas críticos podem impactar segurança e disponibilidade",
+    "confidence_level": "ALTA: Auditoria automatizada com cobertura completa das integrações críticas"
+  },
+  "risk_assessment": {
+    "security_risks": [
+      {
+        "risk": "Vazamento de credenciais",
+        "severity": "CRITICAL",
+        "description": "2 variáveis sensíveis acessíveis no client-side"
+      },
+      {
+        "risk": "Tratamento inadequado de erros externos",
+        "severity": "HIGH",
+        "description": "Integrações críticas sem fallback podem causar indisponibilidade"
+      }
+    ],
+    "operational_risks": [
+      {
+        "risk": "Arquitetura violada",
+        "severity": "HIGH",
+        "description": "Uso de integrações em camadas proibidas compromete manutenibilidade"
+      }
+    ],
+    "financial_risks": [],
+    "compliance_risks": []
+  },
+  "action_items": [
+    {
+      "priority": "CRITICAL",
+      "title": "Corrigir vazamento de credenciais para client-side",
+      "description": "2 variáveis sensíveis expostas no frontend",
+      "owner": "Security Team",
+      "deadline": "Imediato",
+      "impact": "Risco de vazamento de dados sensíveis"
+    },
+    {
+      "priority": "HIGH",
+      "title": "Implementar tratamento de erro em integrações",
+      "description": "1 chamadas externas sem fallback",
+      "owner": "Backend Team",
+      "deadline": "Próxima sprint",
+      "impact": "Risco de indisponibilidade de serviços"
+    }
+  ],
+  "technical_details": {
+    "environment_variables": {
+      "unused": [
+        {
+          "variable": "NEXT_PUBLIC_NODE_ENV",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "NEXT_PUBLIC_ENABLE_DEBUG_OVERLAY",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "CSP_REPORT_ONLY",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "STRIPE_PUBLISHABLE_KEY",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "KV_REST_API_URL",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "KV_REST_API_TOKEN",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "WHATSAPP_PHONE_NUMBER_ID",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "PLAUSIBLE_DOMAIN",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "PLAUSIBLE_API_KEY",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "SENTRY_AUTH_TOKEN",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "PAGBANK_API_KEY",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "PAGBANK_ENCRYPTION_KEY",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "EMAIL_API_KEY",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "EMAIL_FROM",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "EMAIL_SMTP_HOST",
+          "severity": "MEDIUM"
+        },
+        {
+          "variable": "WEBHOOK_SECRET",
+          "severity": "HIGH"
+        },
+        {
+          "variable": "WEBHOOK_TIMEOUT",
+          "severity": "MEDIUM"
+        }
+      ],
+      "leaked": [
+        {
+          "variable": "NEXT_PUBLIC_PLAUSIBLE_DOMAIN",
+          "severity": "CRITICAL"
+        },
+        {
+          "variable": "NODE_ENV",
+          "severity": "CRITICAL"
+        }
+      ]
+    },
+    "integrations": {
+      "unused": [],
+      "unsafe_usage": [
+        {
+          "file": "C:\\Meus Projetos\\Lading Page\\lib\\payments\\stripe.ts",
+          "line": 115,
+          "call": "customer = await stripe.customers.create({",
+          "integration": "stripe",
+          "severity": "HIGH"
+        }
+      ],
+      "forbidden_usage": [
+        {
+          "file": "C:\\Meus Projetos\\Lading Page\\lib\\payments\\stripe.ts",
+          "line": 40,
+          "issue": "Integration stripe used in forbidden layer",
+          "allowed_layers": [
+            "application",
+            "infrastructure"
+          ],
+          "severity": "HIGH"
+        },
+        {
+          "file": "C:\\Meus Projetos\\Lading Page\\lib\\payments\\stripe.ts",
+          "line": 115,
+          "issue": "Integration stripe used in forbidden layer",
+          "allowed_layers": [
+            "application",
+            "infrastructure"
+          ],
+          "severity": "HIGH"
+        },
+        {
+          "file": "C:\\Meus Projetos\\Lading Page\\lib\\analytics-provider.client.tsx",
+          "line": 45,
+          "issue": "Integration plausible used in forbidden layer",
+          "allowed_layers": [
+            "application"
+          ],
+          "severity": "HIGH"
+        }
+      ]
+    },
+    "code_quality": {
+      "unused_symbols": []
+    },
+    "endpoints": {
+      "inactive": []
+    }
+  },
+  "recommendations": [
+    {
+      "category": "Imediato",
+      "recommendation": "Resolver todos os itens críticos antes do próximo deploy",
+      "implementation": "Priorizar correção de vazamentos de segurança e endpoints fantasma"
+    },
+    {
+      "category": "Esta Semana",
+      "recommendation": "Resolver itens de alta prioridade",
+      "implementation": "Focar em tratamento de erros e remoção de código morto crítico"
+    },
+    {
+      "category": "Governança",
+      "recommendation": "Implementar auditoria automatizada em CI/CD",
+      "implementation": "Configurar gates que impeçam merge com problemas críticos"
+    }
+  ]
+}

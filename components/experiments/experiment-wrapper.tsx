@@ -1,6 +1,5 @@
 "use client";
 
-import React, { JSX } from "react";
 import {
   useExperiment,
   getVariantContent,
@@ -64,9 +63,9 @@ export function ExperimentWrapper({
 // Specialized wrapper for content experiments
 interface ContentExperimentProps {
   experimentId: string;
-  defaultContent: any;
-  variantOverrides?: Record<string, any>;
-  render: (content: any, variantId: string) => React.ReactNode;
+  defaultContent: unknown;
+  variantOverrides?: Record<string, unknown>;
+  render: (content: unknown, variantId: string) => React.ReactNode;
   trackEvents?: string[];
 }
 
@@ -87,8 +86,8 @@ export function ContentExperiment({
 
   // Apply overrides
   const finalContent = {
-    ...content,
-    ...(variantOverrides[variantId || ""] || {}),
+    ...(content as any),
+    ...((variantOverrides as any)[variantId || ""] || {}),
   };
 
   // Track events
@@ -106,7 +105,7 @@ export function useExperimentTracking(experimentId: string) {
   const { variantId, trackEvent } = useExperiment(experimentId);
 
   return {
-    trackConversion: (event: string, metadata?: Record<string, any>) => {
+    trackConversion: (event: string, metadata?: Record<string, unknown>) => {
       trackEvent(event, metadata);
     },
     variantId,
@@ -226,7 +225,7 @@ export function ExperimentText({
 
 // Hook for experiment statistics
 export function useExperimentStats(experimentId: string) {
-  const [stats, setStats] = React.useState<any>(null);
+  const [stats, setStats] = React.useState<unknown>(null);
 
   React.useEffect(() => {
     // In a real implementation, this would fetch from an API

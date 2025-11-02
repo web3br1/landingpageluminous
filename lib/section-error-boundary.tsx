@@ -252,12 +252,12 @@ export function useSectionErrorTracking(sectionId: string) {
   const monitor = useProductionMonitoring();
 
   return {
-    trackSectionError: (error: Error, context?: any) => {
+    trackSectionError: (error: Error, context?: unknown) => {
       monitor.trackError(error, {
         boundary: "section",
         sectionId,
         category: "section",
-        ...context,
+        ...(context && typeof context === 'object' ? context : {}),
       });
     },
   };

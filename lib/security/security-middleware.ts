@@ -294,7 +294,7 @@ function validateRequest(request: NextRequest): string | null {
 
 // ===== API ROUTE SECURITY WRAPPER =====
 
-export function withSecurity<T extends any[]>(
+export function withSecurity<T extends unknown[]>(
   handler: (...args: T) => Promise<NextResponse> | NextResponse,
   options: SecurityMiddlewareOptions = {},
 ) {
@@ -333,13 +333,13 @@ export function withSecurity<T extends any[]>(
 
 // ===== UTILITY FUNCTIONS =====
 
-export function sanitizeApiInput(input: any): any {
+export function sanitizeApiInput(input: unknown): unknown {
   if (typeof input === "string") {
     return InputSanitizer.sanitizeGenericText(input);
   }
 
   if (typeof input === "object" && input !== null) {
-    const sanitized: any = {};
+    const sanitized: unknown = {};
 
     for (const [key, value] of Object.entries(input)) {
       if (typeof value === "string") {
@@ -358,13 +358,13 @@ export function sanitizeApiInput(input: any): any {
 }
 
 export function validateApiInput<T>(
-  schema: any,
-  data: any,
+  schema: unknown,
+  data: unknown,
 ): { success: true; data: T } | { success: false; error: string } {
   try {
     const result = schema.parse(data);
     return { success: true, data: result };
-  } catch (error: any) {
+  } catch (error: unknown) {
     const errorMessage = error.errors?.[0]?.message || "Dados inválidos";
     return { success: false, error: errorMessage };
   }

@@ -1,0 +1,44 @@
+[
+  {
+    "category": "Bundle Size",
+    "priority": "CRITICAL",
+    "description": "Bundle muito grande (1.87MB > 1.1MB)",
+    "impact": "Reduzir 40.44188449257298% do tamanho",
+    "implementation": "Implementar code splitting urgente e tree shaking"
+  },
+  {
+    "category": "Bundle Splitting",
+    "priority": "HIGH",
+    "description": "Implementar code splitting por rotas e funcionalidades",
+    "impact": "Redução de 30-50% no bundle inicial",
+    "implementation": "Usar dynamic imports e React.lazy()"
+  },
+  {
+    "category": "Tree Shaking",
+    "priority": "HIGH",
+    "description": "Otimizar imports para reduzir código morto",
+    "impact": "Redução de 20-30% em bibliotecas grandes",
+    "implementation": "Usar imports nomeados ao invés de imports padrão"
+  },
+  {
+    "category": "Compression",
+    "priority": "MEDIUM",
+    "description": "Implementar Brotli compression no servidor",
+    "impact": "Redução adicional de 15-25% no tamanho transferido",
+    "implementation": "Configurar CDN e servidor para Brotli"
+  },
+  {
+    "category": "Image Optimization",
+    "priority": "HIGH",
+    "description": "Lazy loading e otimização de imagens",
+    "impact": "Redução de 40-60% no tamanho de imagens",
+    "implementation": "Usar WebP/AVIF com fallbacks e lazy loading"
+  },
+  {
+    "category": "Caching Strategy",
+    "priority": "MEDIUM",
+    "description": "Implementar cache inteligente com Service Worker",
+    "impact": "Redução de requests repetidos em 70%",
+    "implementation": "Cache de chunks e recursos estáticos"
+  }
+]

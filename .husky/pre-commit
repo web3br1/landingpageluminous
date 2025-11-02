@@ -5,4 +5,4 @@
 npx lint-staged
 
 # Validação rápida (não bloqueia)
-node scripts/daily-status.mjs || true
+node compliance-engine/continuous-monitoring/daily-status.mjs || true

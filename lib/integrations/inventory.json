@@ -1,0 +1,127 @@
+{
+  "integrations": {
+    "stripe": {
+      "name": "Stripe",
+      "package": "stripe",
+      "env_vars": ["STRIPE_SECRET_KEY", "STRIPE_PUBLISHABLE_KEY", "STRIPE_WEBHOOK_SECRET"],
+      "layers_allowed": ["application", "infrastructure"],
+      "client_initialization": "lib/payments/stripe.ts",
+      "usage_patterns": [
+        "await stripe.paymentIntents.create",
+        "await stripe.customers.create",
+        "await stripe.webhooks.constructEvent"
+      ],
+      "critical": true,
+      "revenue_impact": true
+    },
+    "vercel_kv": {
+      "name": "Vercel KV",
+      "package": "@vercel/kv",
+      "env_vars": ["KV_URL", "KV_REST_API_URL", "KV_REST_API_TOKEN"],
+      "layers_allowed": ["infrastructure"],
+      "client_initialization": null,
+      "usage_patterns": [
+        "kv.set",
+        "kv.get",
+        "kv.del"
+      ],
+      "critical": false,
+      "revenue_impact": false
+    },
+    "whatsapp": {
+      "name": "WhatsApp Business API",
+      "package": null,
+      "env_vars": ["WHATSAPP_ACCESS_TOKEN", "WHATSAPP_PHONE_NUMBER_ID"],
+      "layers_allowed": ["application", "infrastructure"],
+      "client_initialization": "lib/whatsapp/integration.ts",
+      "usage_patterns": [
+        "whatsapp.sendMessage",
+        "whatsapp.receiveMessage"
+      ],
+      "critical": false,
+      "revenue_impact": false
+    },
+    "plausible": {
+      "name": "Plausible Analytics",
+      "package": "plausible-tracker",
+      "env_vars": ["PLAUSIBLE_DOMAIN", "PLAUSIBLE_API_KEY"],
+      "layers_allowed": ["application"],
+      "client_initialization": "lib/analytics-core.ts",
+      "usage_patterns": [
+        "plausible.trackEvent",
+        "plausible.trackPageview"
+      ],
+      "critical": false,
+      "revenue_impact": false
+    },
+    "sentry": {
+      "name": "Sentry",
+      "package": null,
+      "env_vars": ["SENTRY_DSN", "SENTRY_AUTH_TOKEN"],
+      "layers_allowed": ["application"],
+      "client_initialization": "lib/error-tracking/comprehensive-error-tracker.ts",
+      "usage_patterns": [
+        "Sentry.captureException",
+        "Sentry.captureMessage"
+      ],
+      "critical": false,
+      "revenue_impact": false
+    },
+    "pagbank": {
+      "name": "PagBank",
+      "package": null,
+      "env_vars": ["PAGBANK_API_KEY", "PAGBANK_ENCRYPTION_KEY"],
+      "layers_allowed": ["application", "infrastructure"],
+      "client_initialization": "lib/payments/pagbank.ts",
+      "usage_patterns": [
+        "pagbank.createOrder",
+        "pagbank.getOrder"
+      ],
+      "critical": false,
+      "revenue_impact": true
+    },
+    "email_service": {
+      "name": "Email Service",
+      "package": null,
+      "env_vars": ["EMAIL_API_KEY", "EMAIL_FROM", "EMAIL_SMTP_HOST"],
+      "layers_allowed": ["application", "infrastructure"],
+      "client_initialization": "lib/email/email-service.ts",
+      "usage_patterns": [
+        "email.send",
+        "email.sendTransactional"
+      ],
+      "critical": false,
+      "revenue_impact": false
+    },
+    "webhooks": {
+      "name": "Webhooks",
+      "package": null,
+      "env_vars": ["WEBHOOK_SECRET", "WEBHOOK_TIMEOUT"],
+      "layers_allowed": ["application"],
+      "client_initialization": "lib/webhooks/service.ts",
+      "usage_patterns": [
+        "webhooks.verifySignature",
+        "webhooks.processEvent"
+      ],
+      "critical": true,
+      "revenue_impact": true
+    }
+  },
+  "security_patterns": {
+    "client_side_env_leak": {
+      "pattern": "process\\.env\\.",
+      "forbidden_in": ["components/**/*", "lib/hooks/**/*", "app/**/*.client.tsx"],
+      "severity": "CRITICAL"
+    },
+    "missing_error_handling": {
+      "pattern": "await (stripe|pagbank|whatsapp)\\.",
+      "requires": "try-catch|Result\\.err",
+      "severity": "HIGH"
+    },
+    "missing_schema_validation": {
+      "pattern": "fetch\\(|axios\\(",
+      "requires": "zod\\.parse|z\\.safeParse",
+      "severity": "HIGH"
+    }
+  }
+}

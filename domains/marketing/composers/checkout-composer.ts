@@ -73,8 +73,8 @@ const checkoutConfig: CheckoutConfiguration = {
   ],
 };
 
-export function composeCheckoutContent(): ComposedCheckoutData {
-  return withCompositionValidation(() => {
+export async function composeCheckoutContent(): Promise<ComposedCheckoutData> {
+  return await withCompositionValidation(async () => {
     const experimentVariant = flags.getExperimentVariant("checkout_variant");
     let activeVariant: CheckoutVariant;
 

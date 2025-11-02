@@ -8,6 +8,40 @@ import {
 } from "./ab-testing-framework";
 import { experimentManager } from "./ab-testing-framework";
 
+export interface ExperimentEventContext {
+  // User context
+  userId?: string;
+  sessionId?: string;
+  userSegment?: string;
+  // Page context
+  pageUrl?: string;
+  pageTitle?: string;
+  referrer?: string;
+  // Device context
+  deviceType?: "mobile" | "tablet" | "desktop";
+  screenSize?: { width: number; height: number };
+  // Experiment context
+  variantId?: string;
+  experimentName?: string;
+  // Custom context properties
+  [key: string]: unknown;
+}
+
+export interface ExperimentEventMetadata {
+  // Timing information
+  timestamp?: number;
+  duration?: number;
+  // Interaction details
+  elementId?: string;
+  elementType?: string;
+  position?: { x: number; y: number };
+  // Conversion details
+  goalValue?: number;
+  goalType?: string;
+  // Custom metadata
+  [key: string]: unknown;
+}
+
 interface UseExperimentOptions {
   enabled?: boolean;
   trackImpressions?: boolean;
@@ -27,12 +61,12 @@ interface UseExperimentReturn {
   trackEvent: (
     eventType: string,
     value?: number,
-    context?: Record<string, any>,
+    context?: ExperimentEventContext,
   ) => void;
   trackConversion: (
     goalId: string,
     value?: number,
-    metadata?: Record<string, any>,
+    metadata?: ExperimentEventMetadata,
   ) => void;
   isControl: boolean;
   experimentId: string;
@@ -111,7 +145,11 @@ export function useExperiment(
   }, [experimentId, enabled, trackImpressions, memoizedUserContext]);
 
   const trackEvent = useCallback(
-    (eventType: string, value: number = 1, context?: Record<string, any>) => {
+    (
+      eventType: string,
+      value: number = 1,
+      context?: Record<string, unknown>,
+    ) => {
       if (!variant || !enabled || typeof window === "undefined") return;
 
       experimentManager.trackEvent(experimentId, variant.id, eventType, value, {
@@ -124,7 +162,7 @@ export function useExperiment(
   );
 
   const trackConversion = useCallback(
-    (goalId: string, value: number = 1, metadata?: Record<string, any>) => {
+    (goalId: string, value: number = 1, metadata?: Record<string, unknown>) => {
       if (
         !variant ||
         !enabled ||

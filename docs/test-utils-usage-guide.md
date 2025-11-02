@@ -16,7 +16,7 @@ import {
   setupBrowserAPIs,
   createMockUser,
   isValidDateString,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 
 // Ou importe tudo para conveniência
 import {
@@ -27,7 +27,7 @@ import {
   screen,
   userEvent,
   setupBrowserAPIs,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 ```
 
 ## 🔧 **Padrões de Correção**
@@ -60,7 +60,7 @@ describe('FadeUp', () => {
 #### **✅ Agora (correção implementada):**
 
 ```typescript
-import { setupBrowserAPIs } from '@/lib/test-utils'
+import { setupBrowserAPIs } from '@/lib/test/test-utils'
 
 describe('FadeUp', () => {
   it('renders with animation', () => {
@@ -90,7 +90,7 @@ it("validates dates", () => {
 #### **✅ Agora (correção implementada):**
 
 ```typescript
-import { isValidDateString } from "@/lib/test-utils";
+import { isValidDateString } from "@/lib/test/test-utils";
 
 it("validates dates", () => {
   // ✅ Função reutilizável e bem testada
@@ -123,7 +123,7 @@ const MyComponent = ({ delayFunction = setTimeout }) => {
 }
 
 // 2. Testar com função controlável
-import { createControllableDelay } from '@/lib/test-utils'
+import { createControllableDelay } from '@/lib/test/test-utils'
 
 it('shows loading', async () => {
   const { delay, resolve } = createControllableDelay()
@@ -149,7 +149,7 @@ import {
   setupBrowserAPIs,
   resetBrowserAPIs,
   mockMatchMedia,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 
 // Configura todos os mocks necessários
 setupBrowserAPIs();
@@ -170,7 +170,7 @@ import {
   generateTestId,
   createMockUser,
   createMockFormData,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 
 // Validação de datas
 expect(isValidDateString("2024-01-15")).toBe(true);
@@ -194,7 +194,7 @@ import {
   waitForStableState,
   createControllableDelay,
   measureExecutionTime,
-} from "@/lib/test-utils";
+} from "@/lib/test/test-utils";
 
 // Espera estabilização do componente
 await waitForStableState(200);
@@ -232,7 +232,7 @@ expectFormField(input, {
 ### **Testando Componentes com Animações**
 
 ```typescript
-import { setupBrowserAPIs } from '@/lib/test-utils'
+import { setupBrowserAPIs } from '@/lib/test/test-utils'
 
 describe('AnimatedComponent', () => {
   beforeEach(() => {
@@ -249,7 +249,7 @@ describe('AnimatedComponent', () => {
 ### **Testando Formulários**
 
 ```typescript
-import { createMockFormData, createControllableDelay } from '@/lib/test-utils'
+import { createMockFormData, createControllableDelay } from '@/lib/test/test-utils'
 
 describe('LeadForm', () => {
   it('submits successfully', async () => {
@@ -279,7 +279,7 @@ describe('LeadForm', () => {
 ### **Testando Validações**
 
 ```typescript
-import { isValidDateString, formatCurrency } from "@/lib/test-utils";
+import { isValidDateString, formatCurrency } from "@/lib/test/test-utils";
 
 describe("ValidationUtils", () => {
   it("validates dates correctly", () => {
@@ -304,7 +304,7 @@ import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/react";
 
 // ✅ Depois
-import { describe, it, expect, render, screen } from "@/lib/test-utils";
+import { describe, it, expect, render, screen } from "@/lib/test/test-utils";
 ```
 
 ### **Passo 2: Substituir Mocks Manuais**

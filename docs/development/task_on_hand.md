@@ -1,138 +1,155 @@
-# Tarefas em Andamento - Landing Page SaaS
+# ⚙️ PROMPT COMPLETO — FASE 3: CORREÇÕES E OTIMIZAÇÕES AVANÇADAS
 
-## 📅 Status Atual (2025-10-02)
+Você é o engenheiro-líder responsável pela **Fase 3** do ciclo de hardening técnico do Luminaris.
+Seu objetivo é **transformar o código estabilizado em código de alta performance**, eliminando gargalos restantes e preparando o sistema para escalar sem regressões.
+A Fase 2 consolidou as fundações — agora é hora de acelerar.
 
-### ✅ Concluídas
+---
 
-- [x] **Setup do Projeto**: Next.js + TypeScript configurado
-- [x] **Dependências**: Todas instaladas e funcionais
-- [x] **Configurações**: tsconfig.json, next.config.js, tailwind.config.ts
-- [x] **Estrutura Base**: Componentes criados e organizados
-- [x] **Linting**: Zero erros nos arquivos existentes
-- [x] **Documentação BDD**: Todos os arquivos criados (project_context, technical_details, development_log, troubleshooting)
-- [x] **shadcn/ui**: Componentes essenciais instalados
-- [x] **Conteúdo Real**: Todas as seções com copy otimizado
-- [x] **SEO Completo**: next-seo + schemas + metadados
-- [x] **TypeScript**: Projeto sem erros de compilação
-- [x] **Analytics**: GA4 + Plausible + consentimento LGPD
-- [x] **A/B Testing**: Framework completo com variações ativas
+## 🎯 Objetivo-Macro
 
-### 🔄 Próximos Passos
+1. Corrigir erros TypeScript e estabilizar o build
+2. Implementar lazy loading em libs de alto impacto
+3. Reduzir bundle total para ≤ **1.1 MB**
+4. Corrigir 20% das violações ESLint (arquivos críticos)
+5. Otimizar Core Web Vitals (LCP < 2.5s, CLS < 0.1)
+6. Implementar compressão Brotli e tree shaking total
 
-- [ ] **Testes BDD**: Implementar cenários Gherkin com Cucumber
-- [ ] **QA Final**: Executar checklist completo (Lighthouse, a11y, performance)
-- [ ] **Deploy**: Configurar Vercel e preparar para produção
-- [ ] **Monitoramento**: Setup Sentry para error tracking
+---
 
-### ⏳ Próximas Prioridades
+## 🔥 BLOCO 1 — Correções de TypeScript e Build
 
-#### 1. **Analytics & Tracking** (Próxima Sessão)
+**Objetivo:** estabilizar build e restaurar confiança no pipeline
 
-- [ ] Configurar GA4 com eventos personalizados
-- [ ] Implementar Plausible como alternativa privacy-first
-- [ ] Setup de eventos: view, cta_click, form_submit
-- [ ] Configurar goals e conversões
+Tarefas:
 
-#### 2. **Sistema de A/B Testing** (Após Analytics)
+* Rodar `tsc --noEmit` e capturar erros críticos
+* Corrigir erros de tipo em módulos core (`lib/utils`, `lib/monitoring`, `lib/forms`)
+* Garantir compatibilidade entre módulos refatorados e antigos
+* Atualizar `tsconfig.json` com `strict: true` e validação incremental
+* Reexecutar pipeline de CI para confirmar build verde
 
-- [ ] Expandir flags.ts para Edge Config
-- [ ] Criar variações de hero headline
-- [ ] Implementar tracking de experimentos
-- [ ] Configurar feature flags por usuário
+Entregável:
 
-#### 3. **Testes BDD** (Após Funcionalidades)
+* `TS-BUILD-STABILIZATION-REPORT.md`
 
-- [ ] Instalar Cucumber/Gherkin
-- [ ] Criar cenários para fluxos críticos
-- [ ] Implementar step definitions
-- [ ] Configurar CI com testes obrigatórios
+  * Tabela: arquivo / erro / tipo / resolução / status
+  * Resumo do progresso (nº total de erros → nº resolvidos)
 
-#### 4. **QA Final & Performance** (Antes do Deploy)
+---
 
-- [ ] Lighthouse audit (target: 90+)
-- [ ] Testes de acessibilidade (WCAG 2.1)
-- [ ] Validação responsiva (320px-1440px)
-- [ ] Performance budget (LCP < 2.5s, CLS < 0.1)
+## ⚡ BLOCO 2 — Lazy Loading Estratégico
 
-#### 6. **Testes e QA** (Final da Sprint)
+**Objetivo:** reduzir bundle e otimizar carregamento inicial
 
-- [ ] Implementar testes BDD com Cucumber
-- [ ] Executar Lighthouse audit (target: ≥90)
-- [ ] Testes de acessibilidade
-- [ ] Validação responsiva (320px-1440px)
+Libs alvo:
 
-## 🎯 Metas da Semana
+* `recharts` (gráficos)
+* `stripe` (pagamentos)
+* `framer-motion` (animações)
 
-### Até Sexta-feira (2025-10-04)
+Tarefas:
 
-- [ ] Landing page com conteúdo real funcional
-- [ ] SEO básico implementado
-- [ ] Analytics configurado
-- [ ] Primeiro teste A/B implementado
-- [ ] Lighthouse ≥ 90 em todas as métricas
+* Converter imports estáticos em dinâmicos (`import('lib')`)
+* Criar boundaries visuais (spinners / skeletons) para UX
+* Validar comportamento em SSR e hydration
+* Medir bundle antes/depois via `next build --analyze`
 
-### KPIs de Sucesso
+Entregável:
 
-- **LCP**: ≤ 2.5s
-- **CLS**: ≤ 0.1
-- **INP**: ≤ 200ms
-- **Bundle Size**: ≤ 180KB (crítico)
-- **Conversão**: Meta de 3%+ (teste inicial)
+* `LAZY-LOADING-IMPLEMENTATION.md`
 
-## 🚨 Bloqueadores Potenciais
+  * Lista de componentes afetados
+  * Tamanho do bundle antes/depois
+  * Impacto percentual na LCP
 
-### Técnicos
+---
 
-- **Dependências BDD**: Cucumber versões - resolver para implementar testes
-- **Performance**: Otimizar imagens grandes (hero dashboard)
-- **Bundle Size**: Verificar se Framer Motion está sendo tree-shaken
+## 🧹 BLOCO 3 — Correção de Violações ESLint Prioritárias
 
-### Conteúdo
+**Objetivo:** reduzir 20% das violações mais críticas (≈80 arquivos)
 
-- **Assets**: Precisamos de screenshots reais do produto
-- **Social Proof**: Logos de clientes reais com permissão
-- **Copy**: Revisão profissional do conteúdo
+Tarefas:
 
-### Design
+* Priorizar módulos com impacto em runtime (`lib/`, `components/ui/`)
+* Corrigir funções >10 complexidade e >300 linhas
+* Quebrar componentes monolíticos
+* Reexecutar `pnpm lint` e salvar métricas de redução
 
-- **Mockups**: Hero visual pode precisar de ajustes
-- **Responsividade**: Testar em dispositivos reais
+Entregável:
 
-## 📋 Checklist Diário
+* `LINTING-REDUCTION-REPORT.md`
 
-### Manhã (Setup/Dev)
+  * Tabela: arquivo / violações antes / depois / tipo / ação
+  * % de redução alcançada
 
-- [ ] Revisar development_log.md
-- [ ] Verificar se projeto roda (npm run dev)
-- [ ] Lint check (npm run lint)
-- [ ] Type check (npm run type-check)
+---
 
-### Tarde (Implementação)
+## 🧱 BLOCO 4 — Compressão e Tree Shaking Avançado
 
-- [ ] Avançar na tarefa prioritária
-- [ ] Testar mudanças em tempo real
-- [ ] Documentar decisões tomadas
-- [ ] Commit com conventional commits
+**Objetivo:** atingir ≤ **1.1 MB** de bundle total
 
-### Final do Dia
+Tarefas:
 
-- [ ] Atualizar task_on_hand.md
-- [ ] Adicionar entrada em development_log.md
-- [ ] Verificar se há novos problemas em troubleshooting.md
-- [ ] Planejar tarefas do próximo dia
+* Habilitar **Brotli compression** no build e no CDN
+* Revisar imports e side effects de libs pesadas
+* Confirmar **Tree Shaking** via `webpack-bundle-analyzer`
+* Identificar módulos redundantes e extrair em chunks
+* Documentar impacto visual nos gráficos Lighthouse
 
-## 🔄 Processo de Atualização
+Entregável:
 
-Este arquivo deve ser atualizado:
+* `PERFORMANCE-ADVANCED-REPORT.md`
 
-- **Diariamente**: Status das tarefas
-- **Após cada conclusão**: Mover itens de "Em Andamento" para "Concluídas"
-- **Quando surgem bloqueadores**: Adicionar na seção específica
-- **Toda sexta-feira**: Revisão semanal e planejamento da próxima
+  * Bundle antes/depois
+  * LCP, FID, CLS comparativos
+  * Recomendação final
 
-## 📞 Comunicação
+---
 
-- **Daily Standup**: Atualização rápida diária
-- **Bloqueadores**: Reportar imediatamente
-- **Mudanças de prioridade**: Discutir antes de implementar
-- **Dúvidas técnicas**: Consultar technical_details.md primeiro
+## 📈 BLOCO 5 — Métricas e Validação Contínua
+
+**Objetivo:** garantir melhoria sustentada e mensurável
+
+Tarefas:
+
+* Executar auditoria Lighthouse pós-otimizações
+* Comparar com baseline da Fase 2
+* Atualizar dashboards (`COMPLEXITY-TRENDS.md`, `QUALITY-GATES-STATUS.md`)
+* Gerar `Fase-3-STATUS.md` com métricas e roadmap da próxima sprint
+
+Métricas obrigatórias:
+
+| Métrica             | Meta     | Atual |
+| ------------------- | -------- | ----- |
+| **Bundle Size**     | ≤ 1.1 MB | ?     |
+| **LCP**             | < 2.5 s  | ?     |
+| **CLS**             | < 0.1    | ?     |
+| **TS Errors**       | 0        | ?     |
+| **Lint Violations** | -20%     | ?     |
+
+---
+
+## 🧠 Comunicação e Governança
+
+* **Daily técnico:** 10 min
+* **Relatório de progresso:** `Fase-3-STATUS.md` atualizado a cada 3 dias
+* **Escalation:** build quebrado >48h ou regressão >10% = alerta imediato
+
+---
+
+## 📦 Saídas Esperadas
+
+1. `TS-BUILD-STABILIZATION-REPORT.md`
+2. `LAZY-LOADING-IMPLEMENTATION.md`
+3. `LINTING-REDUCTION-REPORT.md`
+4. `PERFORMANCE-ADVANCED-REPORT.md`
+5. `Fase-3-STATUS.md`
+
+---
+
+## 💬 Tom esperado
+
+> “Precisão cirúrgica, zero dramatização.”
+> Cada relatório deve conter: dados quantitativos, impacto técnico, risco residual e recomendação direta.
+> Use sempre linguagem de CTO: decisões baseadas em métricas, não em opinião.

@@ -98,7 +98,7 @@ export interface ISSRAdapter {
   ): Promise<T>;
   isStaticGeneration(): boolean;
   safeTimeout(callback: () => void, delay: number): () => void;
-  safeConsoleLog(level: "log" | "warn" | "error", ...args: any[]): void;
+  safeConsoleLog(level: "log" | "warn" | "error", ...args: unknown[]): void;
 }
 
 // Domain Types (pure, no dependencies)
@@ -150,7 +150,7 @@ export type SectionId =
   | "pricing-presale";
 
 export interface SectionContent {
-  content: any; // Will be properly typed per section
+  content: unknown; // Will be properly typed per section
   variant: {
     id: string;
     name: string;
@@ -212,7 +212,7 @@ export interface SectionConditions {
   experiment?: {
     experimentId: string;
     variant?: string;
-    userContext?: Record<string, any>;
+    userContext?: Record<string, unknown>;
   };
   userType?: "new" | "returning" | "enterprise";
 }

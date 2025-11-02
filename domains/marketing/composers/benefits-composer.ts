@@ -45,7 +45,7 @@ const BenefitsComposerSchema = z.object({
     .optional(),
 });
 
-ComposerGuard.registerValidator("benefits", BenefitsComposerSchema);
+// ComposerGuard.registerValidator("benefits", BenefitsComposerSchema); // TODO: Implementar quando ComposerGuard estiver disponível
 
 // Temporary: Mock implementations until lib modules are created
 const useExperiment = (id: string) => ({
@@ -59,7 +59,7 @@ const useAnalytics = () => ({
   trackSectionView: (_section: string, _data?: AnalyticsData) => {},
 });
 
-export const composeBenefitsContent: () => ComposedBenefitsData =
+export const composeBenefitsContent: () => Promise<ComposedBenefitsData> =
   createVariantComposer("benefits-composer", {
     defaultVariant: benefitsConfiguration.defaultVariant,
     variants: benefitsVariants,

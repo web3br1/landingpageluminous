@@ -20,7 +20,7 @@ export interface ChatContext {
 export interface ChatResponse {
   message: string;
   type: "text" | "quick_reply" | "product_card" | "contact_form";
-  metadata?: any;
+  metadata?: unknown;
   confidence: number;
   intent: string;
   next_actions?: string[];

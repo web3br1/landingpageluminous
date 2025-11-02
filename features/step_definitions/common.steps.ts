@@ -6,7 +6,7 @@ import {
   After,
   setWorldConstructor,
 } from "@cucumber/cucumber";
-import { chromium, Browser, Page, BrowserContext } from "playwright";
+import { chromium, Browser, Page, BrowserContext } from "@playwright/test";
 import { expect } from "@playwright/test";
 
 // World object para compartilhar estado entre steps

@@ -1,5 +1,20 @@
 import { useState, useEffect, useCallback } from "react";
 
+// ===== API RESPONSE TYPES =====
+
+export interface CompositionMetricsApiResponse {
+  success: boolean;
+  data?: CompositionMetrics;
+  error?: string;
+  timestamp: number;
+  version: string;
+  metadata?: {
+    requestId: string;
+    processingTime: number;
+    cacheUsed: boolean;
+  };
+}
+
 export interface CompositionMetrics {
   totalRequests: number;
   successfulCompositions: number;
@@ -66,8 +81,18 @@ export function useCompositionMetrics(
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      const data: CompositionMetrics = await response.json();
-      setMetrics(data);
+      let apiResponse: CompositionMetricsApiResponse;
+      try {
+        apiResponse = await response.json();
+      } catch (parseError) {
+        throw new Error(`Failed to parse metrics response: ${parseError}`);
+      }
+
+      if (!apiResponse.success || !apiResponse.data) {
+        throw new Error(apiResponse.error || "Failed to fetch metrics");
+      }
+
+      setMetrics(apiResponse.data);
       setLastUpdated(new Date());
     } catch (err) {
       const errorMessage =

@@ -326,7 +326,7 @@ export class DistributedTracer {
   /**
    * Add event to current span
    */
-  addSpanEvent(name: string, attributes: Record<string, any> = {}): void {
+  addSpanEvent(name: string, attributes: Record<string, unknown> = {}): void {
     const currentSpan = this.spanStack[this.spanStack.length - 1];
     if (!currentSpan) {
       logger.warn("Cannot add event: no active span");
@@ -349,7 +349,7 @@ export class DistributedTracer {
   /**
    * Set attributes on current span
    */
-  setSpanAttributes(attributes: Record<string, any>): void {
+  setSpanAttributes(attributes: Record<string, unknown>): void {
     const currentSpan = this.spanStack[this.spanStack.length - 1];
     if (!currentSpan) {
       logger.warn("Cannot set attributes: no active span");
@@ -486,7 +486,7 @@ export class DistributedTracer {
   /**
    * Export trace data
    */
-  exportTrace(traceId: string): any {
+  exportTrace(traceId: string): unknown {
     const trace = this.activeTraces.get(traceId);
     if (!trace) return null;
 
@@ -625,7 +625,7 @@ export class DistributedTracer {
   /**
    * Serialize span for export
    */
-  private serializeSpan(span: SpanInfo): any {
+  private serializeSpan(span: SpanInfo): unknown {
     return {
       id: span.id,
       name: span.name,
@@ -734,7 +734,7 @@ export function destroyDistributedTracer(): void {
 /**
  * Create a traced function wrapper
  */
-export function traced<T extends any[], R>(
+export function traced<T extends unknown[], R>(
   name: string,
   fn: (...args: T) => Promise<R>,
   attributes: Record<string, unknown> = {},
@@ -757,7 +757,7 @@ export function traced<T extends any[], R>(
 /**
  * Create a traced sync function wrapper
  */
-export function tracedSync<T extends any[], R>(
+export function tracedSync<T extends unknown[], R>(
   name: string,
   fn: (...args: T) => R,
   attributes: Record<string, unknown> = {},

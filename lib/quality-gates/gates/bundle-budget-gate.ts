@@ -55,9 +55,8 @@ export const bundleBudgetGate: QualityGate = {
           stdio: "pipe",
           timeout: 120000,
         });
-      } catch (error: any) {
-        const output =
-          error.stdout?.toString() || error.stderr?.toString() || "";
+      } catch (error: unknown) {
+        const output = getCommandOutput(error);
         const budgetExceeded =
           output.includes("Budget exceeded") ||
           (output.includes("budget") && output.includes("exceeded"));
@@ -92,7 +91,7 @@ export const bundleBudgetGate: QualityGate = {
           name: "Bundle Budget Analysis",
           success: false,
           duration: Date.now() - startTime,
-          error: `Bundle analysis failed: ${error.message}`,
+          error: `Bundle analysis failed: ${error && typeof error === 'object' && 'message' in error ? error.message : 'Unknown error'}`,
           required: true,
           details: {
             scriptError: true,
@@ -229,4 +228,12 @@ function generateBundleRecommendations(
   }
 
   return recommendations;
+}
+
+function getCommandOutput(error: unknown): string {
+  if (error && typeof error === 'object' && 'stdout' in error) {
+    const err = error as { stdout?: unknown; stderr?: unknown };
+    return (err.stdout as string)?.toString() || (err.stderr as string)?.toString() || "";
+  }
+  return "";
 }

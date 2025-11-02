@@ -1,0 +1,118 @@
+name: Governance Audit
+
+on:
+  pull_request:
+    branches: [ main, develop ]
+  schedule:
+    # Executar toda segunda-feira às 9h UTC
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'pnpm'
+
+    - name: Install dependencies
+      run: pnpm install --frozen-lockfile
+
+    - name: Type check
+      run: pnpm typecheck
+
+    - name: Lint
+      run: pnpm lint
+
+    - name: Run governance audit
+      id: audit
+      run: |
+        echo "Running comprehensive governance audit..."
+        pnpm audit:full
+      continue-on-error: true
+
+    - name: Check audit results
+      id: check-audit
+      run: |
+        # Ler relatório de auditoria mais recente
+        AUDIT_FILE=$(ls -t quality-history/*-integrations-audit.json | head -1)
+        if [ -f "$AUDIT_FILE" ]; then
+          CRITICAL=$(jq '.summary.critical' "$AUDIT_FILE")
+          HIGH=$(jq '.summary.high' "$AUDIT_FILE")
+
+          echo "critical=$CRITICAL" >> $GITHUB_OUTPUT
+          echo "high=$HIGH" >> $GITHUB_OUTPUT
+
+          echo "Audit results:"
+          echo "Critical issues: $CRITICAL"
+          echo "High severity issues: $HIGH"
+        else
+          echo "No audit file found"
+          exit 1
+        fi
+
+    - name: Comment PR with audit results
+      if: github.event_name == 'pull_request'
+      uses: actions/github-script@v7
+      with:
+        script: |
+          const fs = require('fs');
+          const auditFile = fs.readdirSync('quality-history')
+            .filter(f => f.endsWith('-integrations-audit.json'))
+            .sort()
+            .reverse()[0];
+
+          if (auditFile) {
+            const auditData = JSON.parse(fs.readFileSync(`quality-history/${auditFile}`, 'utf8'));
+
+            const summary = `## 🔍 Governance Audit Results
+
+**Summary:** ${auditData.summary.critical} CRITICAL, ${auditData.summary.high} HIGH, ${auditData.summary.medium} MEDIUM, ${auditData.summary.low} LOW
+
+### 🚨 Critical Issues
+${auditData.summary.critical > 0 ?
+  auditData.findings.env.leaked_to_client.map(item => `- **${item.variable}** leaked to client-side`).join('\\n') +
+  auditData.findings.routes.inactive_endpoints.map(item => `- **${item.route}** inactive endpoint`).join('\\n')
+  : '✅ No critical issues found'}
+
+### ⚠️ High Priority
+${auditData.summary.high > 0 ?
+  auditData.findings.integrations.missing_error_handling.slice(0, 5).map(item => `- Missing error handling in ${item.file}:${item.line}`).join('\\n') +
+  auditData.findings.integrations.declared_not_used.filter(item => item.severity === 'HIGH').map(item => `- **${item.name}** integration unused`).join('\\n')
+  : '✅ No high priority issues'}
+
+${auditData.summary.critical > 0 || auditData.summary.high > 0 ?
+  '**❌ PR cannot be merged until critical and high severity issues are resolved.**' :
+  '**✅ PR approved for governance standards.**'}
+          `;
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: summary
+            });
+          }
+
+    - name: Fail on critical issues
+      if: steps.check-audit.outputs.critical != '0' || steps.check-audit.outputs.high != '0'
+      run: |
+        echo "❌ Audit failed: Critical or high severity issues found"
+        echo "Critical: ${{ steps.check-audit.outputs.critical }}"
+        echo "High: ${{ steps.check-audit.outputs.high }}"
+        exit 1
+
+    - name: Upload audit artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: governance-audit-results
+        path: |
+          quality-history/
+        retention-days: 30

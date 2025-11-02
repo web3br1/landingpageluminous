@@ -1,0 +1,506 @@
+{
+  "totalChunks": 48,
+  "totalSize": 1959155,
+  "totalSizeMB": "1.87",
+  "estimatedGzippedSize": 587747,
+  "categories": {
+    "vendor": [],
+    "app": [
+      {
+        "name": "1103.66c611d36da5130a.js",
+        "size": 190,
+        "sizeKB": 0.19,
+        "category": "app",
+        "gzippedSize": 57
+      },
+      {
+        "name": "1582.bbbf6fa24122ce0c.js",
+        "size": 162,
+        "sizeKB": 0.16,
+        "category": "app",
+        "gzippedSize": 49
+      },
+      {
+        "name": "1653.7b714a3d79842a03.js",
+        "size": 175,
+        "sizeKB": 0.17,
+        "category": "app",
+        "gzippedSize": 53
+      },
+      {
+        "name": "1698.8ecc8fa4fa9888f9.js",
+        "size": 8202,
+        "sizeKB": 8.01,
+        "category": "app",
+        "gzippedSize": 2461
+      },
+      {
+        "name": "184.de0bc3f7251e6cb6.js",
+        "size": 5898,
+        "sizeKB": 5.76,
+        "category": "app",
+        "gzippedSize": 1769
+      },
+      {
+        "name": "1865.b29c751b2c814e94.js",
+        "size": 163,
+        "sizeKB": 0.16,
+        "category": "app",
+        "gzippedSize": 49
+      },
+      {
+        "name": "232.7842079e592f3e05.js",
+        "size": 2069,
+        "sizeKB": 2.02,
+        "category": "app",
+        "gzippedSize": 621
+      },
+      {
+        "name": "2743.d2ee806c52fcb303.js",
+        "size": 14609,
+        "sizeKB": 14.27,
+        "category": "app",
+        "gzippedSize": 4383
+      },
+      {
+        "name": "3115.a728fe0d1a1351a7.js",
+        "size": 175,
+        "sizeKB": 0.17,
+        "category": "app",
+        "gzippedSize": 53
+      },
+      {
+        "name": "3363.3da20e39ae2ada0e.js",
+        "size": 1731,
+        "sizeKB": 1.69,
+        "category": "app",
+        "gzippedSize": 519
+      },
+      {
+        "name": "3487.63f806513cdf957a.js",
+        "size": 6571,
+        "sizeKB": 6.42,
+        "category": "app",
+        "gzippedSize": 1971
+      },
+      {
+        "name": "3630.c2c07528e747c2a3.js",
+        "size": 12397,
+        "sizeKB": 12.11,
+        "category": "app",
+        "gzippedSize": 3719
+      },
+      {
+        "name": "3697.ad7b1cd99e334aec.js",
+        "size": 2462,
+        "sizeKB": 2.4,
+        "category": "app",
+        "gzippedSize": 739
+      },
+      {
+        "name": "3758.35a46d66f449c16d.js",
+        "size": 3026,
+        "sizeKB": 2.96,
+        "category": "app",
+        "gzippedSize": 908
+      },
+      {
+        "name": "3759.8e27df593f46a7ae.js",
+        "size": 3227,
+        "sizeKB": 3.15,
+        "category": "app",
+        "gzippedSize": 968
+      },
+      {
+        "name": "3896.51bb3d37bdf6dfbb.js",
+        "size": 2491,
+        "sizeKB": 2.43,
+        "category": "app",
+        "gzippedSize": 747
+      },
+      {
+        "name": "4000.95bebac5d90bde8b.js",
+        "size": 6517,
+        "sizeKB": 6.36,
+        "category": "app",
+        "gzippedSize": 1955
+      },
+      {
+        "name": "4578.acdabd8041b6d58d.js",
+        "size": 15482,
+        "sizeKB": 15.12,
+        "category": "app",
+        "gzippedSize": 4645
+      },
+      {
+        "name": "4605.94e1bb2a5fd8b68e.js",
+        "size": 3120,
+        "sizeKB": 3.05,
+        "category": "app",
+        "gzippedSize": 936
+      },
+      {
+        "name": "4614.9b3960ada0ea0009.js",
+        "size": 183,
+        "sizeKB": 0.18,
+        "category": "app",
+        "gzippedSize": 55
+      },
+      {
+        "name": "4880.f2d7c43fb4107a6c.js",
+        "size": 4357,
+        "sizeKB": 4.25,
+        "category": "app",
+        "gzippedSize": 1307
+      },
+      {
+        "name": "4900-71fe765fa4d09031.js",
+        "size": 21320,
+        "sizeKB": 20.82,
+        "category": "app",
+        "gzippedSize": 6396
+      },
+      {
+        "name": "5190.96c12f14a0d4c023.js",
+        "size": 3306,
+        "sizeKB": 3.23,
+        "category": "app",
+        "gzippedSize": 992
+      },
+      {
+        "name": "5383.4ff6e89b17704bb5.js",
+        "size": 26497,
+        "sizeKB": 25.88,
+        "category": "app",
+        "gzippedSize": 7949
+      },
+      {
+        "name": "5605-f6677889d9c621f6.js",
+        "size": 1627,
+        "sizeKB": 1.59,
+        "category": "app",
+        "gzippedSize": 488
+      },
+      {
+        "name": "6227.73984e62bc966a9b.js",
+        "size": 175,
+        "sizeKB": 0.17,
+        "category": "app",
+        "gzippedSize": 53
+      },
+      {
+        "name": "6229.da881b543c7af2a7.js",
+        "size": 3454,
+        "sizeKB": 3.37,
+        "category": "app",
+        "gzippedSize": 1036
+      },
+      {
+        "name": "6707-e3fa4963919b7a03.js",
+        "size": 8890,
+        "sizeKB": 8.68,
+        "category": "app",
+        "gzippedSize": 2667
+      },
+      {
+        "name": "6912.9903ea26e66d2608.js",
+        "size": 10099,
+        "sizeKB": 9.86,
+        "category": "app",
+        "gzippedSize": 3030
+      },
+      {
+        "name": "6986.6d126dfd47815d3b.js",
+        "size": 3935,
+        "sizeKB": 3.84,
+        "category": "app",
+        "gzippedSize": 1181
+      },
+      {
+        "name": "7002.1481549bbb531f25.js",
+        "size": 172,
+        "sizeKB": 0.17,
+        "category": "app",
+        "gzippedSize": 52
+      },
+      {
+        "name": "7250.182005b369fd286b.js",
+        "size": 175,
+        "sizeKB": 0.17,
+        "category": "app",
+        "gzippedSize": 53
+      },
+      {
+        "name": "7393-b7a84435816c5eea.js",
+        "size": 6810,
+        "sizeKB": 6.65,
+        "category": "app",
+        "gzippedSize": 2043
+      },
+      {
+        "name": "7838.7ee84c6687211a1c.js",
+        "size": 2406,
+        "sizeKB": 2.35,
+        "category": "app",
+        "gzippedSize": 722
+      },
+      {
+        "name": "8162.2ae35221820bc4ed.js",
+        "size": 2889,
+        "sizeKB": 2.82,
+        "category": "app",
+        "gzippedSize": 867
+      },
+      {
+        "name": "8461.8d20cd536619eaa7.js",
+        "size": 104,
+        "sizeKB": 0.1,
+        "category": "app",
+        "gzippedSize": 31
+      },
+      {
+        "name": "9067.cd246204693f5ab8.js",
+        "size": 3859,
+        "sizeKB": 3.77,
+        "category": "app",
+        "gzippedSize": 1158
+      },
+      {
+        "name": "9072-ed526557e68ab00e.js",
+        "size": 64283,
+        "sizeKB": 62.78,
+        "category": "app",
+        "gzippedSize": 19285
+      },
+      {
+        "name": "9466-da0d8b7fd3c34f29.js",
+        "size": 9708,
+        "sizeKB": 9.48,
+        "category": "app",
+        "gzippedSize": 2912
+      },
+      {
+        "name": "954-de8cf49ce06ec98a.js",
+        "size": 10041,
+        "sizeKB": 9.81,
+        "category": "app",
+        "gzippedSize": 3012
+      },
+      {
+        "name": "9901.2cbb3d6bd281a691.js",
+        "size": 4911,
+        "sizeKB": 4.8,
+        "category": "app",
+        "gzippedSize": 1473
+      },
+      {
+        "name": "analytics.0a6c2e3f49e13521.js",
+        "size": 13231,
+        "sizeKB": 12.92,
+        "category": "app",
+        "gzippedSize": 3969
+      },
+      {
+        "name": "lib-356d97b060a29e77.js",
+        "size": 1541265,
+        "sizeKB": 1505.14,
+        "category": "app",
+        "gzippedSize": 462380
+      },
+      {
+        "name": "main-293f8ac8122997c2.js",
+        "size": 129,
+        "sizeKB": 0.13,
+        "category": "app",
+        "gzippedSize": 39
+      },
+      {
+        "name": "main-app-bab8e8ea458adf05.js",
+        "size": 467,
+        "sizeKB": 0.46,
+        "category": "app",
+        "gzippedSize": 140
+      },
+      {
+        "name": "marketing-1699c1148f5cee1b.js",
+        "size": 9118,
+        "sizeKB": 8.9,
+        "category": "app",
+        "gzippedSize": 2735
+      },
+      {
+        "name": "polyfills-42372ed130431b0a.js",
+        "size": 112594,
+        "sizeKB": 109.96,
+        "category": "app",
+        "gzippedSize": 33778
+      }
+    ],
+    "pages": [],
+    "framework": [
+      {
+        "name": "webpack-6392055ec3f48882.js",
+        "size": 4483,
+        "sizeKB": 4.38,
+        "category": "framework",
+        "gzippedSize": 1345
+      }
+    ]
+  },
+  "topChunks": [
+    {
+      "name": "lib-356d97b060a29e77.js",
+      "size": 1541265,
+      "sizeKB": 1505.14,
+      "category": "app",
+      "gzippedSize": 462380
+    },
+    {
+      "name": "polyfills-42372ed130431b0a.js",
+      "size": 112594,
+      "sizeKB": 109.96,
+      "category": "app",
+      "gzippedSize": 33778
+    },
+    {
+      "name": "9072-ed526557e68ab00e.js",
+      "size": 64283,
+      "sizeKB": 62.78,
+      "category": "app",
+      "gzippedSize": 19285
+    },
+    {
+      "name": "5383.4ff6e89b17704bb5.js",
+      "size": 26497,
+      "sizeKB": 25.88,
+      "category": "app",
+      "gzippedSize": 7949
+    },
+    {
+      "name": "4900-71fe765fa4d09031.js",
+      "size": 21320,
+      "sizeKB": 20.82,
+      "category": "app",
+      "gzippedSize": 6396
+    },
+    {
+      "name": "4578.acdabd8041b6d58d.js",
+      "size": 15482,
+      "sizeKB": 15.12,
+      "category": "app",
+      "gzippedSize": 4645
+    },
+    {
+      "name": "2743.d2ee806c52fcb303.js",
+      "size": 14609,
+      "sizeKB": 14.27,
+      "category": "app",
+      "gzippedSize": 4383
+    },
+    {
+      "name": "analytics.0a6c2e3f49e13521.js",
+      "size": 13231,
+      "sizeKB": 12.92,
+      "category": "app",
+      "gzippedSize": 3969
+    },
+    {
+      "name": "3630.c2c07528e747c2a3.js",
+      "size": 12397,
+      "sizeKB": 12.11,
+      "category": "app",
+      "gzippedSize": 3719
+    },
+    {
+      "name": "6912.9903ea26e66d2608.js",
+      "size": 10099,
+      "sizeKB": 9.86,
+      "category": "app",
+      "gzippedSize": 3030
+    },
+    {
+      "name": "954-de8cf49ce06ec98a.js",
+      "size": 10041,
+      "sizeKB": 9.81,
+      "category": "app",
+      "gzippedSize": 3012
+    },
+    {
+      "name": "9466-da0d8b7fd3c34f29.js",
+      "size": 9708,
+      "sizeKB": 9.48,
+      "category": "app",
+      "gzippedSize": 2912
+    },
+    {
+      "name": "marketing-1699c1148f5cee1b.js",
+      "size": 9118,
+      "sizeKB": 8.9,
+      "category": "app",
+      "gzippedSize": 2735
+    },
+    {
+      "name": "6707-e3fa4963919b7a03.js",
+      "size": 8890,
+      "sizeKB": 8.68,
+      "category": "app",
+      "gzippedSize": 2667
+    },
+    {
+      "name": "1698.8ecc8fa4fa9888f9.js",
+      "size": 8202,
+      "sizeKB": 8.01,
+      "category": "app",
+      "gzippedSize": 2461
+    },
+    {
+      "name": "7393-b7a84435816c5eea.js",
+      "size": 6810,
+      "sizeKB": 6.65,
+      "category": "app",
+      "gzippedSize": 2043
+    },
+    {
+      "name": "3487.63f806513cdf957a.js",
+      "size": 6571,
+      "sizeKB": 6.42,
+      "category": "app",
+      "gzippedSize": 1971
+    },
+    {
+      "name": "4000.95bebac5d90bde8b.js",
+      "size": 6517,
+      "sizeKB": 6.36,
+      "category": "app",
+      "gzippedSize": 1955
+    },
+    {
+      "name": "184.de0bc3f7251e6cb6.js",
+      "size": 5898,
+      "sizeKB": 5.76,
+      "category": "app",
+      "gzippedSize": 1769
+    },
+    {
+      "name": "9901.2cbb3d6bd281a691.js",
+      "size": 4911,
+      "sizeKB": 4.8,
+      "category": "app",
+      "gzippedSize": 1473
+    }
+  ],
+  "oversizedChunks": [
+    {
+      "name": "lib-356d97b060a29e77.js",
+      "sizeKB": 1505.14,
+      "category": "app"
+    }
+  ],
+  "recommendations": [
+    {
+      "type": "code_splitting",
+      "description": "1 chunks acima de 500KB",
+      "action": "Implementar lazy loading para estes chunks"
+    }
+  ]
+}

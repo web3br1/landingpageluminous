@@ -10,22 +10,21 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
 import { X } from "lucide-react";
 
 export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
   if (!element) return null;
 
-  const handleContentChange = (field: string, value: any) => {
+  const handleContentChange = (field: string, value: unknown) => {
     onUpdate({
       content: {
-        ...element.content,
+        ...(element.content as any),
         [field]: value,
       },
     });
   };
 
-  const handleStyleChange = (field: string, value: any) => {
+  const handleStyleChange = (field: string, value: unknown) => {
     onUpdate({
       styles: {
         ...element.styles,
@@ -80,7 +79,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
               <div>
                 <Label className="text-xs">Texto</Label>
                 <Textarea
-                  value={element.content.text || ""}
+                  value={(element.content as any).text || ""}
                   onChange={(e) => handleContentChange("text", e.target.value)}
                   placeholder="Digite o texto..."
                   className="mt-1"
@@ -99,7 +98,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
               <div>
                 <Label className="text-xs">Texto</Label>
                 <Input
-                  value={element.content.text || ""}
+                  value={(element.content as any).text || ""}
                   onChange={(e) => handleContentChange("text", e.target.value)}
                   placeholder="Digite o título..."
                   className="mt-1"
@@ -108,7 +107,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
               <div>
                 <Label className="text-xs">Nível</Label>
                 <select
-                  value={element.content.level || 1}
+                  value={(element.content as any).level || 1}
                   onChange={(e) =>
                     handleContentChange("level", parseInt(e.target.value))
                   }
@@ -132,7 +131,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
               <div>
                 <Label className="text-xs">Texto do botão</Label>
                 <Input
-                  value={element.content.text || ""}
+                  value={(element.content as any).text || ""}
                   onChange={(e) => handleContentChange("text", e.target.value)}
                   placeholder="Ex: Clique aqui"
                   className="mt-1"
@@ -141,7 +140,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
               <div>
                 <Label className="text-xs">Link</Label>
                 <Input
-                  value={element.content.link || ""}
+                  value={(element.content as any).link || ""}
                   onChange={(e) => handleContentChange("link", e.target.value)}
                   placeholder="https://..."
                   className="mt-1"
@@ -162,7 +161,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
                 <Label className="text-xs">Cor do texto</Label>
                 <Input
                   type="color"
-                  value={element.styles.color || "#000000"}
+                  value={typeof element.styles.color === "string" ? element.styles.color : "#000000"}
                   onChange={(e) => handleStyleChange("color", e.target.value)}
                   className="mt-1 h-8"
                 />
@@ -171,7 +170,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
                 <Label className="text-xs">Tamanho</Label>
                 <Input
                   type="number"
-                  value={parseInt(element.styles.fontSize) || 16}
+                  value={parseInt((element.styles as any).fontSize) || 16}
                   onChange={(e) =>
                     handleStyleChange("fontSize", `${e.target.value}px`)
                   }
@@ -188,7 +187,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
                   <Label className="text-xs">Fundo</Label>
                   <Input
                     type="color"
-                    value={element.styles.backgroundColor || "#ffffff"}
+                    value={(element.styles as any).backgroundColor || "#ffffff"}
                     onChange={(e) =>
                       handleStyleChange("backgroundColor", e.target.value)
                     }
@@ -199,7 +198,7 @@ export function PropertyPanel({ element, onUpdate }: PropertyPanelProps) {
                   <Label className="text-xs">Borda</Label>
                   <Input
                     type="number"
-                    value={parseInt(element.styles.borderRadius) || 0}
+                    value={parseInt((element.styles as any).borderRadius) || 0}
                     onChange={(e) =>
                       handleStyleChange("borderRadius", `${e.target.value}px`)
                     }

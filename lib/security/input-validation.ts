@@ -3,39 +3,11 @@
 
 import { z } from "zod";
 
-// Common attack patterns to detect
-const SUSPICIOUS_PATTERNS = [
-  /<script[^>]*>.*?<\/script>/gi, // Script tags
-  /javascript:/gi, // JavaScript URLs
-  /on\w+\s*=/gi, // Event handlers
-  /<iframe[^>]*>.*?<\/iframe>/gi, // Iframes
-  /<object[^>]*>.*?<\/object>/gi, // Objects
-  /<embed[^>]*>.*?<\/embed>/gi, // Embeds
-  /data:text\/html/gi, // Data URLs
-  /vbscript:/gi, // VBScript
-  /expression\s*\(/gi, // CSS expressions
-  /<\s*meta[^>]*http-equiv[^>]*>/gi, // Meta redirects
-];
-
-// SQL injection patterns
-const SQL_INJECTION_PATTERNS = [
-  /(\b(union|select|insert|delete|update|drop|create|alter|exec|execute)\b)/gi,
-  /('|(\\x27)|(\\x2D\\x2D)|(\-\-)|(\#)|(\%27)|(\%22)|(\%23))/gi,
-  /(\\x27|\\x2D\\x2D|%27|%22|%23)/gi,
-];
-
-// XSS patterns
-const XSS_PATTERNS = [
-  /<script[^>]*>.*?<\/script>/gi,
-  /javascript:[^"']*/gi,
-  /on\w+\s*=\s*["'][^"']*["']/gi,
-  /<iframe[^>]*src[^>]*>/gi,
-  /<object[^>]*data[^>]*>/gi,
-  /<embed[^>]*src[^>]*>/gi,
-  /expression\s*\([^)]*\)/gi,
-  /vbscript:[^"']*/gi,
-  /data:text\/html[^"']*/gi,
-];
+import {
+  SUSPICIOUS_PATTERNS,
+  SQL_INJECTION_PATTERNS,
+  XSS_PATTERNS,
+} from "@/lib/core/regex-patterns";
 
 // Rate limiting for input validation (per IP per minute)
 const validationRateLimit = new Map<
@@ -44,6 +16,89 @@ const validationRateLimit = new Map<
 >();
 const VALIDATION_RATE_LIMIT = 100; // requests per minute
 const VALIDATION_WINDOW_MS = 60 * 1000; // 1 minute
+
+// Security threat detection functions
+export function checkSecurityThreats(input: string): string[] {
+  const threats: string[] = [];
+
+  // Check for common attack patterns
+  const attackPatterns = [
+    /\b(script|javascript|vbscript|onload|onerror)\b/i,
+    /\b(eval|exec|system|shell_exec)\b/i,
+    /\b(unescape|decodeURIComponent)\b/i,
+    /<script[^>]*>.*?<\/script>/gi,
+    /javascript:[^"']*/gi,
+  ];
+
+  for (const pattern of attackPatterns) {
+    if (pattern.test(input)) {
+      threats.push(`Potential security threat detected: ${pattern.source}`);
+    }
+  }
+
+  return threats;
+}
+
+export function checkSQLInjection(input: string): string[] {
+  const sqlPatterns = [
+    /(\b(union|select|insert|delete|update|drop|create|alter)\b.*\b(select|from|where|into)\b)/i,
+    /('|--|#|\/\*.*\*\/)/i,
+    /(\bor\b.*\b=\b.*\bor\b)/i,
+    /(-|=|!=|<|>|<=|>=|\+|\*|\||&|;|\(|\)|{|}|\[|\]|\?|\$|`|'|"|\\|\/)/i,
+  ];
+
+  const issues: string[] = [];
+  for (const pattern of sqlPatterns) {
+    if (pattern.test(input)) {
+      issues.push(`Potential SQL injection pattern: ${pattern.source}`);
+    }
+  }
+
+  return issues;
+}
+
+export function checkXSS(input: string): string[] {
+  const xssPatterns = [
+    /<script[^>]*>.*?<\/script>/gi,
+    /javascript:[^"']*/gi,
+    /vbscript:[^"']*/gi,
+    /onload\s*=/gi,
+    /onerror\s*=/gi,
+    /onclick\s*=/gi,
+    /<iframe[^>]*>/gi,
+    /<object[^>]*>/gi,
+    /<embed[^>]*>/gi,
+  ];
+
+  const issues: string[] = [];
+  for (const pattern of xssPatterns) {
+    if (pattern.test(input)) {
+      issues.push(`Potential XSS pattern: ${pattern.source}`);
+    }
+  }
+
+  return issues;
+}
+
+export function sanitizeInput(input: string, options: ValidationOptions = {}): string {
+  let sanitized = input;
+
+  // Remove potentially dangerous HTML tags
+  sanitized = sanitized.replace(/<script[^>]*>.*?<\/script>/gi, '');
+  sanitized = sanitized.replace(/javascript:[^"']*/gi, '');
+  sanitized = sanitized.replace(/vbscript:[^"']*/gi, '');
+  sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
+
+  // Trim whitespace
+  sanitized = sanitized.trim();
+
+  // Apply length limits
+  if (options.maxLength && sanitized.length > options.maxLength) {
+    sanitized = sanitized.substring(0, options.maxLength);
+  }
+
+  return sanitized;
+}
 
 function checkValidationRateLimit(identifier: string): boolean {
   const now = Date.now();
@@ -106,11 +161,7 @@ export function validateSecureInput(
   options: ValidationOptions = {},
 ): ValidationResult {
   const errors: string[] = [];
-  let riskLevel: "low" | "medium" | "high" | "critical" = "low" as
-    | "low"
-    | "medium"
-    | "high"
-    | "critical";
+  let riskLevel: "low" | "medium" | "high" | "critical" = "low";
   let sanitized = input;
 
   // Rate limiting check
@@ -138,15 +189,16 @@ export function validateSecureInput(
 
   // Type-specific validation
   switch (type) {
-    case "email":
-      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    case "email": {
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+.[a-zA-Z]{2,}$/;
       if (!emailRegex.test(input)) {
         errors.push("Invalid email format");
         riskLevel = "medium";
       }
       break;
+    }
 
-    case "url":
+    case "url": {
       try {
         const url = new URL(input);
         if (!["http:", "https:"].includes(url.protocol)) {
@@ -158,23 +210,26 @@ export function validateSecureInput(
         riskLevel = "high";
       }
       break;
+    }
 
-    case "phone":
-      const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
-      const cleanPhone = input.replace(/[\s\-\(\)\.]/g, "");
+    case "phone": {
+      const phoneRegex = /^[+]?[1-9][\d]{0,15}$/;
+      const cleanPhone = input.replace(/[\s\-(.].]/g, "");
       if (!phoneRegex.test(cleanPhone)) {
         errors.push("Invalid phone number format");
       }
       sanitized = cleanPhone;
       break;
+    }
 
-    case "name":
-      const nameRegex = /^[a-zA-Z\s\-'\.]+$/;
+    case "name": {
+      const nameRegex = /^[a-zA-Z\s-'.]+$/;
       if (!nameRegex.test(input)) {
         errors.push("Name contains invalid characters");
         riskLevel = "medium";
       }
       break;
+    }
   }
 
   // Security checks
@@ -203,65 +258,8 @@ export function validateSecureInput(
   }
 
   // Sanitization
-  if (options.sanitize && sanitized === input) {
+  if (options.sanitize !== false) {
     sanitized = sanitizeInput(input, options);
-  }
-
-  return {
-    isValid: errors.length === 0,
-    errors,
-    sanitized: sanitized !== input ? sanitized : undefined,
-    riskLevel,
-  };
-}
-
-function checkSecurityThreats(input: string): string[] {
-  const threats: string[] = [];
-
-  for (const pattern of SUSPICIOUS_PATTERNS) {
-    if (pattern.test(input)) {
-      threats.push(`Suspicious pattern detected: ${pattern.source}`);
-    }
-  }
-
-  return threats;
-}
-
-function checkSQLInjection(input: string): string[] {
-  const threats: string[] = [];
-
-  for (const pattern of SQL_INJECTION_PATTERNS) {
-    if (pattern.test(input)) {
-      threats.push(`SQL injection pattern: ${pattern.source}`);
-    }
-  }
-
-  return threats;
-}
-
-function checkXSS(input: string): string[] {
-  const threats: string[] = [];
-
-  for (const pattern of XSS_PATTERNS) {
-    if (pattern.test(input)) {
-      threats.push(`XSS pattern: ${pattern.source}`);
-    }
-  }
-
-  return threats;
-}
-
-function sanitizeInput(input: string, options: ValidationOptions): string {
-  let sanitized = input;
-
-  // Remove HTML tags if not allowed
-  if (!options.allowHtml) {
-    sanitized = sanitized.replace(/<[^>]*>/g, "");
-  }
-
-  // Remove JavaScript URLs
-  if (!options.allowUrls) {
-    sanitized = sanitized.replace(/javascript:[^"'\s]*/gi, "");
   }
 
   // Remove event handlers
@@ -293,7 +291,7 @@ export function secureStringSchema(options: ValidationOptions = {}) {
 export function secureEmailSchema(options: ValidationOptions = {}) {
   return z
     .string()
-    .email("Invalid email format")
+    .email()
     .transform((val, ctx) => {
       const validation = validateSecureInput(val, "email", options);
 
@@ -310,22 +308,19 @@ export function secureEmailSchema(options: ValidationOptions = {}) {
 }
 
 export function secureUrlSchema(options: ValidationOptions = {}) {
-  return z
-    .string()
-    .url("Invalid URL format")
-    .transform((val, ctx) => {
-      const validation = validateSecureInput(val, "url", options);
+  return z.string().transform((val, ctx) => {
+    const validation = validateSecureInput(val, "url", options);
 
-      if (!validation.isValid) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: validation.errors.join("; "),
-        });
-        return z.NEVER;
-      }
+    if (!validation.isValid) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: validation.errors.join("; "),
+      });
+      return z.NEVER;
+    }
 
-      return validation.sanitized || val;
-    });
+    return validation.sanitized || val;
+  });
 }
 
 // Utility function to log security events
@@ -344,4 +339,46 @@ export function logSecurityEvent(
     timestamp: new Date().toISOString(),
     ...details,
   });
+}
+
+/**
+ * Create secure fingerprint for input data logging/tracking
+ * Allows monitoring without exposing sensitive information
+ */
+export function createInputFingerprint(input: string, type: string): string {
+  // Create a consistent hash for tracking input patterns without storing actual data
+  const normalizedInput = input.toLowerCase().trim();
+  return hmacSha256(`${type}:${normalizedInput}`, "input-fingerprint-key");
+}
+
+/**
+ * Validate input with secure fingerprinting for audit trails
+ */
+export function validateInputWithFingerprint(
+  input: string,
+  type: "text" | "email" | "url" | "phone" | "name" | "message",
+  options: ValidationOptions & { enableFingerprinting?: boolean } = {},
+): ValidationResult & { fingerprint?: string } {
+  const result = validateSecureInput(input, type, options);
+
+  // Add fingerprint for secure tracking if enabled
+  if (options.enableFingerprinting && result.isValid) {
+    const fingerprint = createInputFingerprint(input, type);
+    return { ...result, fingerprint };
+  }
+
+  return result;
+}
+
+/**
+ * Check if input contains sensitive patterns that should be hashed
+ */
+export function containsSensitiveData(input: string): boolean {
+  const sensitivePatterns = [
+    /\b\d{4}[- ]\d{4}[- ]\d{4}[- ]\d{4}\b/, // Credit card numbers
+    /\b\d{3}[- ]\d{2}[- ]\d{4}\b/, // SSN
+    /\b\d{10,15}\b/, // Long numbers that might be sensitive
+  ];
+
+  return sensitivePatterns.some(pattern => pattern.test(input));
 }

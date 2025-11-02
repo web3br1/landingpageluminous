@@ -1,6 +1,8 @@
 // Personalization Engine - Header-based Theme Resolution
 // Implements points 9-12: personalization by headers without component logic
 
+import { murmurHash3 } from "@/lib/architecture/crypto-utils";
+
 export interface PersonalizationContext {
   tenant?: string;
   campaign?: string;
@@ -16,7 +18,7 @@ export interface ResolvedTheme {
   locale: string;
   currency: string;
   direction: "ltr" | "rtl";
-  customTokens: Record<string, any>;
+  customTokens: Record<string, unknown>;
 }
 
 export interface ExperimentResult {
@@ -30,7 +32,7 @@ export interface OverrideStep {
   variant: "A" | "B";
   reason: string;
   priority: number;
-  context?: Record<string, any>;
+  context?: Record<string, unknown>;
 }
 
 export { EXPERIMENT_CONFIGS, getExperimentVariant };
@@ -119,7 +121,7 @@ const CAMPAIGN_CONFIGS: Record<
 const EXPERIMENT_CONFIGS: Record<
   string,
   {
-    variants: Record<string, any>;
+    variants: Record<string, unknown>;
     weights?: Record<string, number>; // Optional custom weights
     persistDays: number;
     consentRequired: boolean;
@@ -152,42 +154,7 @@ const EXPERIMENT_CONFIGS: Record<
   },
 };
 
-// MurmurHash3 for deterministic bucketing
-function murmurHash3(key: string, seed = 0): number {
-  const c1 = 0xcc9e2d51;
-  const c2 = 0x1b873593;
-  const r1 = 15;
-  const r2 = 13;
-  const m = 5;
-  const n = 0xe6546b64;
-
-  let hash = seed;
-  const data = new TextEncoder().encode(key);
-
-  for (let i = 0; i < data.length; i += 4) {
-    let k = 0;
-    for (let j = 0; j < 4 && i + j < data.length; j++) {
-      k |= data[i + j] << (j * 8);
-    }
-
-    k = Math.imul(k, c1);
-    k = (k << r1) | (k >>> (32 - r1));
-    k = Math.imul(k, c2);
-
-    hash ^= k;
-    hash = (hash << r2) | (hash >>> (32 - r2));
-    hash = Math.imul(hash, m) + n;
-  }
-
-  hash ^= data.length;
-  hash ^= hash >>> 16;
-  hash = Math.imul(hash, 0x85ebca6b);
-  hash ^= hash >>> 13;
-  hash = Math.imul(hash, 0xc2b2ae35);
-  hash ^= hash >>> 16;
-
-  return Math.abs(hash) / 0x7fffffff; // Normalize to [0, 1)
-}
+// Removed duplicate murmurHash3 implementation - now using centralized version
 
 // Get or assign experiment variant deterministically
 function getExperimentVariant(
@@ -259,7 +226,7 @@ function getExperimentFromStorage(
   }
 }
 
-function setExperimentInStorage(key: string, data: any): void {
+function setExperimentInStorage(key: string, data: unknown): void {
   if (typeof window === "undefined") return;
 
   try {
@@ -287,7 +254,7 @@ function selectVariantByWeight(
 }
 
 function getEqualWeights(
-  variants: Record<string, any>,
+  variants: Record<string, unknown>,
 ): Record<string, number> {
   const count = Object.keys(variants).length;
   const weight = 100 / count;
@@ -298,17 +265,34 @@ function getEqualWeights(
 }
 
 function hasConsent(type: string): boolean {
-  // Simple consent check - in real app, use proper consent management
-  if (typeof window === "undefined") return false;
-
-  const consent = localStorage.getItem("consent");
-  if (!consent) return false;
-
   try {
-    const data = JSON.parse(consent);
-    return data[type] === true;
-  } catch {
-    return false;
+    // Import dinâmico para evitar dependências circulares
+    const { ConsentManager } = require("@/lib/privacy/consent-manager");
+
+    // Mapear tipos de string para as categorias do ConsentManager
+    const categoryMap: Record<string, keyof import("@/lib/privacy/consent-manager").ConsentState> = {
+      analytics: "analytics",
+      marketing: "marketing",
+      functional: "functional",
+      essential: "essential",
+    };
+
+    const category = categoryMap[type];
+    if (!category) return false;
+
+    return ConsentManager.hasConsent(category);
+  } catch (error) {
+    console.warn("Failed to check consent via ConsentManager in personalization, using fallback:", error);
+    // Fallback simples para não quebrar funcionalidade
+    if (typeof window === "undefined") return false;
+    try {
+      const consent = localStorage.getItem("consent");
+      if (!consent) return false;
+      const data = JSON.parse(consent);
+      return data[type] === true;
+    } catch {
+      return false;
+    }
   }
 }
 
@@ -373,7 +357,7 @@ export function resolveTheme(
   // Start with defaults
   let themeId = "liquid-glass"; // default theme
   let variant: "A" | "B" = "A";
-  let customTokens: Record<string, any> = {};
+  let customTokens: Record<string, unknown> = {};
 
   overrideChain.push({
     step: "defaults",
@@ -597,11 +581,12 @@ export function generateThemeCSS(resolvedTheme: ResolvedTheme): string {
   `;
 
   // Add custom tokens from personalization
-  if (customTokens.brand) {
+  if (customTokens.brand && typeof customTokens.brand === 'object') {
+    const brand = customTokens.brand as { primary?: string; secondary?: string; accent?: string };
     css += `
-      --color-brand-primary: ${customTokens.brand.primary};
-      --color-brand-secondary: ${customTokens.brand.secondary};
-      --color-brand-accent: ${customTokens.brand.accent};
+      --color-brand-primary: ${brand.primary || ''};
+      --color-brand-secondary: ${brand.secondary || ''};
+      --color-brand-accent: ${brand.accent || ''};
     `;
   }
 
@@ -628,7 +613,7 @@ export function getPerformanceBudget(themeId: string) {
 // Analytics tracking for personalization
 export function trackPersonalizationEvent(
   event: "theme_resolved" | "ab_impression" | "geo_detected",
-  data: Record<string, any>,
+  data: Record<string, unknown>,
 ) {
   // Implementation would integrate with analytics system
   if (typeof window !== "undefined") {

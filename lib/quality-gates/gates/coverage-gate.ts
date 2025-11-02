@@ -55,7 +55,7 @@ export const coverageGate: QualityGate = {
         "coverage",
         "coverage-summary.json",
       );
-      let coverageData: any = null;
+      let coverageData: unknown = null;
 
       if (!existsSync(coveragePath)) {
         console.log("📊 Generating coverage report...");
@@ -65,7 +65,7 @@ export const coverageGate: QualityGate = {
             stdio: "pipe",
             timeout: 240000, // 4 minutes
           });
-        } catch (error: any) {
+        } catch (error: unknown) {
           // Coverage command might fail but still generate partial report
           console.log(
             "⚠️  Coverage command failed, checking for partial report...",
@@ -137,8 +137,9 @@ export const coverageGate: QualityGate = {
   },
 };
 
-function analyzeCoverage(coverageData: any) {
-  const total = coverageData.total || {};
+function analyzeCoverage(coverageData: unknown) {
+  const data = coverageData as Record<string, any>;
+  const total = data?.total || {};
 
   // Calculate coverage by category
   const lines = total.lines || { pct: 0 };
@@ -147,12 +148,12 @@ function analyzeCoverage(coverageData: any) {
   const statements = total.statements || { pct: 0 };
 
   // Analyze coverage distribution across files
-  const files = Object.keys(coverageData).filter((key) => key !== "total");
+  const files = Object.keys(data || {}).filter((key) => key !== "total");
   const fileCoverages = files.map((file) => ({
     file,
-    lines: coverageData[file].lines?.pct || 0,
-    functions: coverageData[file].functions?.pct || 0,
-    branches: coverageData[file].branches?.pct || 0,
+    lines: data[file]?.lines?.pct || 0,
+    functions: data[file]?.functions?.pct || 0,
+    branches: data[file]?.branches?.pct || 0,
   }));
 
   // Identify files with low coverage
@@ -190,7 +191,7 @@ function analyzeCoverage(coverageData: any) {
   };
 }
 
-function calculateCoverageQualityScore(analysis: any): number {
+function calculateCoverageQualityScore(analysis: unknown): number {
   const { overall, files, quality } = analysis;
 
   let score = overall.lines; // Base score on line coverage

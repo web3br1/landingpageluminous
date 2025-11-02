@@ -1,7 +1,17 @@
-import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
 import Stripe from "stripe";
-import { logger } from "@/lib/observability/logger";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
+
+// Import logger from shared if available, fallback to console
+const logger = {
+  error: (message: string, context?: any) => console.error(message, context),
+  warn: (message: string, context?: any) => console.warn(message, context),
+  info: (message: string, context?: any) => console.info(message, context),
+};
 
 // Initialize Stripe with secret key
 const stripe = process.env.STRIPE_SECRET_KEY
@@ -28,12 +38,10 @@ export async function POST(request: NextRequest) {
         requestId,
         reason: "Missing STRIPE_SECRET_KEY or STRIPE_WEBHOOK_SECRET",
       });
-      return NextResponse.json(
-        {
-          error: "Stripe payment processing not configured",
-          requestId,
-        },
-        { status: 503 },
+      return createErrorResponse(
+        "STRIPE_NOT_CONFIGURED",
+        "Stripe payment processing not configured",
+        { status: HTTP_STATUS.SERVICE_UNAVAILABLE }
       );
     }
 
@@ -48,12 +56,10 @@ export async function POST(request: NextRequest) {
         hasSignature: !!sig,
         hasBody: !!body,
       });
-      return NextResponse.json(
-        {
-          error: "Missing signature or body",
-          requestId,
-        },
-        { status: 400 },
+      return createErrorResponse(
+        "MISSING_SIGNATURE_OR_BODY",
+        "Missing signature or body",
+        { status: HTTP_STATUS.BAD_REQUEST }
       );
     }
 
@@ -62,18 +68,20 @@ export async function POST(request: NextRequest) {
 
     try {
       event = stripe!.webhooks.constructEvent(body, sig, webhookSecret!);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errorObj =
+        err instanceof Error
+          ? err
+          : { message: String(err), name: "UnknownError" };
       logger.error("Stripe webhook (simple): Signature verification failed", {
         requestId,
-        error: err.message,
+        error: errorObj,
         signatureLength: sig.length,
       });
-      return NextResponse.json(
-        {
-          error: "Webhook signature verification failed",
-          requestId,
-        },
-        { status: 400 },
+      return createErrorResponse(
+        "WEBHOOK_SIGNATURE_VERIFICATION_FAILED",
+        "Webhook signature verification failed",
+        { status: HTTP_STATUS.BAD_REQUEST }
       );
     }
 
@@ -167,7 +175,7 @@ export async function POST(request: NextRequest) {
       customerId,
     });
 
-    return NextResponse.json({
+    return createSuccessResponse({
       received: true,
       event: event.type,
       status: "processed",
@@ -184,13 +192,10 @@ export async function POST(request: NextRequest) {
       processingTimeMs: processingTime,
     });
 
-    return NextResponse.json(
-      {
-        error: "Webhook processing failed",
-        requestId,
-        processingTimeMs: processingTime,
-      },
-      { status: 500 },
+    return createErrorResponse(
+      "WEBHOOK_PROCESSING_FAILED",
+      "Webhook processing failed",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

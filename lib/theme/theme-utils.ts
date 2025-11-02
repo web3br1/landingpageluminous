@@ -1,142 +1,201 @@
-// ===== THEME UTILITIES =====
-// Utilitários para gerenciamento de tema e preferências
+/**
+ * Theme Utilities - SSR Safe
+ * Provides theme management utilities with SSR protection
+ */
 
-/** Theme constants */
+import { isClient, readLocalStorage, writeLocalStorage } from "../utils/browser-storage";
+
+/**
+ * Available theme types
+ */
+export type Theme = "light" | "dark" | "system";
+
+/**
+ * Theme constants
+ */
 export const THEMES = {
   LIGHT: "light" as const,
   DARK: "dark" as const,
   SYSTEM: "system" as const,
 } as const;
 
-/** Storage key for theme */
-export const STORAGE_KEY = "dataflow-theme";
+/**
+ * Storage key for theme preference
+ */
+export const STORAGE_KEY = "dataflow-theme" as const;
 
-/** Theme mode type */
-export type ThemeMode = "light" | "dark" | "system";
-
-/** Get system color scheme preference */
-export function getSystemTheme(): "light" | "dark" {
-  if (typeof window === "undefined") return "light";
-
-  return window.matchMedia("(prefers-color-scheme: dark)").matches
-    ? "dark"
-    : "light";
-}
-
-/** Get stored theme preference */
-export function getStoredTheme(): ThemeMode | null {
-  if (typeof window === "undefined") return null;
+/**
+ * Gets the system theme preference
+ */
+export function getSystemTheme(): Theme {
+  if (!isClient()) {
+    return "light"; // Default fallback for SSR
+  }
 
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (stored === "light" || stored === "dark" || stored === "system") {
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      return "dark";
+    }
+    return "light";
+  } catch (error) {
+    console.warn("getSystemTheme: Failed to detect system theme:", error);
+    return "light";
+  }
+}
+
+/**
+ * Gets the stored theme from localStorage
+ */
+export function getStoredTheme(): Theme | null {
+  return readLocalStorage<Theme>(STORAGE_KEY);
+}
+
+/**
+ * Applies a theme to the document
+ */
+export function applyTheme(theme: Theme): boolean {
+  if (!isClient()) {
+    return false;
+  }
+
+  try {
+    const root = document.documentElement;
+    const actualTheme = theme === "system" ? getSystemTheme() : theme;
+
+    // Set data attribute
+    root.setAttribute("data-theme", actualTheme);
+
+    // Remove existing theme classes
+    root.className = root.className.replace(/\btheme-\w+/g, "").trim();
+
+    // Add new theme class
+    root.classList.add(`theme-${actualTheme}`);
+
+    // For dark theme, also add "dark" class as expected by tests
+    if (actualTheme === "dark") {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+
+    return true;
+  } catch (error) {
+    console.warn(`applyTheme: Failed to apply theme ${theme}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Sets and applies a theme
+ */
+export function setTheme(theme: Theme): boolean {
+  try {
+    // Store the theme preference
+    const stored = writeLocalStorage(STORAGE_KEY, theme);
+    if (!stored) {
+      console.warn("setTheme: Failed to store theme preference");
+    }
+
+    // Apply the theme
+    return applyTheme(theme);
+  } catch (error) {
+    console.warn(`setTheme: Failed to set theme ${theme}:`, error);
+    return false;
+  }
+}
+
+/**
+ * Gets the current active theme
+ */
+export function getCurrentTheme(): Theme {
+  if (!isClient()) {
+    return "light";
+  }
+
+  try {
+    const stored = getStoredTheme();
+    if (stored && stored !== "system") {
       return stored;
     }
-  } catch {
-    // Ignore localStorage errors
-  }
 
-  return null;
-}
+    // Check data attribute
+    const root = document.documentElement;
+    const dataTheme = root.getAttribute("data-theme") as Theme;
+    if (dataTheme && dataTheme !== "system") {
+      return dataTheme;
+    }
 
-/** Get current theme (resolves system preference) */
-export function getTheme(): "light" | "dark" {
-  const stored = getStoredTheme();
-  if (stored === "light" || stored === "dark") {
-    return stored;
-  }
-  return getSystemTheme();
-}
-
-/** Set theme and apply it */
-export function setTheme(theme: ThemeMode): void {
-  if (typeof window === "undefined") return;
-
-  try {
-    window.localStorage.setItem(STORAGE_KEY, theme);
-  } catch {
-    // Ignore localStorage errors
-  }
-
-  applyTheme(resolveTheme(theme));
-}
-
-/** Toggle between light and dark themes */
-export function toggleTheme(): void {
-  const currentTheme = getTheme();
-  const newTheme = currentTheme === "light" ? "dark" : "light";
-  setTheme(newTheme);
-}
-
-/** Apply theme to document */
-export function applyTheme(theme: "light" | "dark" | "system"): void {
-  if (typeof window === "undefined") return;
-
-  const actualTheme = theme === "system" ? getSystemTheme() : theme;
-
-  const root = window.document.documentElement;
-  root.classList.remove("light", "dark");
-  root.classList.add(actualTheme);
-
-  // Set data attribute for CSS custom properties
-  root.setAttribute("data-theme", actualTheme);
-}
-
-/** Resolve theme mode to actual theme */
-export function resolveTheme(mode: ThemeMode): "light" | "dark" {
-  if (mode === "system") {
+    // Fallback to system preference
     return getSystemTheme();
+  } catch (error) {
+    console.warn("getCurrentTheme: Failed to get current theme:", error);
+    return "light";
   }
-  return mode;
 }
 
-/** Watch system theme changes */
-export function watchSystemTheme(
-  callback: (theme: "light" | "dark") => void,
-): () => void {
-  if (typeof window === "undefined") {
-    return () => {};
-  }
-
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
-  const handleChange = (e: MediaQueryListEvent) => {
-    callback(e.matches ? "dark" : "light");
-  };
-
-  mediaQuery.addEventListener("change", handleChange);
-
-  return () => {
-    mediaQuery.removeEventListener("change", handleChange);
-  };
-}
-
-/** Generate theme classes for body element */
-export function getThemeClasses(
-  defaultTheme?: string | { mode: "light" | "dark" | "system" },
-): string {
-  // Always return a valid string, never undefined
-  if (typeof window === "undefined") {
-    // Server-side rendering fallback
-    if (typeof defaultTheme === "string") {
-      return defaultTheme === "dark" ? "dark" : "light";
-    }
-    if (defaultTheme && typeof defaultTheme === "object" && defaultTheme.mode) {
-      const mode = defaultTheme.mode;
-      if (mode === "system") {
-        // For system theme on server, default to light
-        return "light";
-      }
-      return mode === "dark" ? "dark" : "light";
-    }
-    return "light"; // Default fallback
+/**
+ * Initializes theme on page load
+ */
+export function initializeTheme(): boolean {
+  if (!isClient()) {
+    return false;
   }
 
   try {
-    const theme = getTheme();
-    return theme === "dark" ? "dark" : "light";
+    const stored = getStoredTheme();
+    if (stored) {
+      return applyTheme(stored);
+    }
+
+    // Apply system theme by default
+    return applyTheme("system");
   } catch (error) {
-    console.warn("Failed to get theme, using light as fallback", error);
-    return "light";
+    console.warn("initializeTheme: Failed to initialize theme:", error);
+    return false;
+  }
+}
+
+/**
+ * Toggles between light and dark themes
+ */
+export function toggleTheme(): Theme | null {
+  try {
+    const current = getCurrentTheme();
+    const newTheme: Theme = current === "light" ? "dark" : "light";
+    const applied = setTheme(newTheme);
+    return applied ? newTheme : null;
+  } catch (error) {
+    console.warn("toggleTheme: Failed to toggle theme:", error);
+    return null;
+  }
+}
+
+/**
+ * Listens for system theme changes
+ */
+export function watchSystemTheme(callback: (theme: Theme) => void): (() => void) | null {
+  if (!isClient() || !window.matchMedia) {
+    return null;
+  }
+
+  try {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+
+    const listener = (event: MediaQueryListEvent) => {
+      const stored = getStoredTheme();
+      if (stored === "system") {
+        const theme = event.matches ? "dark" : "light";
+        callback(theme);
+      }
+    };
+
+    mediaQuery.addEventListener("change", listener);
+
+    return () => {
+      mediaQuery.removeEventListener("change", listener);
+    };
+  } catch (error) {
+    console.warn("watchSystemTheme: Failed to set up theme watcher:", error);
+    return null;
   }
 }

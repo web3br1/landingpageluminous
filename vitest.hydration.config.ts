@@ -45,7 +45,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname),
       "@/*": path.resolve(__dirname, "./*"),
-      "@shared/*": path.resolve(__dirname, "./shared/*"),
       "@/components/*": path.resolve(__dirname, "./components/*"),
       "@/ui/*": path.resolve(__dirname, "./components/ui/*"),
       "@/lib/*": path.resolve(__dirname, "./lib/*"),
@@ -98,7 +97,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname),
       "@/*": path.resolve(__dirname, "./*"),
-      "@shared/*": path.resolve(__dirname, "./shared/*"),
       "@/components/*": path.resolve(__dirname, "./components/*"),
       "@/ui/*": path.resolve(__dirname, "./components/ui/*"),
       "@/lib/*": path.resolve(__dirname, "./lib/*"),

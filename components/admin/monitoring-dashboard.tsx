@@ -1,6 +1,5 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
 import { AlertTriangle, TrendingUp, Zap, Bug, RefreshCw } from "lucide-react";
 import { Button } from "@/app/(marketing)/components/ui/button";
 import { useResilientFetch } from "@/lib/network/use-resilient-fetch";
@@ -50,7 +49,7 @@ export function MonitoringDashboard() {
     enabled: true,
     refetchInterval: 30000, // Refresh every 30 seconds
     onSuccess: (data) => {
-      setErrorPatterns(data.data?.errorPatterns || []);
+      setErrorPatterns((data as any).data?.errorPatterns || []);
       setLastUpdate(new Date());
     },
   });
@@ -64,7 +63,7 @@ export function MonitoringDashboard() {
     enabled: true,
     refetchInterval: 30000, // Refresh every 30 seconds
     onSuccess: (data) => {
-      setPerformanceMetrics(data.data?.metrics || null);
+      setPerformanceMetrics((data as any).data?.metrics || null);
       setLastUpdate(new Date());
     },
   });

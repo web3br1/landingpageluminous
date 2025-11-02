@@ -6,6 +6,11 @@ import { useRouter } from "next/router";
 import { getSSRAdapter } from "../composition/container";
 import { logger } from "../observability/logger";
 import { metrics } from "../observability/metrics";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
 
 /**
  * SEO Optimizer Component

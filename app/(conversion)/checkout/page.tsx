@@ -8,9 +8,7 @@ export const revalidate = 3600;
 // Generate metadata dynamically from composition
 export async function generateMetadata(): Promise<Metadata> {
   try {
-    const composition = await composePageFull("checkout", undefined, {
-      flags: {},
-    });
+    const composition = await composePageFull("checkout", undefined);
 
     if (!composition?.metadata) {
       return {
@@ -29,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
         type: "website",
       },
     };
-  } catch (error) {
+  } catch {
     return {
       title: "Checkout - Error Fallback",
       description: "Checkout page - error occurred",
@@ -41,16 +39,14 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Checkout() {
   try {
     // Compose page content asynchronously with checkout and payment data
-    const composition = await composePageFull("checkout", undefined, {
-      flags: {},
-    });
+    const composition = await composePageFull("checkout", undefined);
 
     if (!composition) {
       return <div>Error: No composition available</div>;
     }
 
     return <PageRenderer composition={composition} pageType="checkout" />;
-  } catch (error) {
+  } catch {
     return <div>Error: Failed to render checkout page</div>;
   }
 }

@@ -2,13 +2,13 @@
 // Hook personalizado para gerenciar estado do Visual Experiment Builder
 
 import { useReducer, useCallback, useEffect } from "react";
+import { EditableElement, BuilderMode, ViewMode } from "./types";
 import {
   builderReducer,
   initialBuilderState,
   selectors,
   actions,
 } from "./builder-reducer";
-import { BuilderState, VisualVariant } from "./types";
 import {
   experimentEngine,
   type Experiment,
@@ -228,14 +228,14 @@ export function useExperimentBuilder(experimentId?: string) {
     selectElement: (elementId: string | null) =>
       dispatch(actions.selectElement(elementId)),
 
-    updateElement: (elementId: string, updates: any) => {
+    updateElement: (elementId: string, updates: unknown) => {
       const variantId = state.selectedVariantId;
       if (variantId) {
         dispatch(actions.updateElement(variantId, elementId, updates));
       }
     },
 
-    addElement: (element: any) => {
+    addElement: (element: EditableElement) => {
       const variantId = state.selectedVariantId;
       if (variantId) {
         dispatch(actions.addElement(variantId, element));
@@ -250,9 +250,9 @@ export function useExperimentBuilder(experimentId?: string) {
     },
 
     // UI actions
-    setMode: (mode: any) => dispatch(actions.setMode(mode)),
+    setMode: (mode: BuilderMode) => dispatch(actions.setMode(mode)),
 
-    setViewMode: (viewMode: any) => dispatch(actions.setViewMode(viewMode)),
+    setViewMode: (viewMode: ViewMode) => dispatch(actions.setViewMode(viewMode)),
 
     undo: () => dispatch(actions.undo()),
 

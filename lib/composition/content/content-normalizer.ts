@@ -30,7 +30,7 @@ const PlaceholderContentSchema = BaseSectionContentSchema.extend({
 });
 
 // ===== SCHEMA REGISTRY =====
-const contentSchemaRegistry: Record<SectionId, z.ZodSchema<any>> = {
+const contentSchemaRegistry: Record<SectionId, z.ZodSchema<unknown>> = {
   // All sections use base schema for now - can be extended later
   hero: BaseSectionContentSchema,
   benefits: BaseSectionContentSchema,
@@ -61,7 +61,7 @@ export class ContentNormalizer {
   static normalizeContent(
     sectionId: SectionId,
     rawContent: unknown,
-  ): Record<string, any> {
+  ): Record<string, unknown> {
     const schema = contentSchemaRegistry[sectionId];
 
     if (!schema) {
@@ -73,13 +73,14 @@ export class ContentNormalizer {
       const normalizedContent = schema.parse(rawContent);
 
       // Add section ID if not present
-      if (!normalizedContent.id) {
-        normalizedContent.id = sectionId;
+      const content = normalizedContent as any;
+      if (!content.id) {
+        content.id = sectionId;
       }
 
       // Add tracking defaults if not present
-      if (!normalizedContent.tracking) {
-        normalizedContent.tracking = {
+      if (!content.tracking) {
+        content.tracking = {
           sectionId,
           eventCategory: "landing_page",
           eventAction: "section_interaction",
@@ -89,7 +90,7 @@ export class ContentNormalizer {
       console.log(
         `[ContentNormalizer] Normalized content for section: ${sectionId}`,
       );
-      return normalizedContent;
+      return content;
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error(
@@ -146,8 +147,8 @@ export class ContentNormalizer {
   /**
    * Get default content for a section
    */
-  static getDefaultContent(sectionId: SectionId): Record<string, any> {
-    const defaults: Record<string, any> = {
+  static getDefaultContent(sectionId: SectionId): Record<string, unknown> {
+    const defaults: Record<string, unknown> = {
       hero: {
         headline: "Bem-vindo à nossa plataforma",
         subheadline: "Transforme seu negócio com nossas soluções inovadoras",
@@ -255,8 +256,8 @@ export class ContentNormalizer {
    */
   static mergeWithDefaults(
     sectionId: SectionId,
-    userContent: Record<string, any>,
-  ): Record<string, any> {
+    userContent: Record<string, unknown>,
+  ): Record<string, unknown> {
     const defaults = this.getDefaultContent(sectionId);
 
     // Simple merge for now - can be enhanced later

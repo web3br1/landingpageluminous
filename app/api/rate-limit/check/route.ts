@@ -1,5 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  createRateLimitResponse,
+  parseRequestBody,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
 
 // Rate limiting storage (in production, use Redis or similar)
 const rateLimitStore = new Map<
@@ -23,9 +30,13 @@ const requestSchema = z.object({
 });
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const { action, identifier } = requestSchema.parse(body);
+  // Parse and validate request body
+  const parseResult = await parseRequestBody(request, requestSchema);
+  if (!parseResult.success) {
+    return (parseResult as { success: false; error: NextResponse }).error;
+  }
+
+  const { action, identifier } = parseResult.data;
 
     // Create unique key for this action + identifier
     const key = `${action}:${identifier}`;
@@ -50,29 +61,7 @@ export async function POST(request: NextRequest) {
     if (rateData.count >= limit) {
       // Rate limit exceeded
       const retryAfter = Math.ceil((rateData.resetTime - now) / 1000);
-
-      return NextResponse.json(
-        {
-          allowed: false,
-          remaining: 0,
-          resetTime: Math.floor(rateData.resetTime / 1000),
-          retryAfter,
-          limit,
-          windowMs,
-          message: `Rate limit exceeded. Try again in ${retryAfter} seconds.`,
-        },
-        {
-          status: 429,
-          headers: {
-            "Retry-After": retryAfter.toString(),
-            "X-RateLimit-Limit": limit.toString(),
-            "X-RateLimit-Remaining": "0",
-            "X-RateLimit-Reset": Math.floor(
-              rateData.resetTime / 1000,
-            ).toString(),
-          },
-        },
-      );
+      return createRateLimitResponse(retryAfter, limit, 0);
     }
 
     // Update count
@@ -82,7 +71,7 @@ export async function POST(request: NextRequest) {
     // Check if this would exceed limit on next request
     const wouldExceed = rateData.count >= limit;
 
-    return NextResponse.json(
+    return createSuccessResponse(
       {
         allowed: true,
         remaining: Math.max(0, limit - rateData.count),
@@ -100,21 +89,6 @@ export async function POST(request: NextRequest) {
           ).toString(),
           "X-RateLimit-Reset": Math.floor(rateData.resetTime / 1000).toString(),
         },
-      },
+      }
     );
-  } catch (error) {
-    console.error("Rate limit check error:", error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid request data", details: error.issues },
-        { status: 400 },
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
 }

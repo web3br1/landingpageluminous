@@ -27,8 +27,8 @@ export type EditableElementType =
 export interface EditableElement {
   id: string;
   type: EditableElementType;
-  content: any;
-  styles: Record<string, any>;
+  content: unknown;
+  styles: Record<string, unknown>;
   position: {
     x: number;
     y: number;
@@ -173,7 +173,7 @@ export const createEditableElement = (
   variantId,
 });
 
-const getDefaultContent = (type: EditableElementType): any => {
+const getDefaultContent = (type: EditableElementType): unknown => {
   switch (type) {
     case "text":
       return { text: "Click to edit text" };
@@ -192,7 +192,9 @@ const getDefaultContent = (type: EditableElementType): any => {
   }
 };
 
-const getDefaultStyles = (type: EditableElementType): Record<string, any> => {
+const getDefaultStyles = (
+  type: EditableElementType,
+): Record<string, unknown> => {
   switch (type) {
     case "text":
       return {

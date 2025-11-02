@@ -27,7 +27,7 @@ interface AdminLayoutProps {
 interface NavItem {
   href: string;
   label: string;
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
   description: string;
 }
 

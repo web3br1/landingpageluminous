@@ -15,7 +15,7 @@ import { Section } from "@/components/ui/section";
 import { CTA } from "@/components/ui/cta-button-unified";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FadeUp } from "@/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface PricingPlan {
   id: string;

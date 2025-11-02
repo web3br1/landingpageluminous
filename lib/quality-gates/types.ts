@@ -21,7 +21,7 @@ export interface GateResult {
   success: boolean;
   duration: number;
   error?: string;
-  details?: Record<string, any>;
+  details?: Record<string, unknown>;
   required: boolean;
   score?: number;
   threshold?: number;

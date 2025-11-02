@@ -4,11 +4,16 @@
 
 "use client";
 
-import { useState } from "react";
+import { z } from "zod";
 // SectionWrapper/SectionHeader removidos: renderer fornece <section> e headingId
 import { cn } from "@/lib/utils";
 import { Check, X, Zap } from "lucide-react";
 import type { PricingContent } from "@/domains/marketing";
+import { SimpleErrorBoundary } from "@/lib/architecture/error-boundary-pattern";
+import { withComponentContext } from "@/lib/architecture/logger-pattern";
+import { useValidatedProps } from "@/lib/architecture/component-props";
+import { useAnalytics } from "@/lib/analytics/use-analytics";
+import { usePerformanceMonitor } from "@/lib/performance/optimized-lazy-loading";
 
 export interface PricingProps {
   content: PricingContent;
@@ -23,7 +28,8 @@ export interface PricingProps {
   headingId?: string;
 }
 
-export function Pricing({
+// Internal pricing component implementation
+function PricingInternal({
   content,
   variant = "default",
   tracking,
@@ -31,10 +37,13 @@ export function Pricing({
   onToggleBilling,
   headingId,
 }: PricingProps) {
+  const logger = withComponentContext("pricing", "render");
+
   // Safety check - if content is undefined or plans is undefined, provide minimal fallback
   if (!content || !content.plans || !Array.isArray(content.plans)) {
-    console.warn(
-      "Pricing component received undefined content, plans, or plans is not an array, using fallback",
+    logger.warn(
+      "Invalid pricing content received, using fallback",
+      { hasContent: !!content, hasPlans: !!(content?.plans), plansIsArray: Array.isArray(content?.plans) }
     );
     content = {
       title: "Planos",
@@ -44,20 +53,57 @@ export function Pricing({
     };
   }
 
-  // Debug: Log received content
-  console.log(
-    "Pricing component received content:",
-    JSON.stringify(content, null, 2),
-  );
-
   const [billingPeriod, setBillingPeriod] = useState<"monthly" | "annual">(
     content.billingToggle?.defaultPeriod || "annual",
   );
 
-  const handleBillingToggle = (period: "monthly" | "annual") => {
+  // Log component initialization
+  logger.debug("Initializing pricing component", {
+    variant,
+    planCount: content.plans?.length || 0,
+    hasTracking: !!tracking,
+    experimentId: tracking?.experimentId
+  });
+  const analytics = useAnalytics({
+    trackErrors: true,
+    customTracking: { component: "pricing", variant }
+  });
+  const performanceMonitor = usePerformanceMonitor("MemoizedPricing");
+
+  // Track component lifecycle
+  React.useEffect(() => {
+    analytics.trackEvent("component", "mount", "pricing", undefined, {
+      variant,
+      planCount: content.plans?.length || 0,
+      hasBillingToggle: !!content.billingToggle?.enabled,
+      experimentId: tracking?.experimentId,
+    }).catch(err => logger.warn("Failed to track pricing mount", { error: err }));
+
+    return () => {
+      analytics.trackEvent("component", "unmount", "pricing", undefined, {
+        variant,
+        renderCount: performanceMonitor.renderCount,
+        billingPeriod,
+      }).catch(err => logger.warn("Failed to track pricing unmount", { error: err }));
+    };
+  }, [analytics, logger, variant, content.plans?.length, content.billingToggle?.enabled, tracking?.experimentId, performanceMonitor.renderCount, billingPeriod]);
+
+  // Memoize billing toggle handler with analytics
+  const handleBillingToggle = useCallback((period: "monthly" | "annual") => {
+    const previousPeriod = billingPeriod;
+
     setBillingPeriod(period);
     onToggleBilling?.(period);
-  };
+
+    // Track billing toggle interaction
+    analytics.trackEvent("pricing", "billing_toggle", period, undefined, {
+      previousPeriod,
+      newPeriod: period,
+      experimentId: tracking?.experimentId,
+      variant: tracking?.variant,
+      planCount: content.plans?.length || 0,
+    }).catch(err => logger.warn("Failed to track billing toggle", { error: err, period }));
+  }, [billingPeriod, onToggleBilling, analytics, tracking, content.plans?.length, logger]);
 
   const formatPrice = (price: number, currency: string) => {
     if (!currency || currency.trim() === "") {
@@ -73,8 +119,9 @@ export function Pricing({
       }).format(price);
     } catch (error) {
       // Fallback se a currency for inválida
-      console.warn(
+      logger.warn(
         `Invalid currency code: ${currency}. Using fallback formatting.`,
+        { currency, price }
       );
       return `R$ ${price.toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`;
     }
@@ -304,3 +351,88 @@ export function Pricing({
     </div>
   );
 }
+
+// Main Pricing component with error boundary and props validation
+export function Pricing(props: PricingProps) {
+  // Validate props using our pattern
+  const validatedProps = useValidatedProps(props, z.object({
+    content: z.any(), // Allow any object, we'll handle validation in component
+    variant: z.enum(["default", "enterprise"]).optional().default("default"),
+    tracking: z.object({
+      experimentId: z.string().optional(),
+      variant: z.string().optional(),
+      section: z.literal("pricing"),
+    }).optional(),
+    onPlanSelect: z.function().optional(),
+    onToggleBilling: z.function().optional(),
+    headingId: z.string().optional(),
+  }), {
+    componentName: "Pricing",
+    logErrors: true,
+    fallbackValues: {
+      variant: "default"
+    }
+  });
+
+  return (
+    <SimpleErrorBoundary
+      maxRetries={2}
+      onError={(error) => {
+        withComponentContext("pricing", "errorBoundary").error(
+          "Pricing component error boundary triggered",
+          error,
+          { variant: validatedProps.variant, experimentId: validatedProps.tracking?.experimentId }
+        );
+      }}
+      fallback={(error, retry) => (
+        <div className="max-w-4xl mx-auto p-8 bg-red-50 border border-red-200 rounded-lg">
+          <div className="text-center">
+            <div className="text-6xl mb-4">💰</div>
+            <h3 className="text-2xl font-semibold text-red-900 mb-4">
+              Planos Indisponíveis
+            </h3>
+            <p className="text-red-700 mb-6">
+              Houve um problema ao carregar os planos de preços. Tente novamente ou entre em contato conosco.
+            </p>
+            <div className="space-y-3">
+              <button
+                onClick={retry}
+                className="w-full bg-red-600 text-white px-6 py-3 rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Tentar Novamente
+              </button>
+              <a
+                href="#contact"
+                className="block w-full bg-gray-200 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-300 transition-colors text-center"
+              >
+                Falar com Vendas
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
+    >
+      <PricingInternal {...validatedProps} />
+    </SimpleErrorBoundary>
+  );
+}
+
+// Memoize the pricing component for performance optimization
+export const MemoizedPricing = React.memo(Pricing, (prevProps, nextProps) => {
+  // Custom comparison function to prevent unnecessary re-renders
+  return (
+    prevProps.content === nextProps.content &&
+    prevProps.variant === nextProps.variant &&
+    prevProps.tracking?.experimentId === nextProps.tracking?.experimentId &&
+    prevProps.tracking?.variant === nextProps.tracking?.variant &&
+    prevProps.headingId === nextProps.headingId &&
+    prevProps.onPlanSelect === nextProps.onPlanSelect &&
+    prevProps.onToggleBilling === nextProps.onToggleBilling
+  );
+});
+
+// Export the memoized version as default
+export default MemoizedPricing;
+
+// Export the original for specific use cases
+export { Pricing as PricingComponent };

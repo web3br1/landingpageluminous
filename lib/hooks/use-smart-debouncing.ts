@@ -73,12 +73,12 @@ class SmartDebouncer {
     }
   }
 
-  debounce<T extends (...args: any[]) => any>(
+  debounce<T extends (...args: unknown[]) => unknown>(
     id: string,
     fn: T,
-    context?: any,
+    context?: unknown,
   ): T {
-    const debouncedFn = ((...args: any[]) => {
+    const debouncedFn = ((...args: unknown[]) => {
       const now = Date.now();
 
       // Update call statistics
@@ -197,7 +197,7 @@ export function getSmartDebouncer(): SmartDebouncer {
 }
 
 // Hook for smart debouncing with cleanup
-export function useSmartDebounce<T extends (...args: any[]) => any>(
+export function useSmartDebounce<T extends (...args: unknown[]) => unknown>(
   fn: T,
   id: string,
   config?: Partial<DebounceConfig>,

@@ -2,6 +2,80 @@
 
 import React from "react";
 import { Inter, Inter_Tight } from "next/font/google";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
+
+// ===== FONT OPTIMIZATION TYPES =====
+
+export interface FontConfig {
+  family: string;
+  weights: string[];
+  subsets: string[];
+  display: "auto" | "block" | "swap" | "fallback" | "optional";
+  preload: boolean;
+  fallback: string[];
+  variable?: string;
+  adjustFontFallback?: boolean;
+  axes?: string[];
+}
+
+export interface FontMetrics {
+  capHeight: number;
+  ascent: number;
+  descent: number;
+  lineGap: number;
+  unitsPerEm: number;
+  xHeight?: number;
+  capHeightRatio?: number;
+}
+
+export interface FontPerformanceMetrics {
+  fontFamily: string;
+  loadTime: number;
+  size: number;
+  cached: boolean;
+  timestamp: number;
+  priority: FontPriority;
+  source: "google" | "local" | "system";
+}
+
+export interface FontLoadingStrategy {
+  critical: FontConfig[];  // Load immediately (hero, headings)
+  high: FontConfig[];     // Load soon (body text)
+  medium: FontConfig[];   // Load when needed (buttons, labels)
+  low: FontConfig[];      // Load on interaction (footnotes)
+}
+
+export interface DynamicFontOptions {
+  fontName: string;
+  weights?: string[];
+  subsets?: string[];
+  display?: FontConfig["display"];
+  timeout?: number;
+  fallback?: string[];
+  onLoad?: () => void;
+  onError?: (error: Error) => void;
+}
+
+export interface FontOptimizationConfig {
+  // Font loading strategies
+  strategy: FontLoadingStrategy;
+
+  // Performance settings
+  enablePreload: boolean;
+  enableFontMetrics: boolean;
+  enablePerformanceTracking: boolean;
+
+  // Fallback settings
+  fallbackFonts: string[];
+  fontDisplay: FontConfig["display"];
+
+  // Critical fonts (above the fold)
+  criticalFonts: string[];
+}
 
 // Optimized font configurations with performance best practices
 export const inter = Inter({
@@ -71,23 +145,24 @@ export function useFontOptimization() {
     const fontLoadObserver = new PerformanceObserver((list) => {
       const entries = list.getEntries();
 
-      entries.forEach((entry: any) => {
+      entries.forEach((entry: unknown) => {
+        const perfEntry = entry as PerformanceResourceTiming;
         if (
-          entry.entryType === "resource" &&
-          entry.name.includes("fonts.googleapis.com")
+          perfEntry.entryType === "resource" &&
+          perfEntry.name.includes("fonts.googleapis.com")
         ) {
-          const loadTime = entry.responseEnd - entry.requestStart;
+          const loadTime = perfEntry.responseEnd - perfEntry.requestStart;
 
           // Log font loading performance
           console.log(
-            `Font loaded: ${entry.name.split("/").pop()} in ${loadTime.toFixed(2)}ms`,
+            `Font loaded: ${perfEntry.name.split("/").pop()} in ${loadTime.toFixed(2)}ms`,
           );
 
           // Send to analytics if slow
           if (loadTime > 500) {
             if (typeof window !== "undefined" && (window as any).gtag) {
               (window as any).gtag("event", "font_load_slow", {
-                font_url: entry.name,
+                font_url: perfEntry.name,
                 load_time: loadTime,
                 page_location: window.location.href,
               });
@@ -139,7 +214,6 @@ export function useDynamicFont(
         // Dynamic import of additional fonts if needed
         if (fontName === "display") {
           // Load display font dynamically
-          const { Poppins } = await import("next/font/google");
           // Font loading logic here
         }
 

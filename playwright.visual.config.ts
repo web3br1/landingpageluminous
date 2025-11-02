@@ -1,14 +1,14 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 /**
  * @type {import('@playwright/test').PlaywrightTestConfig}
  */
 export default defineConfig({
-  testDir: './tests',
-  outputDir: './test-results/visual',
+  testDir: "./tests",
+  outputDir: "./test-results/visual",
 
   // Global setup for visual regression
-  globalSetup: require.resolve('./tests/visual/setup.ts'),
+  globalSetup: require.resolve("./tests/visual/setup.ts"),
 
   // Timeout for visual tests (longer due to screenshots)
   timeout: 60000,
@@ -23,18 +23,21 @@ export default defineConfig({
   // Use only chromium for visual regression (consistent rendering)
   projects: [
     {
-      name: 'visual-regression',
+      name: "visual-regression",
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
         // Disable animations for consistent screenshots
         launchOptions: {
-          args: ['--disable-web-security', '--disable-features=VizDisplayCompositor'],
+          args: [
+            "--disable-web-security",
+            "--disable-features=VizDisplayCompositor",
+          ],
         },
         // Screenshot configuration
-        screenshot: 'only-on-failure',
+        screenshot: "only-on-failure",
       },
       metadata: {
-        type: 'visual-regression',
+        type: "visual-regression",
       },
     },
   ],
@@ -43,9 +46,9 @@ export default defineConfig({
 
   // Reporter for visual regression results
   reporter: [
-    ['html', { outputFolder: 'playwright-report/visual' }],
-    ['json', { outputFile: 'test-results/visual/results.json' }],
-    ['github'],
+    ["html", { outputFolder: "playwright-report/visual" }],
+    ["json", { outputFile: "test-results/visual/results.json" }],
+    ["github"],
   ],
 
   // Retry failed tests (useful for flaky visual tests)

@@ -183,7 +183,7 @@ export class BundleOptimizer {
   /**
    * Load component bundle dynamically
    */
-  private async loadComponentBundle(componentName: string): Promise<any> {
+  private async loadComponentBundle(componentName: string): Promise<unknown> {
     // This would be replaced with actual dynamic imports in a real implementation
     // For now, simulate loading
     return new Promise((resolve) => {
@@ -196,7 +196,7 @@ export class BundleOptimizer {
    */
   async getLazyComponent(
     componentName: string,
-  ): Promise<React.ComponentType<any>> {
+  ): Promise<React.ComponentType<unknown>> {
     const config = this.lazyComponents.get(componentName);
 
     if (!config) {
@@ -220,7 +220,7 @@ export class BundleOptimizer {
         },
       );
 
-      return bundle.default;
+      return (bundle as any).default;
     } catch (error) {
       logger.error(`Failed to load lazy component: ${componentName}`, {
         error: error instanceof Error ? error : new Error("Unknown load error"),
@@ -459,10 +459,10 @@ export function destroyBundleOptimizer(): void {
 /**
  * Create lazy-loaded component with automatic bundle splitting
  */
-export function createLazyComponent<T extends React.ComponentType<any>>(
+export function createLazyComponent<T extends React.ComponentType<unknown>>(
   importFn: () => Promise<{ default: T }>,
   config: Partial<LazyLoadConfig> = {},
-): React.ComponentType<any> {
+): React.ComponentType<unknown> {
   const LazyComponent = React.lazy(importFn);
 
   const componentName = config.component || "UnknownComponent";
@@ -474,11 +474,11 @@ export function createLazyComponent<T extends React.ComponentType<any>>(
     ...config,
   } as LazyLoadConfig);
 
-  return (props: any) => (
+  return (props: unknown) => (
     <Suspense
       fallback={config.fallback ? <config.fallback /> : <div>Loading...</div>}
     >
-      <LazyComponent {...props} />
+      <LazyComponent {...(props as any)} />
     </Suspense>
   );
 }
@@ -489,7 +489,7 @@ export function createLazyComponent<T extends React.ComponentType<any>>(
 export function useBundleOptimization(): {
   prefetchComponent: (componentName: string) => void;
   getOptimizationScore: () => number;
-  getRecommendations: () => any[];
+  getRecommendations: () => unknown[];
 } {
   const optimizer = getBundleOptimizer();
 

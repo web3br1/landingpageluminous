@@ -10,7 +10,7 @@ import {
   useAnimationController,
   CHAPTER_ANIMATIONS,
 } from "@/lib/theme/animation-controller";
-import { useAnalytics } from "@/lib/hooks/use-analytics";
+import { useAnalytics } from "@/lib/analytics/use-analytics";
 
 // ===== DEFINIÇÃO DOS CAPÍTULOS =====
 export const STORY_CHAPTERS = {

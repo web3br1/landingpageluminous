@@ -195,7 +195,7 @@ export class SSRAdapter implements ISSRAdapter {
   }
 
   // Environment-specific console logging
-  safeConsoleLog(level: "log" | "warn" | "error", ...args: any[]): void {
+  safeConsoleLog(level: "log" | "warn" | "error", ...args: unknown[]): void {
     if (this.isServerContext()) {
       // On server, use console with SSR prefix
       console[level]("[SSR]", ...args);
@@ -206,7 +206,7 @@ export class SSRAdapter implements ISSRAdapter {
   }
 
   // Safe JSON serialization that handles circular references
-  safeStringify(obj: any, fallback: string = "{}"): string {
+  safeStringify(obj: unknown, fallback: string = "{}"): string {
     try {
       return JSON.stringify(obj);
     } catch (error) {

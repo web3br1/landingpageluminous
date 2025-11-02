@@ -1,4 +1,3 @@
-import { useCallback, useRef, useState, useEffect } from "react";
 
 /**
  * Hook para throttled values - limita frequência de atualizações de valor

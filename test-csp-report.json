@@ -1,8 +1,0 @@
-{
-  "csp-report": {
-    "document-uri": "http://example.com/test",
-    "violated-directive": "script-src",
-    "original-policy": "script-src 'self'",
-    "blocked-uri": "http://evil.com/malicious.js"
-  }
-}

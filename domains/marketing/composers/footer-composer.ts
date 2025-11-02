@@ -10,7 +10,7 @@ import { withCompositionValidation } from "@/lib/composition/composer-validation
  * @param options Configuration options for footer composition
  * @returns Composed footer content ready for UI consumption
  */
-export function composeFooterContent(
+export async function composeFooterContent(
   options: {
     variant?: "default" | "minimal";
     experimentId?: string;
@@ -31,8 +31,8 @@ export function composeFooterContent(
 
   // Apply any custom link modifications here if needed
 
-  return withCompositionValidation(
-    () => ({
+  return await withCompositionValidation(
+    async () => ({
       content: {
         ...content,
         envelope: {

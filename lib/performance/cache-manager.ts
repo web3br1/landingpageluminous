@@ -21,10 +21,13 @@ export interface CacheStrategy {
 class CacheManager {
   private cache = new Map<
     string,
-    CacheEntry & { data?: any; timestamp: number }
+    CacheEntry & { data?: unknown; timestamp: number }
   >();
   private strategies: CacheStrategy[] = [];
   private observers: PerformanceObserver[] = [];
+  private hitCount = 0;
+  private missCount = 0;
+  private warmingQueue: string[] = [];
 
   constructor() {
     this.initializeStrategies();
@@ -253,6 +256,73 @@ class CacheManager {
     this.observers = [];
     this.clearCache();
   }
+
+  /**
+   * Cache warming - preload frequently accessed resources
+   */
+  async warmCache(urls: string[]): Promise<void> {
+    if (urls.length === 0) return;
+
+    console.log(`🔥 Warming cache with ${urls.length} resources...`);
+
+    const warmingPromises = urls.map(async (url) => {
+      try {
+        // Create cache entry for warming
+        const entry: CacheEntry = {
+          url,
+          type: "document",
+          priority: "high",
+          maxAge: 60 * 60 * 1000, // 1 hour
+        };
+
+        // Preload the resource
+        await this.preloadResource(entry);
+        console.log(`✅ Warmed cache for: ${url}`);
+      } catch (error) {
+        console.warn(`❌ Failed to warm cache for ${url}:`, error);
+      }
+    });
+
+    await Promise.allSettled(warmingPromises);
+    console.log(`🎉 Cache warming completed for ${urls.length} resources`);
+  }
+
+  /**
+   * Get cache hit ratio statistics
+   */
+  getCacheHitRatio(): { ratio: number; hits: number; misses: number; total: number } {
+    const total = this.hitCount + this.missCount;
+    const ratio = total > 0 ? this.hitCount / total : 0;
+
+    return {
+      ratio,
+      hits: this.hitCount,
+      misses: this.missCount,
+      total,
+    };
+  }
+
+  /**
+   * Reset cache statistics
+   */
+  resetCacheStats(): void {
+    this.hitCount = 0;
+    this.missCount = 0;
+  }
+
+  /**
+   * Record a cache hit
+   */
+  recordHit(): void {
+    this.hitCount++;
+  }
+
+  /**
+   * Record a cache miss
+   */
+  recordMiss(): void {
+    this.missCount++;
+  }
 }
 
 // Singleton instance
@@ -271,5 +341,10 @@ export function useCacheManager() {
     preloadResource: cacheManager.preloadResource.bind(cacheManager),
     getCacheStats: cacheManager.getCacheStats.bind(cacheManager),
     clearCache: cacheManager.clearCache.bind(cacheManager),
+    warmCache: cacheManager.warmCache.bind(cacheManager),
+    getCacheHitRatio: cacheManager.getCacheHitRatio.bind(cacheManager),
+    resetCacheStats: cacheManager.resetCacheStats.bind(cacheManager),
+    recordHit: cacheManager.recordHit.bind(cacheManager),
+    recordMiss: cacheManager.recordMiss.bind(cacheManager),
   };
 }

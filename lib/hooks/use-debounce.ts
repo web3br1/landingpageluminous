@@ -1,4 +1,3 @@
-import { useEffect, useState, useRef } from "react";
 
 /**
  * Hook para debounced values - atrasa atualizações até que o usuário pare de digitar

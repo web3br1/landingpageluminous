@@ -1,5 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  parseRequestBody,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
 
 const reportSchema = z.object({
   action: z.string().min(1),
@@ -15,13 +21,17 @@ const rateLimitAnalytics: Array<{
   identifier: string;
   success: boolean;
   timestamp: number;
-  metadata?: Record<string, any>;
+  metadata?: Record<string, unknown>;
 }> = [];
 
 export async function POST(request: NextRequest) {
-  try {
-    const body = await request.json();
-    const validatedData = reportSchema.parse(body);
+  // Parse and validate request body
+  const parseResult = await parseRequestBody(request, reportSchema);
+  if (!parseResult.success) {
+    return (parseResult as { success: false; error: NextResponse }).error;
+  }
+
+  const validatedData = parseResult.data;
 
     // Store analytics data (in production, send to analytics service)
     rateLimitAnalytics.push({
@@ -46,22 +56,7 @@ export async function POST(request: NextRequest) {
       timestamp: validatedData.timestamp,
     });
 
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    console.error("Rate limit report error:", error);
-
-    if (error instanceof z.ZodError) {
-      return NextResponse.json(
-        { error: "Invalid report data", details: error.issues },
-        { status: 400 },
-      );
-    }
-
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
-    );
-  }
+    return createSuccessResponse({ success: true });
 }
 
 // GET endpoint to retrieve analytics (for debugging/admin purposes)
@@ -82,7 +77,7 @@ export async function GET() {
       {} as Record<string, number>,
     );
 
-    return NextResponse.json({
+    return createSuccessResponse({
       totalReports,
       successfulReports,
       failedReports,
@@ -93,9 +88,10 @@ export async function GET() {
     });
   } catch (error) {
     console.error("Rate limit analytics error:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+    return createErrorResponse(
+      "INTERNAL_ERROR",
+      "An unexpected error occurred",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }

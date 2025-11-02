@@ -3,6 +3,52 @@
 
 import { SWCacheManager } from "../sw/sw-cache-manager";
 
+// ===== BUNDLE SPLITTING & DYNAMIC IMPORT TYPES =====
+
+export interface BundleChunkConfig {
+  name: string;
+  priority: "critical" | "high" | "normal" | "low";
+  preload?: boolean;
+  prefetch?: boolean;
+  modules: string[];
+  size?: number; // estimated size in KB
+}
+
+export interface DynamicImportOptions {
+  chunkName?: string;
+  priority?: "high" | "normal" | "low";
+  timeout?: number;
+  fallback?: React.ComponentType;
+  errorBoundary?: React.ComponentType<{ error: Error }> ;
+  loadingComponent?: React.ComponentType;
+}
+
+export interface LazyComponentConfig {
+  component: () => Promise<{ default: React.ComponentType<any> }>;
+  options?: DynamicImportOptions;
+  chunkName?: string;
+  priority?: "critical" | "high" | "normal" | "low";
+  preload?: boolean;
+  prefetch?: boolean;
+}
+
+export interface BundleSplitStrategy {
+  critical: BundleChunkConfig[];    // Above the fold, load immediately
+  high: BundleChunkConfig[];       // High priority, preload
+  normal: BundleChunkConfig[];     // Normal priority, prefetch
+  low: BundleChunkConfig[];        // Low priority, lazy load
+}
+
+export interface BundlePerformanceMetrics {
+  chunkName: string;
+  size: number;
+  loadTime: number;
+  priority: string;
+  cached: boolean;
+  timestamp: number;
+  dependencies: string[];
+}
+
 // ===== TYPES & INTERFACES =====
 
 interface CacheStrategy {
@@ -603,7 +649,7 @@ class AdvancedCacheManager {
     return { ...this.metrics };
   }
 
-  getCacheStats(): Record<string, any> {
+  getCacheStats(): Record<string, unknown> {
     return {
       configs: Object.fromEntries(this.cacheConfigs),
       metrics: this.metrics,

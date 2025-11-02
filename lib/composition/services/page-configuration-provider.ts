@@ -15,7 +15,7 @@ export interface PageConfig {
 export interface SectionConfig {
   id: SectionId;
   component: string;
-  content: any;
+  content: unknown;
   order: number;
 }
 

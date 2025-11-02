@@ -3,13 +3,29 @@
 // ===== PERFORMANCE MONITORING SYSTEM =====
 // Sistema avançado de monitoramento de performance para design system
 
-import React, { forwardRef } from "react";
+import {
+  safeWindowAccess,
+  safeDocumentAccess,
+  safeNavigatorAccess,
+} from "@/lib/utils/browser-api-helpers";
 import type {
   AnimationMetrics,
   RuntimeContext,
   AnimationPerformanceError,
   UseAnimationControllerReturn,
 } from "@/lib/types/design-system";
+
+/**
+ * Extended Performance Entry interfaces
+ */
+interface ExtendedPerformanceEntry {
+  startTime: number;
+  processingStart?: number;
+  processingEnd?: number;
+  hadRecentInput?: boolean;
+  value?: number;
+  name?: string;
+}
 
 // ===== PERFORMANCE BUDGETS =====
 export const PERFORMANCE_BUDGETS = {
@@ -112,8 +128,9 @@ export class PerformanceMonitor {
       const layoutShiftObserver = new PerformanceObserver((list) => {
         let clsValue = 0;
         for (const entry of list.getEntries()) {
-          if (!(entry as any).hadRecentInput) {
-            clsValue += (entry as any).value;
+          const extendedEntry = entry as ExtendedPerformanceEntry;
+          if (!extendedEntry.hadRecentInput) {
+            clsValue += extendedEntry.value || 0;
           }
         }
 
@@ -223,7 +240,10 @@ export class PerformanceMonitor {
 
   // ===== MEMORY MONITORING =====
   getMemoryUsage(): number {
-    if (typeof window !== "undefined" && (window as any).performance?.memory) {
+    if (
+      typeof window !== "undefined" &&
+      (window as any).performance?.memory
+    ) {
       return (window as any).performance.memory.usedJSHeapSize;
     }
     return 0;
@@ -411,7 +431,7 @@ export function usePerformanceMonitoring() {
 // ===== PERFORMANCE UTILITIES =====
 
 /** Debounce function for performance */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number,
 ): (...args: Parameters<T>) => void {
@@ -424,7 +444,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 /** Throttle function for performance */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number,
 ): (...args: Parameters<T>) => void {
@@ -440,7 +460,7 @@ export function throttle<T extends (...args: any[]) => any>(
 }
 
 /** Lazy loading utility for components */
-export function lazyWithRetry<T extends React.ComponentType<any>>(
+export function lazyWithRetry<T extends React.ComponentType<unknown>>(
   importFunc: () => Promise<{ default: T }>,
   retries: number = 3,
 ): React.LazyExoticComponent<T> {

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { Section } from "./section";
 import { cn } from "@/lib/utils";
+import { useIntersectionLazyLoader } from "@/lib/animation/lazy-motion-provider";
 
 interface SectionWrapperProps {
   id?: string;
@@ -13,6 +14,8 @@ interface SectionWrapperProps {
   background?: "default" | "muted" | "gradient" | "none";
   animate?: boolean;
   delay?: number;
+  lazy?: boolean; // Enable lazy loading for below-the-fold sections
+  lazyRootMargin?: string; // Intersection observer root margin
 }
 
 export function SectionWrapper({
@@ -24,7 +27,15 @@ export function SectionWrapper({
   background = "default",
   animate = true,
   delay = 0,
+  lazy = false,
+  lazyRootMargin = "100px",
 }: SectionWrapperProps) {
+  // Use lazy loading for performance optimization
+  const { hasLoaded } = useIntersectionLazyLoader({
+    threshold: 0.1,
+    rootMargin: lazyRootMargin,
+    triggerOnce: true,
+  });
   const backgroundClasses = {
     default: "",
     muted: "bg-neutral-50/50 dark:bg-neutral-900/50",
@@ -54,6 +65,21 @@ export function SectionWrapper({
         transition: { duration: 0.6, delay },
       }
     : {};
+
+  // For lazy sections, only render content when visible
+  if (lazy && !hasLoaded) {
+    return (
+      <section
+        id={id}
+        className={cn(backgroundClasses[background], className)}
+        style={{ minHeight: "200px" }} // Placeholder height
+      >
+        <Section containerSize={containerSize} padding={padding}>
+          <div className="animate-pulse bg-gray-200 dark:bg-gray-700 h-32 rounded-lg" />
+        </Section>
+      </section>
+    );
+  }
 
   return (
     <MotionSection

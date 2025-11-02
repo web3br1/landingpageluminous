@@ -18,7 +18,7 @@ import { Section } from "@/components/ui/section";
 import { CTA } from "@/components/ui/cta-button-unified";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { FadeUp } from "@/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface TrialFormData {
   name: string;
@@ -154,7 +154,7 @@ export function TrialPage() {
               <div className="max-w-4xl mx-auto">
                 {/* Hero Section */}
                 <Section className="text-center mb-12">
-                  <FadeUp>
+                  <FadeUp duration="normal" lazy={false}>
                     <Badge className="mb-4 bg-green-100 text-green-800 border-green-200">
                       <Sparkles className="w-3 h-3 mr-1" />
                       Oferta Limitada - Teste Grátis
@@ -386,7 +386,7 @@ export function TrialPage() {
 
                 {/* Trust Signals */}
                 <Section className="text-center">
-                  <FadeUp>
+                  <FadeUp duration="normal" lazy={false}>
                     <div className="grid md:grid-cols-3 gap-8 mb-8">
                       <div className="text-center">
                         <div className="text-3xl font-bold text-blue-600 mb-2">

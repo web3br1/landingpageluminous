@@ -5,8 +5,6 @@
 // Usa histerese para evitar flickering em micro-movimentos
 
 import React from "react";
-import type { AnimationID, ChapterId } from "@/lib/types/design-system";
-import { useDebounce, useThrottle } from "@/lib/utils/advanced-utils";
 
 // ===== SCROLL SYNC CONFIG =====
 

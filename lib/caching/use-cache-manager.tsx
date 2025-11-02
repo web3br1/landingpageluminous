@@ -7,6 +7,39 @@ import {
   invalidateCache,
 } from "./advanced-cache-manager";
 
+// ===== TYPES =====
+
+export interface CachedData {
+  // Response data
+  data: unknown;
+
+  // Metadata
+  timestamp: number;
+  expiresAt?: number;
+  etag?: string;
+  lastModified?: string;
+
+  // Cache information
+  isFromCache: boolean;
+  cacheKey: string;
+  cacheHit: boolean;
+
+  // Request information
+  url: string;
+  method: string;
+  headers?: Record<string, string>;
+
+  // Performance metrics
+  fetchTime?: number;
+  cacheTime?: number;
+
+  // Error handling
+  error?: Error;
+  retryCount?: number;
+}
+
+// ===== INTERFACES =====
+
 interface UseCacheManagerOptions {
   autoInvalidate?: boolean;
   invalidateInterval?: number;
@@ -14,10 +47,10 @@ interface UseCacheManagerOptions {
 }
 
 interface CacheManagerHookReturn {
-  metrics: any;
+  metrics: unknown;
   invalidatePatterns: (patterns: string[], tags?: string[]) => Promise<void>;
   clearAllCache: () => Promise<void>;
-  getCacheStats: () => any;
+  getCacheStats: () => unknown;
   refreshCache: () => Promise<void>;
   isOnline: boolean;
 }
@@ -125,7 +158,7 @@ export function useCacheManager(
 
 // Hook for cache-aware data fetching
 export function useCacheAwareFetch(url: string, options: RequestInit = {}) {
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<CachedData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
   const [isFromCache, setIsFromCache] = useState(false);
@@ -161,15 +194,20 @@ export function useCacheAwareFetch(url: string, options: RequestInit = {}) {
         }
 
         const contentType = response.headers.get("content-type");
-        let result: any;
+        let result: unknown;
 
-        if (contentType?.includes("application/json")) {
-          result = await response.json();
-        } else {
-          result = await response.text();
+        try {
+          if (contentType?.includes("application/json")) {
+            result = await response.json();
+          } else {
+            result = await response.text();
+          }
+        } catch (parseError) {
+          console.warn("Failed to parse response:", parseError);
+          result = null;
         }
 
-        setData(result);
+        setData(result as CachedData);
       } catch (err) {
         const error = err as Error;
         setError(error);

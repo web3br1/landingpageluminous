@@ -21,7 +21,7 @@ export class AppError extends Error {
   public readonly type: ErrorType;
   public readonly code?: string;
   public readonly statusCode?: number;
-  public readonly details?: any;
+  public readonly details?: unknown;
   public readonly retryable: boolean;
   public readonly cause?: Error;
 
@@ -31,7 +31,7 @@ export class AppError extends Error {
     options: {
       code?: string;
       statusCode?: number;
-      details?: any;
+      details?: unknown;
       retryable?: boolean;
       cause?: Error;
     } = {},
@@ -52,10 +52,10 @@ export class AppError extends Error {
 
 // Funções para criar erros específicos
 export const createError = {
-  network: (message: string, details?: any) =>
+  network: (message: string, details?: unknown) =>
     new AppError(message, ErrorType.NETWORK, { retryable: true, details }),
 
-  validation: (message: string, details?: any) =>
+  validation: (message: string, details?: unknown) =>
     new AppError(message, ErrorType.VALIDATION, { details }),
 
   authentication: (message: string = "Falha na autenticação") =>
@@ -64,7 +64,7 @@ export const createError = {
   authorization: (message: string = "Acesso negado") =>
     new AppError(message, ErrorType.AUTHORIZATION),
 
-  business: (message: string, code?: string, details?: any) =>
+  business: (message: string, code?: string, details?: unknown) =>
     new AppError(message, ErrorType.BUSINESS_LOGIC, { code, details }),
 
   external: (message: string, service?: string) =>
@@ -73,40 +73,40 @@ export const createError = {
       retryable: true,
     }),
 
-  webpack: (message: string, chunkId?: string, details?: any) =>
+  webpack: (message: string, chunkId?: string, details?: unknown) =>
     new AppError(message, ErrorType.WEBPACK_RUNTIME, {
       code: chunkId,
-      details: { ...details, errorType: "webpack" },
+      details: { ...(details && typeof details === 'object' ? details : {}), errorType: "webpack" },
     }),
 
-  module: (message: string, moduleId?: string, details?: any) =>
+  module: (message: string, moduleId?: string, details?: unknown) =>
     new AppError(message, ErrorType.MODULE_LOADING, {
       code: moduleId,
-      details: { ...details, errorType: "module" },
+      details: { ...(details && typeof details === 'object' ? details : {}), errorType: "module" },
     }),
 
   factory: (
     message: string = "Factory function error",
     factoryName?: string,
-    details?: any,
+    details?: unknown,
   ) =>
     new AppError(message, ErrorType.FACTORY_ERROR, {
       code: factoryName,
-      details: { ...details, errorType: "factory", factoryCall: true },
+      details: { ...(details && typeof details === 'object' ? details : {}), errorType: "factory", factoryCall: true },
     }),
 
   performance: (
     message: string,
     metric?: string,
     value?: number,
-    details?: any,
+    details?: unknown,
   ) =>
     new AppError(message, ErrorType.PERFORMANCE, {
       code: metric,
-      details: { ...details, metric, value, errorType: "performance" },
+      details: { ...(details && typeof details === 'object' ? details : {}), metric, value, errorType: "performance" },
     }),
 
-  unknown: (message: string, details?: any) =>
+  unknown: (message: string, details?: unknown) =>
     new AppError(message, ErrorType.UNKNOWN, { details }),
 };
 
@@ -135,7 +135,7 @@ export const errorStrategies = {
   },
 
   // Log detalhado para desenvolvimento
-  log: (error: AppError, context?: any) => {
+  log: (error: AppError, context?: unknown) => {
     console.error("AppError:", {
       message: error.message,
       type: error.type,
@@ -158,7 +158,7 @@ export const errorStrategies = {
   },
 
   // Estratégia completa: log + notify
-  handle: (error: AppError, context?: any) => {
+  handle: (error: AppError, context?: unknown) => {
     errorStrategies.log(error, context);
     errorStrategies.notify(error);
   },
@@ -263,7 +263,7 @@ export function useErrorHandler() {
     return appError;
   };
 
-  const withErrorHandling = <T extends any[], R>(
+  const withErrorHandling = <T extends unknown[], R>(
     fn: (...args: T) => Promise<R>,
     errorStrategy: keyof typeof errorStrategies = "handle",
   ) => {
@@ -287,9 +287,9 @@ export function useErrorHandler() {
 // Utilitários para tratamento de erros comuns
 export const errorUtils = {
   // Trata erros de API
-  handleApiError: (error: any): AppError => {
-    if (error.response) {
-      const { status, data } = error.response;
+  handleApiError: (error: unknown): AppError => {
+    if ((error as any).response) {
+      const { status, data } = (error as any).response;
 
       switch (status) {
         case 400:
@@ -309,21 +309,21 @@ export const errorUtils = {
       }
     }
 
-    if (error.request) {
+    if ((error as any).request) {
       return createError.network("Sem resposta do servidor");
     }
 
-    return createError.unknown(error.message || "Erro desconhecido");
+    return createError.unknown((error as Error).message || "Erro desconhecido");
   },
 
   // Trata erros de formulários
-  handleFormError: (error: any): AppError => {
-    if (error.errors && Array.isArray(error.errors)) {
-      const messages = error.errors.map((e: any) => e.message).join(", ");
+  handleFormError: (error: unknown): AppError => {
+    if ((error as any).errors && Array.isArray((error as any).errors)) {
+      const messages = (error as any).errors.map((e: unknown) => (e as Error).message).join(", ");
       return createError.validation(messages);
     }
 
-    return createError.validation(error.message || "Erro no formulário");
+    return createError.validation((error as Error).message || "Erro no formulário");
   },
 };
 
@@ -335,7 +335,7 @@ export class ErrorBoundary extends React.Component<
   },
   { hasError: boolean; error?: Error }
 > {
-  constructor(props: any) {
+  constructor(props: unknown) {
     super(props);
     this.state = { hasError: false };
   }
@@ -344,7 +344,7 @@ export class ErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  componentDidCatch(error: Error, errorInfo: unknown) {
     // Only handle errors in browser, not during SSR
     if (typeof window !== "undefined") {
       errorStrategies.handle(

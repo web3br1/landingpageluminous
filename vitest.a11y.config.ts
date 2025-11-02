@@ -35,7 +35,6 @@ export default defineConfig({
       // Aliases compatíveis com tsconfig.json
       "@": path.resolve(__dirname),
       "@/*": path.resolve(__dirname, "./*"),
-      "@shared/*": path.resolve(__dirname, "./shared/*"),
       "@/components/*": path.resolve(__dirname, "./components/*"),
       "@/ui/*": path.resolve(__dirname, "./components/ui/*"),
       "@/onboarding/*": path.resolve(__dirname, "./components/onboarding/*"),
@@ -74,7 +73,6 @@ export default defineConfig({
     alias: {
       "@": path.resolve(__dirname),
       "@/*": path.resolve(__dirname, "./*"),
-      "@shared/*": path.resolve(__dirname, "./shared/*"),
       "@/components/*": path.resolve(__dirname, "./components/*"),
       "@/ui/*": path.resolve(__dirname, "./components/ui/*"),
       "@/onboarding/*": path.resolve(__dirname, "./components/onboarding/*"),

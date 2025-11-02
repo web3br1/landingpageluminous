@@ -4,7 +4,7 @@ import {
   LeadRepository,
   RepositoryError,
 } from "../../domain/ports/LeadRepository";
-import { Result } from "../../../../shared/core/Result";
+import { Result } from "@/lib/core/result";
 
 export class LocalStorageLeadRepository implements LeadRepository {
   private readonly STORAGE_KEY = "luminaris_leads";
@@ -82,7 +82,7 @@ export class LocalStorageLeadRepository implements LeadRepository {
     }
   }
 
-  private getAllLeads(): any[] {
+  private getAllLeads(): unknown[] {
     try {
       const stored = localStorage.getItem(this.STORAGE_KEY);
       return stored ? JSON.parse(stored) : [];

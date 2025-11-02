@@ -69,8 +69,10 @@ export function useSEOPerformanceTracking(pageType: string) {
     // Track page load for SEO performance
     const trackLoadTime = () => {
       const navigationEntries = performance.getEntriesByType("navigation");
-      const loadTime = navigationEntries[0] as PerformanceNavigationTiming | undefined;
-      if (loadTime && 'loadEventEnd' in loadTime && 'fetchStart' in loadTime) {
+      const loadTime = navigationEntries[0] as
+        | PerformanceNavigationTiming
+        | undefined;
+      if (loadTime && "loadEventEnd" in loadTime && "fetchStart" in loadTime) {
         // This would be tracked in your analytics/metrics system
         console.log(
           `Page load time for ${pageType}:`,

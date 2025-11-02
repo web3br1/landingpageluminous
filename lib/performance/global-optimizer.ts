@@ -1,6 +1,8 @@
 // Global Performance Optimizer for Edge Computing
 // Monitors and optimizes performance across global CDN
 
+import { safeNavigatorConnection, safePerformanceEntryAccess } from "../utils/browser-api-helpers";
+
 export interface PerformanceMetrics {
   lcp: number;
   fid: number;
@@ -251,7 +253,7 @@ export const globalPerformanceOptimizer = new GlobalPerformanceOptimizer();
 // Performance tracking utilities
 export const performanceUtils = {
   // Track Web Vitals
-  trackWebVitals(metric: any) {
+  trackWebVitals(metric: unknown) {
     const geoPerf: Omit<GeoPerformance, "timestamp"> = {
       country: "unknown", // Will be set by middleware
       city: "unknown",
@@ -263,25 +265,28 @@ export const performanceUtils = {
         fcp: 0,
       },
       userAgent: navigator.userAgent,
-      connectionType: (navigator as any).connection?.effectiveType,
+      connectionType: safeNavigatorConnection()?.effectiveType || "unknown",
     };
 
     // Map web vitals to our metrics
-    switch (metric.name) {
+    const metricName = safePerformanceEntryAccess(metric, (m) => m.name, "");
+    const metricValue = safePerformanceEntryAccess(metric, (m) => m.value, 0);
+
+    switch (metricName) {
       case "LCP":
-        geoPerf.metrics.lcp = metric.value;
+        geoPerf.metrics.lcp = metricValue;
         break;
       case "FID":
-        geoPerf.metrics.fid = metric.value;
+        geoPerf.metrics.fid = metricValue;
         break;
       case "CLS":
-        geoPerf.metrics.cls = metric.value;
+        geoPerf.metrics.cls = metricValue;
         break;
       case "FCP":
-        geoPerf.metrics.fcp = metric.value;
+        geoPerf.metrics.fcp = metricValue;
         break;
       case "TTFB":
-        geoPerf.metrics.ttfb = metric.value;
+        geoPerf.metrics.ttfb = metricValue;
         break;
     }
 

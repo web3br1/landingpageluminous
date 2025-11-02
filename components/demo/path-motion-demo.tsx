@@ -35,7 +35,8 @@ export function PathMotionDemo({ enabled, speed }: PathMotionDemoProps) {
       if (animationRef.current && scrubberRef.current) {
         const currentTime = animationRef.current.currentTime || 0;
         const duration =
-          (animationRef.current.effect as any)?.getTiming?.()?.duration || 1;
+          (animationRef.current.effect as any)?.getTiming?.()?.duration ||
+          1;
         const progress = (Number(currentTime) / Number(duration)) * 100;
         updateScrubber(Math.max(0, Math.min(100, progress)));
       }

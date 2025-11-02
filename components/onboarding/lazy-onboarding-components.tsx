@@ -2,7 +2,6 @@
 // Onboarding flows are multi-step and not critical for initial page load
 
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
 
 // Loading fallback for onboarding
 const OnboardingLoadingFallback = () => (

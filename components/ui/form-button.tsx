@@ -3,7 +3,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { CtaButton } from "./cta-button-unified";
-import { FadeUp } from "@/app/(marketing)/components/ui/fade-up";
+import { FadeUp } from "@/components/ui/fade-up-optimized";
 
 interface FormButtonProps {
   children: React.ReactNode;

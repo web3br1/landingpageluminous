@@ -239,7 +239,7 @@ function HeroSection() {
 export function useMigratedChapterTokens(
   componentType: string,
   chapterId: ChapterId,
-  existingProps: Record<string, any>,
+  existingProps: Record<string, unknown>,
 ) {
   const newTokens = useComponentTokens(componentType, chapterId);
   const cssVars = useChapterCSSVariables(chapterId);

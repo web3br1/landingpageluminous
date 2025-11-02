@@ -56,9 +56,8 @@ export const performanceGate: QualityGate = {
           stdio: "pipe",
           timeout: 480000, // 8 minutes
         });
-      } catch (error: any) {
-        const output =
-          error.stdout?.toString() || error.stderr?.toString() || "";
+      } catch (error: unknown) {
+        const output = getCommandOutput(error);
 
         // Check if it's a performance failure vs script failure
         const performanceFailure =
@@ -92,7 +91,7 @@ export const performanceGate: QualityGate = {
           name: "Core Web Vitals & Performance",
           success: false,
           duration: Date.now() - startTime,
-          error: `Lighthouse CI failed: ${error.message}`,
+          error: `Lighthouse CI failed: ${error && typeof error === 'object' && 'message' in error ? error.message : 'Unknown error'}`,
           required: true,
           details: {
             lighthouse: true,
@@ -285,4 +284,12 @@ function extractLighthouseMetrics(output: string) {
     cls: clsMatch ? parseFloat(clsMatch[1]) : null,
     score: 70, // Default score for failed runs
   };
+}
+
+function getCommandOutput(error: unknown): string {
+  if (error && typeof error === 'object' && 'stdout' in error) {
+    const err = error as { stdout?: unknown; stderr?: unknown };
+    return (err.stdout as string)?.toString() || (err.stderr as string)?.toString() || "";
+  }
+  return "";
 }

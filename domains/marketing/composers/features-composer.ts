@@ -45,7 +45,7 @@ const FeaturesComposerSchema = z.object({
     .optional(),
 });
 
-ComposerGuard.registerValidator("features", FeaturesComposerSchema);
+// ComposerGuard.registerValidator("features", FeaturesComposerSchema); // TODO: Implementar quando ComposerGuard estiver disponível
 
 // Temporary: Mock implementations until lib modules are created
 const useExperiment = (id: string) => ({
@@ -60,14 +60,14 @@ const useAnalytics = () => ({
 });
 
 // Use standardized composer with envelope contract
-export const composeFeaturesContent: () => ComposedFeaturesData =
+export const composeFeaturesContent: () => Promise<ComposedFeaturesData> =
   createVariantComposer("features-composer", {
     defaultVariant: featuresConfiguration.defaultVariant,
-    variants: featuresVariants as any,
+    variants: featuresVariants,
     experimentId: "features_variant",
   });
 
-// export const composeFeaturesContent: () => ComposedFeaturesData = createVariantComposer(
+// export const composeFeaturesContent: () => Promise<ComposedFeaturesData> = createVariantComposer(
 //   'features-composer',
 //   { defaultVariant: featuresConfiguration.defaultVariant, variants: featuresVariants as any, experimentId: 'features_variant' }
 // )

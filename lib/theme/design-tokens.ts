@@ -2,7 +2,6 @@
 // Este arquivo define tokens semânticos organizados por intenção e uso
 // Substitui a abordagem de cores puras por significados contextuais
 
-import { COLORS, GRADIENTS, SHADOWS } from "./colors";
 
 // ===== TOKENS DE BASE (HSL) =====
 export const TOKENS_BASE = {

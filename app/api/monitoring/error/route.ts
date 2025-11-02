@@ -2,127 +2,62 @@
 // Receives error data from ProductionMonitor
 
 import { NextRequest, NextResponse } from "next/server";
-import { logger } from "@/lib/logger";
+import { z } from "zod";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  parseRequestBody,
+  HTTP_STATUS,
+} from "../../../../lib/architecture/api-handler";
 
-interface ErrorPayload {
-  error: {
-    message: string;
-    type: string;
-    code?: string;
-    stack?: string;
-    details?: any;
-  };
-  context: {
-    url: string;
-    userAgent: string;
-    timestamp: number;
-    sessionId: string;
-    userId?: string;
-    viewport: { width: number; height: number };
-    connection: { effectiveType: string; downlink: number };
-    memory?: { used: number; total: number; limit: number };
-    experiments?: string[];
-    sections?: string[];
-  };
-}
+// Import logger from shared if available, fallback to console
+const logger = {
+  error: (message: string, context?: any) => console.error(message, context),
+  warn: (message: string, context?: any) => console.warn(message, context),
+};
+
+// Schema for error monitoring payload validation
+const errorPayloadSchema = z.object({
+  error: z.object({
+    message: z.string().min(1, "Error message is required"),
+    type: z.string().min(1, "Error type is required"),
+    code: z.string().optional(),
+    stack: z.string().optional(),
+    details: z.unknown().optional(),
+  }),
+  context: z.object({
+    url: z.string().min(1, "URL is required"),
+    userAgent: z.string().min(1, "User agent is required"),
+    timestamp: z.number().min(0, "Timestamp must be a positive number"),
+    sessionId: z.string().min(1, "Session ID is required"),
+    userId: z.string().optional(),
+    viewport: z.object({
+      width: z.number().min(1),
+      height: z.number().min(1),
+    }),
+    connection: z.object({
+      effectiveType: z.string().min(1),
+      downlink: z.number().min(0),
+    }),
+    memory: z.object({
+      used: z.number().min(0),
+      total: z.number().min(0),
+      limit: z.number().min(0),
+    }).optional(),
+    experiments: z.array(z.string()).optional().default([]),
+    sections: z.array(z.string()).optional().default([]),
+  }),
+});
 
 export async function POST(request: NextRequest) {
   try {
-    // Handle malformed JSON gracefully
-    let payload: ErrorPayload;
-    try {
-      payload = await request.json();
-    } catch (jsonError) {
-      logger.error("Invalid JSON in error report payload", {
-        error: jsonError instanceof Error ? jsonError.message : "Invalid JSON",
-      });
-      return NextResponse.json(
-        { error: "Invalid JSON format" },
-        {
-          status: 400,
-          headers: {
-            "X-Content-Type-Options": "nosniff",
-            "X-Frame-Options": "DENY",
-          },
-        },
-      );
+    // Parse and validate request body
+    const parseResult = await parseRequestBody(request, errorPayloadSchema);
+    if (!parseResult.success) {
+      return (parseResult as { success: false; error: NextResponse }).error;
     }
 
-    // Validate required fields
-    const validationErrors: string[] = [];
-
-    if (!payload.error) {
-      validationErrors.push("error field is required");
-    } else {
-      if (!payload.error.message || typeof payload.error.message !== "string") {
-        validationErrors.push("error.message must be a non-empty string");
-      }
-      if (!payload.error.type || typeof payload.error.type !== "string") {
-        validationErrors.push("error.type must be a valid string");
-      }
-    }
-
-    if (!payload.context) {
-      validationErrors.push("context field is required");
-    } else {
-      if (!payload.context.url || typeof payload.context.url !== "string") {
-        validationErrors.push("context.url must be a valid string");
-      }
-      if (
-        !payload.context.userAgent ||
-        typeof payload.context.userAgent !== "string"
-      ) {
-        validationErrors.push("context.userAgent must be a valid string");
-      }
-      if (
-        !payload.context.sessionId ||
-        typeof payload.context.sessionId !== "string"
-      ) {
-        validationErrors.push("context.sessionId must be a valid string");
-      }
-      if (
-        !payload.context.timestamp ||
-        typeof payload.context.timestamp !== "number"
-      ) {
-        validationErrors.push("context.timestamp must be a valid number");
-      }
-      if (
-        !payload.context.viewport ||
-        typeof payload.context.viewport !== "object"
-      ) {
-        validationErrors.push(
-          "context.viewport must be an object with width and height",
-        );
-      }
-      if (
-        !payload.context.connection ||
-        typeof payload.context.connection !== "object"
-      ) {
-        validationErrors.push(
-          "context.connection must be an object with effectiveType and downlink",
-        );
-      }
-    }
-
-    if (validationErrors.length > 0) {
-      logger.warn("Invalid error report format", {
-        validationErrors,
-        receivedPayload: payload,
-      });
-      return NextResponse.json(
-        {
-          error: "Invalid error report format",
-          details: validationErrors,
-        },
-        {
-          status: 400,
-          headers: {
-            "X-Content-Type-Options": "nosniff",
-            "X-Frame-Options": "DENY",
-          },
-        },
-      );
-    }
+    const payload = parseResult.data;
 
     // Log error with structured data
     logger.error("Client Error Reported", {
@@ -151,41 +86,26 @@ export async function POST(request: NextRequest) {
     // Examples: Sentry, LogRocket, DataDog, etc.
 
     // For now, we'll just acknowledge receipt
-    return NextResponse.json(
-      {
-        success: true,
-        reportId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        timestamp: new Date().toISOString(),
-      },
-      {
-        headers: {
-          "X-Content-Type-Options": "nosniff",
-          "X-Frame-Options": "DENY",
-          "X-XSS-Protection": "1; mode=block",
-          "Referrer-Policy": "strict-origin-when-cross-origin",
-        },
-      },
-    );
+    return createSuccessResponse({
+      success: true,
+      reportId: `err_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
     logger.error("Error processing monitoring payload", {
       error: error instanceof Error ? error.message : String(error),
     });
-    return NextResponse.json(
-      { error: "Failed to process error report" },
-      {
-        status: 500,
-        headers: {
-          "X-Content-Type-Options": "nosniff",
-          "X-Frame-Options": "DENY",
-        },
-      },
+    return createErrorResponse(
+      "MONITORING_ERROR_PROCESSING",
+      "Failed to process error report",
+      { status: HTTP_STATUS.INTERNAL_SERVER_ERROR }
     );
   }
 }
 
 // Health check endpoint
 export async function GET() {
-  return NextResponse.json({
+  return createSuccessResponse({
     status: "ok",
     service: "error-monitoring",
     timestamp: new Date().toISOString(),

@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react";
 import { analytics } from "../analytics-core";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 // Unified event types
 export type InteractionType = "click" | "press" | "activate";
@@ -117,10 +118,12 @@ export function useUnifiedEvents() {
         const inputMethod = detectInputMethod(originalEvent);
         const interactionType = normalizeInteractionType(originalEvent);
 
+        if (!isHTMLElement(originalEvent.target)) return;
+
         const unifiedEvent: UnifiedEvent = {
           type: interactionType,
           inputMethod,
-          target: originalEvent.target as HTMLElement,
+          target: originalEvent.target,
           originalEvent,
           timestamp: Date.now(),
         };
@@ -153,7 +156,7 @@ export function useUnifiedEvents() {
           if (
             event.type === "click" &&
             listeners.touchstart &&
-            Date.now() - (listeners.touchstart as any).lastTouch < 300
+            Date.now() - (listeners.touchstart as unknown).lastTouch < 300
           ) {
             return;
           }
@@ -166,11 +169,11 @@ export function useUnifiedEvents() {
 
         // Track touch timing for debounce
         if (eventType === "touchstart") {
-          (listener as any).lastTouch = 0;
+          (listener as unknown).lastTouch = 0;
           element.addEventListener(
             "touchstart",
             () => {
-              (listener as any).lastTouch = Date.now();
+              (listener as unknown).lastTouch = Date.now();
             },
             { capture },
           );
@@ -265,9 +268,11 @@ export function useViewportTracking() {
         observerRef.current = new IntersectionObserver(
           (entries) => {
             entries.forEach((entry) => {
+              if (!isHTMLElement(entry.target)) return;
+
               // Track visibility changes
               analytics.track("viewport_visibility", {
-                elementId: (entry.target as HTMLElement).id || undefined,
+                elementId: entry.target.id || undefined,
                 visible: entry.isIntersecting,
                 intersectionRatio: entry.intersectionRatio,
                 timestamp: Date.now(),

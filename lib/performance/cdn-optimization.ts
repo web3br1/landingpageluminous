@@ -8,6 +8,7 @@ import {
   FeatureFlag,
 } from "../environment/environment-manager";
 import { getAdvancedMonitoringSystem } from "../monitoring/advanced-metrics";
+import { safeNavigatorConnection } from "../utils/browser-api-helpers";
 import { logger } from "../observability/logger";
 
 /**
@@ -217,10 +218,7 @@ export class CDNOptimizer {
    * Setup connection awareness
    */
   private setupConnectionAwareness(): void {
-    if (typeof navigator === "undefined" || !("connection" in navigator))
-      return;
-
-    const connection = (navigator as any).connection;
+    const connection = safeNavigatorConnection();
 
     if (connection) {
       // Adjust strategy based on connection
@@ -369,8 +367,9 @@ export class CDNOptimizer {
   } {
     let connectionType: string | undefined;
 
-    if (typeof navigator !== "undefined" && "connection" in navigator) {
-      connectionType = (navigator as any).connection?.effectiveType;
+    const connection = safeNavigatorConnection();
+    if (connection) {
+      connectionType = connection.effectiveType;
     }
 
     return {
@@ -540,8 +539,8 @@ export function prefetchOnIdle(url: string, as: string = "fetch"): void {
  */
 export function useCDNOptimization(): {
   warmUpConnections: () => void;
-  getResourceMetrics: () => any;
-  getRecommendations: () => any[];
+  getResourceMetrics: () => unknown;
+  getRecommendations: () => unknown[];
 } {
   const optimizer = getCDNOptimizer();
 

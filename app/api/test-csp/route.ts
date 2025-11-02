@@ -1,12 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
+import {
+  createErrorResponse,
+  HTTP_STATUS,
+} from "../../../lib/architecture/api-handler";
 
 // CSP Test Endpoint
 export async function GET(request: NextRequest) {
   // Only allow in development
   if (process.env.NODE_ENV !== "development") {
-    return NextResponse.json(
-      { error: "CSP test endpoint only available in development" },
-      { status: 403 },
+    return createErrorResponse(
+      "CSP_TEST_NOT_ALLOWED_IN_PRODUCTION",
+      "CSP test endpoint only available in development",
+      { status: HTTP_STATUS.FORBIDDEN }
     );
   }
 
@@ -73,22 +78,26 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    return NextResponse.json(
+    return createErrorResponse(
+      "INVALID_CSP_TEST_TYPE",
+      "Invalid test type",
       {
-        error: "Invalid test type",
-        availableTests: ["nonce", "report"],
-        usage: "/api/test-csp?test=nonce or /api/test-csp?test=report",
-      },
-      { status: 400 },
+        status: HTTP_STATUS.BAD_REQUEST,
+        details: {
+          availableTests: ["nonce", "report"],
+          usage: "/api/test-csp?test=nonce or /api/test-csp?test=report",
+        },
+      }
     );
   } catch (error) {
     console.error("[CSP Test Error]", error);
-    return NextResponse.json(
+    return createErrorResponse(
+      "CSP_TEST_FAILED",
+      "CSP test failed",
       {
-        error: "CSP test failed",
+        status: HTTP_STATUS.INTERNAL_SERVER_ERROR,
         details: error instanceof Error ? error.message : String(error),
-      },
-      { status: 500 },
+      }
     );
   }
 }

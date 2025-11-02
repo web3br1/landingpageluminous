@@ -2,7 +2,6 @@
 // These components are only loaded when needed in admin routes
 
 import dynamic from "next/dynamic";
-import React, { Suspense, ComponentType } from "react";
 
 // Loading fallback component
 const AdminLoadingFallback = () => (

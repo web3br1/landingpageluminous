@@ -1,7 +1,6 @@
 // User Service - Basic user management for Stripe webhooks
 // Temporary implementation until full user system is ready
 
-import { Result, isOk, isErr } from "../../shared/core/Result";
 import { edgeCache as cache } from "../cache/edge-cache";
 
 export interface UserSubscription {

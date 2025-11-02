@@ -3,6 +3,37 @@
 import { logger } from "../logger";
 import { analytics } from "../analytics-core";
 
+// ===== API RESPONSE TYPES =====
+
+export interface ApiResponseWrapper<T = unknown> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+  code?: string | number;
+  timestamp?: number;
+  requestId?: string;
+  metadata?: Record<string, unknown>;
+}
+
+export interface PaginatedApiResponse<T = unknown> extends ApiResponseWrapper<T[]> {
+  pagination?: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+}
+
+export interface StreamingApiResponse<T = unknown> {
+  type: "data" | "error" | "complete";
+  data?: T;
+  error?: string;
+  metadata?: Record<string, unknown>;
+}
+
 // Network error taxonomy - Known error types, no "Unknown error"
 export enum NetworkErrorType {
   NETWORK_TIMEOUT = "network_timeout",
@@ -94,7 +125,7 @@ class CircuitBreaker {
 }
 
 // Request deduplication
-const pendingRequests = new Map<string, Promise<any>>();
+const pendingRequests = new Map<string, Promise<unknown>>();
 
 function getRequestKey(url: string, options: RequestInit): string {
   const method = options.method || "GET";
@@ -133,7 +164,7 @@ export interface FetchOptions extends RequestInit {
   signal?: AbortSignal;
 }
 
-export async function resilientFetch<T = any>(
+export async function resilientFetch<T = unknown>(
   url: string,
   options: FetchOptions = {},
 ): Promise<T> {
@@ -243,7 +274,7 @@ export async function resilientFetch<T = any>(
         }
       }
 
-      return response as any;
+      return response as unknown;
     } catch (error) {
       clearTimeout(timeoutId!);
 
@@ -360,12 +391,12 @@ export async function resilientFetch<T = any>(
 
 // Convenience methods
 export const api = {
-  get: <T = any>(url: string, options?: Omit<FetchOptions, "method">) =>
+  get: <T = unknown>(url: string, options?: Omit<FetchOptions, "method">) =>
     resilientFetch<T>(url, { ...options, method: "GET" }),
 
-  post: <T = any>(
+  post: <T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Omit<FetchOptions, "method">,
   ) =>
     resilientFetch<T>(url, {
@@ -375,9 +406,9 @@ export const api = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
-  put: <T = any>(
+  put: <T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Omit<FetchOptions, "method">,
   ) =>
     resilientFetch<T>(url, {
@@ -387,9 +418,9 @@ export const api = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
-  patch: <T = any>(
+  patch: <T = unknown>(
     url: string,
-    data?: any,
+    data?: unknown,
     options?: Omit<FetchOptions, "method">,
   ) =>
     resilientFetch<T>(url, {
@@ -399,6 +430,6 @@ export const api = {
       body: data ? JSON.stringify(data) : undefined,
     }),
 
-  delete: <T = any>(url: string, options?: Omit<FetchOptions, "method">) =>
+  delete: <T = unknown>(url: string, options?: Omit<FetchOptions, "method">) =>
     resilientFetch<T>(url, { ...options, method: "DELETE" }),
 };

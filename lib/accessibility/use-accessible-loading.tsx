@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useScreenReader } from "./accessibility-manager";
+import { isHTMLElement } from "@/lib/utils/dom-type-guards";
 
 interface UseAccessibleLoadingOptions {
   loadingText?: string;
@@ -211,8 +212,47 @@ export function AccessibleLoadingSection({
 
 // ===== HOOK PARA FORMULÁRIOS =====
 
+export interface FormFieldErrors {
+  // Common form field errors
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+  subject?: string;
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+  role?: string;
+  password?: string;
+  confirmPassword?: string;
+  terms?: string;
+  newsletter?: string;
+  // Custom field errors
+  [fieldName: string]: string | undefined;
+}
+
+export interface AccessibleFormData {
+  // Common form fields
+  name?: string;
+  email?: string;
+  phone?: string;
+  message?: string;
+  subject?: string;
+  // User information
+  firstName?: string;
+  lastName?: string;
+  company?: string;
+  role?: string;
+  // Preferences
+  newsletter?: boolean;
+  terms?: boolean;
+  marketing?: boolean;
+  // Custom form fields
+  [key: string]: unknown;
+}
+
 interface UseAccessibleFormOptions {
-  onSubmit: (data: Record<string, any>) => Promise<void>;
+  onSubmit: (data: AccessibleFormData) => Promise<void>;
   validateOnChange?: boolean;
   announceErrors?: boolean;
 }
@@ -235,7 +275,7 @@ export function useAccessibleForm({
 }: UseAccessibleFormOptions): UseAccessibleFormReturn {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const [fieldErrors, setFieldErrors] = useState<FormFieldErrors>({});
 
   const { announce } = useScreenReader();
 
@@ -354,11 +394,16 @@ export class FormValidator {
     return null;
   }
 
-  static validateCPF(cpf: string): string | null {
-    // Simplified CPF validation
-    const cpfRegex = /^\d{3}\.\d{3}\.\d{3}-\d{2}$/;
-    if (!cpfRegex.test(cpf)) {
+  static async validateCPF(cpf: string): Promise<string | null> {
+    // Use centralized CPF validation
+    const { CPF_REGEX, validateCpfChecksum } = await import("@/lib/core/regex-patterns");
+
+    if (!CPF_REGEX.test(cpf)) {
       return "CPF deve estar no formato XXX.XXX.XXX-XX";
+    }
+
+    if (!validateCpfChecksum(cpf)) {
+      return "CPF inválido";
     }
     return null;
   }
@@ -370,7 +415,7 @@ export class FocusManager {
   private static previouslyFocusedElement: HTMLElement | null = null;
 
   static saveFocus() {
-    this.previouslyFocusedElement = document.activeElement as HTMLElement;
+    this.previouslyFocusedElement = isHTMLElement(document.activeElement) ? document.activeElement : null;
   }
 
   static restoreFocus() {

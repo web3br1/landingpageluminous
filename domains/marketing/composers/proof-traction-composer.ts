@@ -5,7 +5,7 @@ import { proofTractionConfiguration } from "../content/proof-traction-content";
 import type { ComposedProofTractionData } from "../types/proof-traction.types";
 import { createVariantComposer } from "./_base";
 
-export const composeProofTractionContent: () => ComposedProofTractionData =
+export const composeProofTractionContent: () => Promise<ComposedProofTractionData> =
   createVariantComposer("proof-traction", {
     defaultVariant: proofTractionConfiguration.defaultVariant,
     variants: proofTractionConfiguration.variants as any,

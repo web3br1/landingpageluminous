@@ -1,0 +1,152 @@
+name: Code Quality CI
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  code-quality-check:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run TypeScript type checking
+        run: npx tsc --noEmit
+
+      - name: Run ESLint
+        run: npx eslint . --max-warnings 0
+        continue-on-error: true
+
+      - name: Run Code Quality Verification
+        run: node scripts/code-quality-verification.mjs
+        id: code-quality
+        continue-on-error: true
+
+      - name: Generate Code Quality Badge
+        run: |
+          SCORE=$(node scripts/code-quality-verification.mjs | grep "Score Geral" | sed 's/.*: \([0-9]*\).*/\1/' || echo "0")
+
+          if [ "$SCORE" -ge 90 ]; then
+            COLOR="brightgreen"
+            STATUS="excellent"
+          elif [ "$SCORE" -ge 70 ]; then
+            COLOR="yellow"
+            STATUS="good"
+          elif [ "$SCORE" -ge 50 ]; then
+            COLOR="orange"
+            STATUS="fair"
+          else
+            COLOR="red"
+            STATUS="poor"
+          fi
+
+          echo "Code Quality Score: $SCORE/100 ($STATUS)" >> $GITHUB_STEP_SUMMARY
+          echo "Badge: https://img.shields.io/badge/Code%20Quality-$SCORE%2F100-$COLOR" >> $GITHUB_STEP_SUMMARY
+
+      - name: Code Quality Gate
+        run: |
+          SCORE=$(node scripts/code-quality-verification.mjs | grep "Score Geral" | sed 's/.*: \([0-9]*\).*/\1/' || echo "0")
+
+          if [ "$SCORE" -lt 70 ]; then
+            echo "❌ Code Quality Gate Failed: Score $SCORE/100 is below minimum threshold of 70/100"
+            echo ""
+            echo "Please fix the following issues:"
+            echo "1. Run 'npx tsc --noEmit' and fix TypeScript errors"
+            echo "2. Run 'npx eslint . --fix' for automatic fixes"
+            echo "3. Review and fix remaining lint errors"
+            echo "4. Consider refactoring files with high error density"
+            exit 1
+          else
+            echo "✅ Code Quality Gate Passed: Score $SCORE/100 meets requirements"
+          fi
+
+      - name: Upload code quality reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: code-quality-reports
+          path: |
+            tmp/code-quality-reports/
+          retention-days: 30
+
+  auto-fix:
+    name: Auto-fix Code Issues
+    runs-on: ubuntu-latest
+    needs: code-quality-check
+    if: failure() && github.event_name == 'pull_request'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run ESLint auto-fix
+        run: npx eslint . --fix --quiet
+
+      - name: Format code
+        run: npx prettier --write "**/*.{ts,tsx,js,jsx,json,md}"
+
+      - name: Check for changes
+        id: verify-changed-files
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+            echo "📝 Code auto-fixed. Changes detected."
+            git diff --name-only
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+            echo "✅ No changes needed after auto-fix."
+          fi
+
+      - name: Commit auto-fixes
+        if: steps.verify-changed-files.outputs.changes == 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add -A
+          git commit -m "🤖 Auto-fix: ESLint and Prettier formatting
+
+- Fixed ESLint issues automatically
+- Applied Prettier code formatting
+- Maintained code style consistency" || echo "No changes to commit"
+
+      - name: Push auto-fixes
+        if: steps.verify-changed-files.outputs.changes == 'true'
+        run: |
+          git push origin ${{ github.head_ref }} || echo "Failed to push auto-fixes"
+
+      - name: Comment on PR
+        if: steps.verify-changed-files.outputs.changes == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '🤖 **Code Quality Auto-fix Applied**\n\nI\'ve automatically fixed some code quality issues:\n\n- ✅ ESLint violations corrected\n- ✅ Code formatting applied\n- ✅ Style consistency maintained\n\nPlease review the changes and ensure they meet your expectations.'
+            })
